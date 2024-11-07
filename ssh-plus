@@ -50,8 +50,6 @@ fi
 
 # - Atualiza Lista/Pacotes/Sistema
 dpkg --configure -a
-apt update -y && apt upgrade -y
-apt install unzip python3 -y
 
 # - Desabilita ipv6
 sysctl -w net.ipv6.conf.all.disable_ipv6=1 && sysctl -p
