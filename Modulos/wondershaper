@@ -1,0 +1,45 @@
+#!/bin/bash
+FECHA=$(date +"%Y-%m-%d")
+COR1='\033[1;31m'
+COR2='\033[0;34m'
+COR3='\033[1;35m'
+CLEAR
+SCOR='\033[0m'
+
+echo -e "\033[1;44;37m==============================================\033[0m"
+echo -e "\033[1;44;37m           ESCOLHA UMA OPÇÃO ABAIXO           \033[0m"
+echo -e "\033[1;44;37m==============================================\033[0m"
+echo -e "\033[1;32m [ 1 ] INSTALAR GIT\033[0m"
+echo -e "\033[1;32m [ 2 ] CLONAR REPOSITÓRIO WONDER SHAPER\033[0m"
+echo -e "\033[1;32m [ 3 ] CRIAR PASTA WONDER SHAPER\033[0m"
+echo -e "\033[1;32m [ 4 ] INSTALAR WONDER SHAPER\033[0m"
+echo -e "\033[1;32m [ 5 ] ATIVAR LIMITADOR DE BANDA NA INTERFACE ETH0\033[0m"
+echo -e "\033[1;32m [ 6 ] LIMITAR VELOCIDADE PARA 1MB\033[0m"
+echo -e "\033[1;32m [ 7 ] LIMITAR VELOCIDADE PARA 2MB\033[0m"
+echo -e "\033[1;32m [ 8 ] LIMITAR VELOCIDADE PARA 4MB\033[0m"
+echo -e "\033[1;32m [ 9 ] TESTAR VELOCIDADE DA INTERNET\033[0m"
+echo -e "\033[1;32m [10 ] DESATIVAR WONDER SHAPER\033[0m"
+echo -e "\033[1;32m [11 ] VERIFICAR INSTALAÇÃO DO WONDER SHAPER\033[0m"
+echo -e "\033[1;32m [ 0 ] SAIR\033[0m"
+echo -e "\033[1;44;37m==============================================\033[0m"
+
+# Ler entrada do usuário
+read -p "DIGITE SUA ESCOLHA: " n
+
+case $n in
+    1) apt install git ;;
+    2) git clone https://github.com/magnific0/wondershaper.git ;;
+    3) mkdir -p wondershaper && cd wondershaper ;;
+    4) cd wondershaper && make install ;;
+    5) wondershaper -a eth0 -d 2500 -u 2500 ;;
+    6) wondershaper -a eth0 -d 1000 -u 1000 ;;
+    7) wondershaper -a eth0 -d 2000 -u 2000 ;;
+    8) wondershaper -a eth0 -d 4000 -u 4000 ;;
+    9) speedtest-cli
+       echo -ne "\n\033[1;31mPRESSIONE \033[1;33mENTER\033[1;32m PARA VOLTAR AO MENU!\033[0m"; read ;;
+    10) wondershaper -c -a eth0 ;;
+    11) which wondershaper
+        sleep 4 ;;
+    0) echo "SAINDO..." && exit ;;
+    *) echo -e "\033[1;31mOPÇÃO INVÁLIDA! TENTE NOVAMENTE.\033[0m" ;;
+esac

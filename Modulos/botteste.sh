@@ -17,10 +17,10 @@
     screen -dmS bot_teste ./botssh $token > /dev/null 2>&1
     clear
     echo "BOT ATIVADO"
-    menu
+    menu2
 } || {
     screen -r -S "bot_teste" -X quit
     clear
     echo "BOT DESATIVADO"
-    menu
+    menu2
 }

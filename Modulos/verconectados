@@ -1,0 +1,55 @@
+#!/bin/bash
+
+echo -e "\E[44;1;37m       MENU PARA VER CONECTADOS      \E[0m"
+echo -e""
+echo "Seleccione una opción:"
+echo ""
+echo -e "\e[1;31m[\e[1;36m01\e[1;31m] \e[1;37m• \e[1;33mCONECTADOS EN PUERTO 80
+\e[1;31m[\e[1;36m02\e[1;31m] \e[1;37m• \e[1;33mCONECTADOS EN PUERTO 443
+\e[1;31m\e[1;31m[\e[1;36m03\e[1;31m] \e[1;37m• \e[1;33mCONECTADOS EN PUERTO 22
+\e[1;31m[\e[1;36m04\e[1;31m] \e[1;37m• \e[1;33mVOLVER\e[1;31m"
+echo -e "\033[0;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\\033[0m"
+echo ""
+read -p "Opción: " opcion
+
+case $opcion in
+1 | 01)
+  clear
+  PSIPHON_PORT_80=$(sudo netstat -tn | awk '$4 ~ /:80$/ {print $5}' | cut -d: -f1 | sort | uniq -c | wc -l)
+  echo -e "CONEXIONES EN EL PUERTO 80: \033[1;32m$PSIPHON_PORT_80\033[0m"
+  echo -ne "\n\033[1;31mENTER \033[1;33mPARA VOLVER AL \033[1;32mMENU!\033[0m"
+  read
+  clear
+  verconectados
+  ;;
+2 | 02)
+  clear
+  PSIPHON_PORT_443=$(sudo netstat -tn | awk '$4 ~ /:443$/ {print $5}' | cut -d: -f1 | sort | uniq -c | wc -l)
+  echo -e "CONEXIONES EN EL PUERTO 443: \033[1;32m$PSIPHON_PORT_443\033[0m"
+  echo -ne "\n\033[1;31mENTER \033[1;33mPARA VOLVER AL \033[1;32mMENU!\033[0m"
+  read
+  clear
+  verconectados
+  ;;
+3 | 03)
+  clear
+  PSIPHON_PORT_22=$(sudo netstat -tn | awk '$4 ~ /:22$/ {print $5}' | cut -d: -f1 | sort | uniq -c | wc -l)
+  echo -e "CONEXIONES EN EL PUERTO 22: \033[1;32m$PSIPHON_PORT_22\033[0m"
+  echo -ne "\n\033[1;31mENTER \033[1;33mPARA VOLVER AL \033[1;32mMENU!\033[0m"
+  read
+  clear
+  verconectados
+  ;;
+4 | 04)
+  echo "Volviendo..."
+  sleep 1
+  clear
+  menupsiphon
+  ;;
+*)
+  echo "Opción inválida"
+  sleep 1
+  clear
+  verconectados
+  ;;
+esac
