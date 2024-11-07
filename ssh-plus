@@ -51,15 +51,23 @@ fi
 # - Verifica se wget esta instalado
 if ! command -v wget &> /dev/null; then
     echo -e "${RED}[x] O WGET NAO ESTA INSTALADO! INSTALANDO...${SCOLOR}"
-    apt-get update && apt-get install wget -y
+    apt-get install wget -y
+fi
+
+# - Instala multipath-tools e verifica o status do serviço
+echo -e "${YELLOW}[!] INSTALANDO MULTIPATH-TOOLS...${SCOLOR}"
+apt-get install multipath-tools -y
+systemctl restart multipathd
+if ! systemctl is-active --quiet multipathd; then
+    echo -e "${RED}[x] FALHA AO INICIAR O MULTIPATHD!${SCOLOR}"
+    echo -e "${YELLOW}[!] VERIFIQUE OS LOGS PARA MAIS DETALHES:${SCOLOR}"
+    journalctl -xe | grep -i multipath-tools | tail -10
+else
+    echo -e "${YELLOW}[✓] MULTIPATHD INICIADO COM SUCESSO!${SCOLOR}"
 fi
 
 # - Configura pacotes pendentes
 dpkg --configure -a
-
-# Instala o speedtest-cli
-echo -e "\033[1;34mInstalando o speedtest-cli...\033[0m"
-pip install speedtest-cli
 
 # - Desabilita ipv6
 sysctl -w net.ipv6.conf.all.disable_ipv6=1 && sysctl -p
