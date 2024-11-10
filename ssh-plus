@@ -54,21 +54,9 @@ if ! command -v wget &> /dev/null; then
     apt-get install wget -y
 fi
 
-# - Instala multipath-tools e verifica o status do serviço
-echo -e "${YELLOW}[!] INSTALANDO MULTIPATH-TOOLS...${SCOLOR}"
-apt-get install multipath-tools -y
-systemctl restart multipathd
-if ! systemctl is-active --quiet multipathd; then
-    echo -e "${RED}[x] FALHA AO INICIAR O MULTIPATHD!${SCOLOR}"
-    echo -e "${YELLOW}[!] VERIFIQUE OS LOGS PARA MAIS DETALHES:${SCOLOR}"
-    journalctl -xe | grep -i multipath-tools | tail -10
-else
-    echo -e "${YELLOW}[✓] MULTIPATHD INICIADO COM SUCESSO!${SCOLOR}"
-fi
-
 # Instala o speedtest-cli
 echo -e "\033[1;34mInstalando o speedtest-cli...\033[0m"
-pip3 install speedtest-cli
+pip install speedtest-cli
 
 # - Configura pacotes pendentes
 dpkg --configure -a
