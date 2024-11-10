@@ -218,19 +218,12 @@ for _prog in ${_pacotes[@]}; do
 apt install $_prog -y
 done
 pip install speedtest-cli
-
 sudo firewall-cmd --zone=public --permanent --add-port=80/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=8989/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=5454/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=8888/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=8080/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=7300/udp ; sudo firewall-cmd --zone=public --permanent --add-port=443/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=8080/tcp ; sudo firewall-cmd --reload
 }
 fun_bar 'inst_pct'
 #-----------------------------------------------------------------------------------------------------------------
 [[ -f "/usr/sbin/ufw" ]] && ufw allow 443/tcp ; ufw allow 80/tcp ; ufw allow 3128/tcp ; ufw allow 8799/tcp ; ufw allow 8080/tcp
 #-----------------------------------------------------------------------------------------------------------------
-
-# Redefinir a exibição do terminal novamente
-tput reset
-# Instala o speedtest-cli
-echo -e "\033[1;34mInstalando o speedtest-cli...\033[0m"
-pip install speedtest-cli
 
 # Redefinir a exibição do terminal novamente
 tput reset
