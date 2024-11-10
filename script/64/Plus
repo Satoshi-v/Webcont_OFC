@@ -217,7 +217,17 @@ _pacotes=("bc" "screen" "nano" "unzip" "lsof" "netstat" "net-tools" "dos2unix" "
 for _prog in ${_pacotes[@]}; do
 apt install $_prog -y
 done
+# Instala o speedtest-cli
+echo -e "\033[1;34mInstalando o speedtest-cli...\033[0m"
 pip install speedtest-cli
+
+# Verifica se a instalação foi bem-sucedida
+if command -v speedtest-cli &> /dev/null; then
+    echo -e "\033[1;32mspeedtest-cli instalado com sucesso!\033[0m"
+else
+    echo -e "\033[1;31mFalha na instalação do speedtest-cli.\033[0m"
+    exit 1
+fi
 
 # instalando rustyproxy by @UlekBR
 bash <(wget -qO- https://raw.githubusercontent.com/PhoenixxZ2023/RustyProxyOnly/refs/heads/master/install.sh)
