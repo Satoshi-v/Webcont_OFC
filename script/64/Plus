@@ -217,12 +217,7 @@ _pacotes=("bc" "screen" "nano" "unzip" "lsof" "netstat" "net-tools" "dos2unix" "
 for _prog in ${_pacotes[@]}; do
 apt install $_prog -y
 done
-# Instala o speedtest-cli
-echo -e "\033[1;34mInstalando o speedtest-cli...\033[0m"
 pip install speedtest-cli
-
-# instalando rustyproxy by @UlekBR
-bash <(wget -qO- https://raw.githubusercontent.com/PhoenixxZ2023/RustyProxyOnly/refs/heads/master/install.sh)
 
 sudo firewall-cmd --zone=public --permanent --add-port=80/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=8989/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=5454/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=8888/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=8080/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=7300/udp ; sudo firewall-cmd --zone=public --permanent --add-port=443/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=8080/tcp ; sudo firewall-cmd --reload
 }
@@ -230,6 +225,18 @@ fun_bar 'inst_pct'
 #-----------------------------------------------------------------------------------------------------------------
 [[ -f "/usr/sbin/ufw" ]] && ufw allow 443/tcp ; ufw allow 80/tcp ; ufw allow 3128/tcp ; ufw allow 8799/tcp ; ufw allow 8080/tcp
 #-----------------------------------------------------------------------------------------------------------------
+
+# Redefinir a exibição do terminal novamente
+tput reset
+# Instala o speedtest-cli
+echo -e "\033[1;34mInstalando o speedtest-cli...\033[0m"
+pip install speedtest-cli
+
+# Redefinir a exibição do terminal novamente
+tput reset
+# instalando rustyproxy by @UlekBR
+bash <(wget -qO- https://raw.githubusercontent.com/PhoenixxZ2023/RustyProxyOnly/refs/heads/master/install.sh)
+
 # Redefinir a exibição do terminal novamente
 tput reset
 # Instala ferramentas de rede
