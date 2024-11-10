@@ -167,7 +167,7 @@ echo -e "\E[38;5;18m╰━━━━━━━━━━━━━━━━━━━
 echo ""
 echo -e "       \033[1;91m[\033[1;31m⚠️ \033[1;91m] \033[1;97mINSTALANDO PYTHON \033[1;91m[\033[1;31m⚠️ \033[1;91m] \033[0m"
 echo ""
-echo -e "  \033[1;93mCOSTUMA DEMORAR UM POUCO!\033[0m"
+echo -e "        \033[1;93mCOSTUMA DEMORAR UM POUCO!\033[0m"
 echo ""
 
 # Instala Python2
