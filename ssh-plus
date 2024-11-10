@@ -66,6 +66,10 @@ else
     echo -e "${YELLOW}[✓] MULTIPATHD INICIADO COM SUCESSO!${SCOLOR}"
 fi
 
+# Instala o speedtest-cli
+echo -e "\033[1;34mInstalando o speedtest-cli...\033[0m"
+pip3 install speedtest-cli
+
 # - Configura pacotes pendentes
 dpkg --configure -a
 
