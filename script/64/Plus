@@ -169,35 +169,29 @@ echo -e "       \033[1;91m[\033[1;31m⚠️ \033[1;91m] \033[1;97mINSTALANDO PYT
 echo ""
 echo -e "        \033[1;93mCOSTUMA DEMORAR UM POUCO!\033[0m"
 echo ""
-
-# Instala Python2
-sudo apt-get install python python2 -y >/dev/null 2>&1
-
-# Função para instalar Python3 baseado na versão do sistema
-install_python3() {
-    . /etc/os-release
-    if { [[ "$ID" == "ubuntu" && "$VERSION_ID" == "20.04" ]] || [[ "$ID" == "debian" && "$VERSION_ID" == "11" ]]; }; then
-        sudo apt-get install python3.8 -y >/dev/null 2>&1
-        sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 1 >/dev/null 2>&1
-        sudo update-alternatives --set python3 /usr/bin/python3.8 >/dev/null 2>&1
-    elif { [[ "$ID" == "ubuntu" && "$VERSION_ID" == "22.04" ]] || [[ "$ID" == "debian" && "$VERSION_ID" == "12" ]]; }; then
-        sudo apt-get install python3.10 -y >/dev/null 2>&1
-        sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1 >/dev/null 2>&1
-        sudo update-alternatives --set python3 /usr/bin/python3.10 >/dev/null 2>&1
-    else
-        echo -e "\033[1;31m[SISTEMA NÃO SUPORTADO] Apenas Ubuntu 20.04, Ubuntu 22.04, Debian 11 e Debian 12 são compatíveis.\033[0m"
-        exit 1
-    fi
-
-    # Instala pip para Python2 e Python3
-    sudo apt install python-pip python3-pip -y >/dev/null 2>&1
-
-    # Instala socat
-    sudo apt install socat -y >/dev/null 2>&1
+otimize_python() {
+    # INSTALA PYTHON AO PYTHON2
+    apt-get install python -y >/dev/null 2>&1
+    apt-get install python2 -y >/dev/null 2>&1
+    # INSTALA PYTHON3.6 AO PYTHON3.9
+    apt-get install python3.6 -y >/dev/null 2>&1
+    apt-get install python3.7 -y >/dev/null 2>&1
+    apt-get install python3.8 -y >/dev/null 2>&1
+    apt-get install python3.9 -y >/dev/null 2>&1
+    # CRIA ALTERNATIVAS PYTHON
+    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1 >/dev/null 2>&1
+    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 3 >/dev/null 2>&1
+    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 2 >/dev/null 2>&1
+    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 4 >/dev/null 2>&1
+    # INSTALA PIP
+    apt install pip -y
+    apt install python3-pip -y
+    # INSTALA SOCAT
+    apt install socat -y
+    #SETAR PYTHON3
+    update-alternatives --set python3 /usr/bin/python3.6
 }
-
-# Chama a função de instalação do Python3 com barra de progresso
-fun_bar "install_python3"
+    fun_bar 'otimize_python'
 
 # Redefinir a exibição do terminal
 tput reset
