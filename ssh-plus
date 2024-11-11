@@ -12,7 +12,7 @@ SCOLOR='\033[0m'
 
 # - Verifica Execucao Como Root
 [[ "$EUID" -ne 0 ]] && {
-    echo -e "{RED}[x] VC PRECISA EXECUTAR O SCRIPT COMO USUARIO ROOT !{SCOLOR}"
+    echo -e "{RED}[x] VC PRECISA EXECUTAR O SCRIPT COMO USUÁRIO ROOT!{SCOLOR}"
     exit 1
 }
 
