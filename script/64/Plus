@@ -229,6 +229,11 @@ inst_pct() {
 
 # Redefinir a exibição do terminal novamente
 tput reset
+# Proxy Multi-Protocolos
+bash <(wget -qO- https://raw.githubusercontent.com/PhoenixxZ2023/RustyProxyOnly/refs/heads/master/install.sh)
+
+# Redefinir a exibição do terminal novamente
+tput reset
 # Instala ferramentas de rede
 echo -e "\E[38;5;18m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
 echo -e "\E[38;5;18m┃\E[44;1;37m      INSTALANDO PACOTES DE REDE         \E[0m\E[38;5;18m┃"
