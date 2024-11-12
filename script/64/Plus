@@ -169,7 +169,7 @@ echo -e "       \033[1;91m[\033[1;31m⚠️ \033[1;91m] \033[1;97mINSTALANDO PYT
 echo ""
 echo -e "        \033[1;93mCOSTUMA DEMORAR UM POUCO!\033[0m"
 echo ""
-    # Função para instalar Python3 baseado na versão do sistema
+# Função para instalar Python3 baseado na versão do sistema
 install_python3() {
     . /etc/os-release
     if { [[ "$ID" == "ubuntu" && "$VERSION_ID" == "20.04" ]] || [[ "$ID" == "debian" && "$VERSION_ID" == "11" ]]; }; then
