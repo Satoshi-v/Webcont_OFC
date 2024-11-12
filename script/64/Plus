@@ -171,6 +171,10 @@ echo -e "        \033[1;93mCOSTUMA DEMORAR UM POUCO!\033[0m"
 echo ""
 # Função para instalar Python3 baseado na versão do sistema
 install_python3() {
+    # INSTALA PYTHON AO PYTHON2
+    apt-get install python -y >/dev/null 2>&1
+    apt-get install python2 -y >/dev/null 2>&1
+
     . /etc/os-release
     if { [[ "$ID" == "ubuntu" && "$VERSION_ID" == "20.04" ]] || [[ "$ID" == "debian" && "$VERSION_ID" == "11" ]]; }; then
         sudo apt-get install python3.8 -y >/dev/null 2>&1
@@ -211,7 +215,7 @@ for _prog in ${_pacotes[@]}; do
 apt install $_prog -y
 done
 pip install speedtest-cli
-sudo firewall-cmd --zone=public --permanent --add-port=80/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=8989/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=5454/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=8888/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=8080/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=7300/udp ; sudo firewall-cmd --zone=public --permanent --add-port=443/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=8080/tcp ; sudo firewall-cmd --reload
+sudo firewall-cmd --zone=public --permanent --add-port=80/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=1194/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=8989/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=5454/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=8888/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=8080/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=7300/udp ; sudo firewall-cmd --zone=public --permanent --add-port=443/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=8080/tcp ; sudo firewall-cmd --reload
 }
 fun_bar 'inst_pct'
 #-----------------------------------------------------------------------------------------------------------------
