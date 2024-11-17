@@ -225,7 +225,7 @@ fun_bar 'inst_pct'
 # Redefinir a exibição do terminal novamente
 tput reset
 # Proxy Multi-Protocolos
-bash <(wget -qO- https://raw.githubusercontent.com/UlekBR/RustyProxyOnly/refs/heads/main/install.sh)
+bash <(wget -qO- https://raw.githubusercontent.com/PhoenixxZ2023/RustyProxyOnly/refs/heads/main/install.sh)
 
 # Redefinir a exibição do terminal novamente
 tput reset
