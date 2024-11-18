@@ -157,6 +157,7 @@ msg17='\033[1;37m\033[1;33m(Sin información - Para cancelar presione CTRL + C)\
             ;;
         esac
     }
+
 intallv2ray() {
     echo -e "\033[1;32mIniciando instalação do V2Ray...\033[0m"
 
