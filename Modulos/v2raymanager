@@ -157,7 +157,38 @@ msg17='\033[1;37m\033[1;33m(Sin información - Para cancelar presione CTRL + C)\
             ;;
         esac
     }
+# Função para verificar se o V2Ray já está instalado
+function is_v2ray_installed() {
+    if [[ -f "$V2RAY_BINARY" && -f "$V2RAY_SERVICE" ]]; then
+        echo "V2Ray já está instalado."
+        return 0  # Retorna 0 se já estiver instalado
+    else
+        echo "V2Ray não está instalado."
+        return 1  # Retorna 1 se não estiver instalado
+    fi
+}
+
+# Função para exibir o menu do V2Ray (gerenciamento)
+function show_v2raymanager() {
+    if [[ -f "$V2RAY_MANAGER_SCRIPT" ]]; then
+        echo "Redirecionando para o menu do V2Ray..."
+        bash "$V2RAY_MANAGER_SCRIPT"
+    else
+        echo "O script do V2Ray Manager não foi encontrado!"
+    fi
+}
+
+# Função de instalação
 function install_v2ray() {
+    # Verificar se o V2Ray já está instalado
+    if is_v2ray_installed; then
+        echo "Nada a fazer, V2Ray já está instalado. Redirecionando para o menu de gerenciamento."
+        show_v2ray_manager
+        return 0  # Sai da função se já estiver instalado
+    fi
+
+    echo "Instalando o V2Ray..."
+
     [[ ! -d /etc/SSHPlus/v2ray ]] && mkdir -p /etc/SSHPlus/v2ray
 
     if systemctl is-active --quiet v2ray; then
@@ -187,7 +218,11 @@ EOF
 
     # Chamar a função de remoção de seções do config.json, se necessário
     remove_config_section
+
+    echo "V2Ray instalado com sucesso! Redirecionando para o menu de gerenciamento."
+    show_v2raymanager
 }
+
 # Chamada da função de instalação
 install_v2ray
         echo -e "\033[1;37m\033[1;33m¡INSTALADO CON ÉXITO ✅!\033[1;31m"
