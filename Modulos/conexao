@@ -1169,6 +1169,7 @@ if [ ! -d "/etc/openvpn/easy-rsa" ]; then
         ./easyrsa --batch build-client-full client nopass > /dev/null 2>&1 || error_exit "Falha ao gerar certificado do cliente"
         cp pki/ca.crt pki/private/ca.key pki/dh.pem pki/issued/server.crt pki/private/server.key /etc/openvpn  > /dev/null 2>&1 || error_exit "Falha ao copiar arquivos do openvpn"
         openvpn --genkey --secret /etc/openvpn/ta.key  > /dev/null 2>&1 || error_exit "Falha ao gerar a chave"
+fi
     # Generando server.conf
     echo "port $porta
 proto $PROTOCOL
