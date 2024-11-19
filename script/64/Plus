@@ -281,7 +281,6 @@ inst_pct() {
 }
 
 # Executar a função inst_pct
-echo -e "\e[1;32mINICIANDO INSTALAÇÃO E CONFIGURAÇÃO...\e[0m"
 fun_bar inst_pct
 
 # Redefinir a exibição do terminal novamente
