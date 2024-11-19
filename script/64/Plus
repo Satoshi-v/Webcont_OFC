@@ -204,8 +204,8 @@ echo ""
 
 # Função para instalar pacotes
 inst_pct() {
-    pacotes=("bc" "screen" "nano" "unzip" "lsof" "netstat" "net-tools" "dos2unix" \
-             "nload" "jq" "curl" "figlet" "python3" "python3-pip" "firewalld")
+    pacotes=("bc" "screen" "nano" "unzip" "lsof" "dos2unix" \
+             "nload" "jq" "curl" "figlet" "python3-pip" "firewalld")
 
     echo -e "\e[1;32mINSTALANDO PACOTES NECESSÁRIOS...\e[0m"
     for prog in "${pacotes[@]}"; do
@@ -226,10 +226,9 @@ inst_pct() {
     }
 }
 
-configurar_firewall() {
     # Listas de portas TCP e UDP
-    portas_tcp=(80 1194 8989 5454 8888 8080 443)
-    portas_udp=(7300)
+    portas_tcp=(80 1194 8989 5454 8888 8080 443 2053 8081 8443)
+    portas_udp=(7200 7300 7400 7500)
 
     # Verificar e configurar firewalld
     if systemctl is-active --quiet firewalld; then
@@ -272,20 +271,8 @@ configurar_firewall() {
         done
     fi
 }
-
-fun_bar() {
-    local comando=$1
-    echo -ne "\e[1;32m$comando...\e[0m"
-    eval "$comando" && echo -e "\e[1;32m[CONCLUÍDO]\e[0m" || {
-        echo -e "\e[1;31m[ERRO]\e[0m"
-        exit 1
-    }
-}
-
 # Executar script
-verificar_versao_ubuntu
 fun_bar "inst_pct"
-fun_bar "configurar_firewall"
 
 # Redefinir a exibição do terminal novamente
 tput reset
