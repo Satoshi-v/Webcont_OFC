@@ -159,7 +159,7 @@ fun_bar "fun_attlist"
 tput reset
 # Exibir mensagem de espera com fundo azul e texto branco em negrito
 echo -e "\E[38;5;18m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
-echo -e "\E[38;5;18m┃\E[44;1;37m           AGUARDE A INSTALAÇÃO          \E[0m\E[38;5;18m┃"
+echo -e "\E[38;5;18m┃\E[44;1;37m                 AGUARDE A INSTALAÇÃO               \E[0m\E[38;5;18m┃"
 echo -e "\E[38;5;18m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
 echo ""
 echo -e "       \033[1;91m[\033[1;31m⚠️ \033[1;91m] \033[1;97mINSTALANDO PYTHON \033[1;91m[\033[1;31m⚠️ \033[1;91m] \033[0m"
@@ -187,7 +187,8 @@ install_python3() {
     # INSTALA SOCAT
     apt install socat -y
 }
-    install_python3
+# Chama a função de instalação do Python3 com barra de progresso
+fun_bar "install_python3"
 
 # Redefinir a exibição do terminal
 tput reset
