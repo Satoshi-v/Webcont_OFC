@@ -129,9 +129,9 @@ awk -F : "$3 >= 500 { print $1 "1" }" /etc/passwd | grep -v "^nobody" > $HOME/us
 # Redefinir a exibição do terminal
 tput reset
 # Exibir mensagem de espera com fundo azul e texto branco em negrito
-echo -e "\E[38;5;18m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
-echo -e "\E[38;5;18m┃\E[44;1;37m           AGUARDE A INSTALAÇÃO         \E[0m\E[38;5;18m┃"
-echo -e "\E[38;5;18m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
+echo -e "\E[38;5;92m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
+echo -e "\E[38;5;92m┃\E[44;1;37m              AGUARDE A INSTALAÇÃO               \E[0m\E[38;5;92m┃"
+echo -e "\E[38;5;92m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
 echo ""
 echo -e "       \033[1;91m[\033[1;31m⚠️ \033[1;37m] \033[1;97mATUALIZANDO SISTEMA \033[1;37m[\033[1;31m⚠️ \033[1;91m]\033[0m"
 echo ""
@@ -158,9 +158,9 @@ fun_bar "fun_attlist"
 # Redefinir a exibição do terminal
 tput reset
 # Exibir mensagem de espera com fundo azul e texto branco em negrito
-echo -e "\E[38;5;18m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
-echo -e "\E[38;5;18m┃\E[44;1;37m              AGUARDE A INSTALAÇÃO               \E[0m\E[38;5;18m┃"
-echo -e "\E[38;5;18m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
+echo -e "\E[38;5;92m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
+echo -e "\E[38;5;92m┃\E[44;1;37m              AGUARDE A INSTALAÇÃO               \E[0m\E[38;5;92m┃"
+echo -e "\E[38;5;92m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
 echo ""
 echo -e "       \033[1;91m[\033[1;31m⚠️ \033[1;91m] \033[1;97mINSTALANDO PYTHON \033[1;91m[\033[1;31m⚠️ \033[1;91m] \033[0m"
 echo ""
@@ -193,20 +193,21 @@ fun_bar "install_python3"
 # Redefinir a exibição do terminal
 tput reset
 # Exibir mensagem de espera com fundo azul e texto branco em negrito
-echo -e "\E[38;5;18m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
-echo -e "\E[38;5;18m┃\E[44;1;37m           AGUARDE A INSTALAÇÃO          \E[0m\E[38;5;18m┃"
-echo -e "\E[38;5;18m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
+echo -e "\E[38;5;92m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
+echo -e "\E[38;5;92m┃\E[44;1;37m              AGUARDE A INSTALAÇÃO               \E[0m\E[38;5;92m┃"
+echo -e "\E[38;5;92m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
 echo ""
 echo -e "       \033[1;91m[\033[1;31m⚠️ \033[1;91m] \033[1;97mINSTALANDO PACOTES  \033[1;91m[\033[1;31m⚠️ \033[1;91m] \033[0m"
 echo ""
 echo -e " \033[1;93mALGUNS PACOTES SÃO EXTREMAMENTE NECESSÁRIOS!\033[0m"
 echo ""
-
-# Função para instalar pacotes necessários
+# Função para instalar pacotes necessários e configurar o firewall
 inst_pct() {
+    # Lista de pacotes para instalação
     pacotes=("bc" "screen" "nano" "unzip" "lsof" "dos2unix" \
              "nload" "jq" "curl" "figlet" "python3-pip" "firewalld")
 
+    # Instalando pacotes necessários
     echo -e "\e[1;32mINSTALANDO PACOTES NECESSÁRIOS...\e[0m"
     for prog in "${pacotes[@]}"; do
         if ! dpkg -l | grep -q "^ii.*$prog"; then
@@ -219,13 +220,14 @@ inst_pct() {
         fi
     done
 
+    # Instalando o Speedtest-CLI
     echo -e "\e[1;32mINSTALANDO SPEEDTEST-CLI...\e[0m"
     pip3 install speedtest-cli || {
         echo -e "\e[1;31mFALHA AO INSTALAR SPEEDTEST-CLI\e[0m"
         exit 1
     }
-}
 
+    # Configuração de firewall
     # Listas de portas TCP e UDP
     portas_tcp=(80 1194 8989 5454 8888 8080 443 2053 8081 8443)
     portas_udp=(7200 7300 7400 7500)
@@ -252,10 +254,12 @@ inst_pct() {
 
         # Recarregar firewalld para aplicar mudanças
         firewall-cmd --reload
+    else
+        echo -e "\e[1;33mFIREWALLD NÃO ESTÁ ATIVO. PULANDO CONFIGURAÇÃO DE FIREWALLD.\e[0m"
     fi
 
     # Configuração para UFW
-    if [[ -f "/usr/sbin/ufw" ]]; then
+    if [[ -x "/usr/sbin/ufw" ]]; then
         echo -e "\e[1;32mCONFIGURANDO UFW...\e[0m"
         
         # Configurar portas TCP
@@ -271,12 +275,14 @@ inst_pct() {
                 echo -e "\e[1;31mFALHA AO CONFIGURAR A PORTA $porta/UDP EM UFW\e[0m"
             }
         done
+    else
+        echo -e "\e[1;33mUFW NÃO ENCONTRADO. PULANDO CONFIGURAÇÃO DE UFW.\e[0m"
     fi
-    }
 }
 
-# Executar script
-fun_bar "inst_pct"
+# Executar a função inst_pct
+echo -e "\e[1;32mINICIANDO INSTALAÇÃO E CONFIGURAÇÃO...\e[0m"
+inst_pct
 
 # Redefinir a exibição do terminal novamente
 tput reset
