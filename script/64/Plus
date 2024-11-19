@@ -202,7 +202,7 @@ echo ""
 echo -e " \033[1;93mALGUNS PACOTES SÃO EXTREMAMENTE NECESSÁRIOS!\033[0m"
 echo ""
 
-# Função para instalar pacotes
+# Função para instalar pacotes necessários
 inst_pct() {
     pacotes=("bc" "screen" "nano" "unzip" "lsof" "dos2unix" \
              "nload" "jq" "curl" "figlet" "python3-pip" "firewalld")
@@ -226,11 +226,15 @@ inst_pct() {
     }
 }
 
+# Função para configurar firewall (firewalld e ufw)
+configurar_firewall() {
     # Listas de portas TCP e UDP
     portas_tcp=(80 1194 8989 5454 8888 8080 443 2053 8081 8443)
     portas_udp=(7200 7300 7400 7500)
 
-    # Verificar e configurar firewalld
+    echo -e "\e[1;32mCONFIGURANDO FIREWALL...\e[0m"
+
+    # Configuração para firewalld
     if systemctl is-active --quiet firewalld; then
         echo -e "\e[1;32mCONFIGURANDO FIREWALLD...\e[0m"
         
@@ -252,7 +256,7 @@ inst_pct() {
         firewall-cmd --reload
     fi
 
-    # Verificar e configurar UFW
+    # Configuração para UFW
     if [[ -f "/usr/sbin/ufw" ]]; then
         echo -e "\e[1;32mCONFIGURANDO UFW...\e[0m"
         
@@ -271,8 +275,20 @@ inst_pct() {
         done
     fi
 }
+
+# Função para barra de progresso
+fun_bar() {
+    local comando=$1
+    echo -ne "\e[1;32m$comando...\e[0m"
+    eval "$comando" && echo -e "\e[1;32m[CONCLUÍDO]\e[0m" || {
+        echo -e "\e[1;31m[ERRO]\e[0m"
+        exit 1
+    }
+}
+
 # Executar script
 fun_bar "inst_pct"
+fun_bar "configurar_firewall"
 
 # Redefinir a exibição do terminal novamente
 tput reset
