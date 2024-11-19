@@ -159,7 +159,7 @@ fun_bar "fun_attlist"
 tput reset
 # Exibir mensagem de espera com fundo azul e texto branco em negrito
 echo -e "\E[38;5;18m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
-echo -e "\E[38;5;18m┃\E[44;1;37m                 AGUARDE A INSTALAÇÃO               \E[0m\E[38;5;18m┃"
+echo -e "\E[38;5;18m┃\E[44;1;37m              AGUARDE A INSTALAÇÃO               \E[0m\E[38;5;18m┃"
 echo -e "\E[38;5;18m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
 echo ""
 echo -e "       \033[1;91m[\033[1;31m⚠️ \033[1;91m] \033[1;97mINSTALANDO PYTHON \033[1;91m[\033[1;31m⚠️ \033[1;91m] \033[0m"
@@ -226,8 +226,6 @@ inst_pct() {
     }
 }
 
-# Função para configurar firewall (firewalld e ufw)
-configurar_firewall() {
     # Listas de portas TCP e UDP
     portas_tcp=(80 1194 8989 5454 8888 8080 443 2053 8081 8443)
     portas_udp=(7200 7300 7400 7500)
@@ -274,21 +272,11 @@ configurar_firewall() {
             }
         done
     fi
-}
-
-# Função para barra de progresso
-fun_bar() {
-    local comando=$1
-    echo -ne "\e[1;32m$comando...\e[0m"
-    eval "$comando" && echo -e "\e[1;32m[CONCLUÍDO]\e[0m" || {
-        echo -e "\e[1;31m[ERRO]\e[0m"
-        exit 1
     }
 }
 
 # Executar script
 fun_bar "inst_pct"
-fun_bar "configurar_firewall"
 
 # Redefinir a exibição do terminal novamente
 tput reset
