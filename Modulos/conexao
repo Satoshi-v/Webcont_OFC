@@ -1300,7 +1300,6 @@ duplicate-cn" > /etc/openvpn/server.conf || error_exit "Falha ao criar openvpn s
 		}
 		sleep 3
 		fun_conexao
-	}
 
 	fun_socks() {
 		clear
