@@ -1169,7 +1169,7 @@ if [ ! -d "/etc/openvpn/easy-rsa" ]; then
         ./easyrsa --batch build-client-full client nopass > /dev/null 2>&1 || error_exit "Falha ao gerar certificado do cliente"
         cp pki/ca.crt pki/private/ca.key pki/dh.pem pki/issued/server.crt pki/private/server.key /etc/openvpn  > /dev/null 2>&1 || error_exit "Falha ao copiar arquivos do openvpn"
         openvpn --genkey --secret /etc/openvpn/ta.key  > /dev/null 2>&1 || error_exit "Falha ao gerar a chave"
-    fi
+fi
     # Generando server.conf
     echo "port $porta
 proto $PROTOCOL
@@ -1264,6 +1264,38 @@ duplicate-cn" > /etc/openvpn/server.conf || error_exit "Falha ao criar openvpn s
     systemctl stop openvpn@server > /dev/null 2>&1
     systemctl disable openvpn@server > /dev/null 2>&1
     increment_step
+				fi
+				if hash sestatus 2>/dev/null; then
+					if sestatus | grep "Current mode" | grep -qs "enforcing"; then
+						if [[ "$porta" != '1194' || "$PROTOCOL" = 'tcp' ]]; then
+							if ! hash semanage 2>/dev/null; then
+								yum install policycoreutils-python -y
+							fi
+							semanage port -a -t openvpn_port_t -p $PROTOCOL $porta
+						fi
+					fi
+				fi
+			}
+			echo -e "\033[1;32mINSTALANDO O OPENVPN  \033[1;31m(\033[1;33mPODE DEMORAR!\033[1;31m)"
+			echo ""
+			fun_bar 'fun_dep > /dev/null 2>&1'
+			fun_ropen() {
+				[[ "$OS" = 'debian' ]] && {
+					if pgrep systemd-journal; then
+						systemctl restart openvpn@server.service
+					else
+						/etc/init.d/openvpn restart
+					fi
+				} || {
+					if pgrep systemd-journal; then
+						systemctl restart openvpn@server.service
+						systemctl enable openvpn@server.service
+					else
+						service openvpn restart
+						chkconfig openvpn on
+					fi
+				}
+			}
 			echo ""
 			echo -e "\033[1;32mREINICIANDO O OPENVPN"
 			echo ""
@@ -1298,8 +1330,17 @@ duplicate-cn" > /etc/openvpn/server.conf || error_exit "Falha ao criar openvpn s
 			newclient "SSHPLUS"
 			[[ "$(netstat -nplt | grep -wc 'openvpn')" != '0' ]] && echo -e "\n\033[1;32mOPENVPN INSTALADO COM SUCESSO\033[0m" || echo -e "\n\033[1;31mERRO ! A INSTALACAO CORROMPEU\033[0m"
 		}
+		sed -i '$ i\echo 1 > /proc/sys/net/ipv4/ip_forward' /etc/rc.local
+		sed -i '$ i\echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6' /etc/rc.local
+		sed -i '$ i\iptables -A INPUT -p tcp --dport 25 -j DROP' /etc/rc.local
+		sed -i '$ i\iptables -A INPUT -p tcp --dport 110 -j DROP' /etc/rc.local
+		sed -i '$ i\iptables -A OUTPUT -p tcp --dport 25 -j DROP' /etc/rc.local
+		sed -i '$ i\iptables -A OUTPUT -p tcp --dport 110 -j DROP' /etc/rc.local
+		sed -i '$ i\iptables -A FORWARD -p tcp --dport 25 -j DROP' /etc/rc.local
+		sed -i '$ i\iptables -A FORWARD -p tcp --dport 110 -j DROP' /etc/rc.local
 		sleep 3
 		fun_conexao
+	}
 
 	fun_socks() {
 		clear
