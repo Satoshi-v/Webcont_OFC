@@ -1264,8 +1264,6 @@ duplicate-cn" > /etc/openvpn/server.conf || error_exit "Falha ao criar openvpn s
     systemctl stop openvpn@server > /dev/null 2>&1
     systemctl disable openvpn@server > /dev/null 2>&1
     increment_step
-			}
-			}
 			echo ""
 			echo -e "\033[1;32mREINICIANDO O OPENVPN"
 			echo ""
