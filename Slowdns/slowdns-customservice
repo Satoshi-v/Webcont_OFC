@@ -57,7 +57,7 @@ echo -e "CONFIGURING IPTABLES..."
 ipt_set () {
 cd /etc
 mv rc.local rc.local.bkp
-wget https://github.com/powermx/dnstt/raw/main/rc.local
+wget https://github.com/PhoenixxZ2023/PLUS/raw/main/Slowdns/rc.local
 chmod +x /etc/rc.local
 systemctl enable rc-local
 systemctl start rc-local
@@ -188,8 +188,8 @@ Opcao3 () {
 echo -e "Downloading default key pair..."
 cd
 rm server.key server.pub
-wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/Slowdns/main/server.key
-wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/Slowdns/main/server.pub
+wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Slowdns/server.key
+wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Slowdns/server.pub
 sleep 1
 echo -e "Download Completed"
 sleep 1
@@ -265,8 +265,8 @@ slowdns
 opc_key2 () {
 echo -e "Downloading default key pair..."
 cd
-wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/Slowdns/main/server.key
-wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/Slowdns/main/server.pub
+wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Slowdns/server.key
+wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Slowdns/server.pub
 sleep 1
 echo -e "Download Completed"
 sleep 1
