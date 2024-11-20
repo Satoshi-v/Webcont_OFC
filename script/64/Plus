@@ -129,9 +129,9 @@ awk -F : "$3 >= 500 { print $1 "1" }" /etc/passwd | grep -v "^nobody" > $HOME/us
 # Redefinir a exibição do terminal
 tput reset
 # Exibir mensagem de espera com fundo azul e texto branco em negrito
-echo -e "\E[38;5;92m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
+echo -e "\E[38;5;92m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
 echo -e "\E[38;5;92m┃\E[44;1;37m              AGUARDE A INSTALAÇÃO               \E[0m\E[38;5;92m┃"
-echo -e "\E[38;5;92m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
+echo -e "\E[38;5;92m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
 echo ""
 echo -e "       \033[1;91m[\033[1;31m⚠️ \033[1;37m] \033[1;97mATUALIZANDO SISTEMA \033[1;37m[\033[1;31m⚠️ \033[1;91m]\033[0m"
 echo ""
@@ -158,9 +158,9 @@ fun_bar "fun_attlist"
 # Redefinir a exibição do terminal
 tput reset
 # Exibir mensagem de espera com fundo azul e texto branco em negrito
-echo -e "\E[38;5;92m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
+echo -e "\E[38;5;92m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
 echo -e "\E[38;5;92m┃\E[44;1;37m              AGUARDE A INSTALAÇÃO               \E[0m\E[38;5;92m┃"
-echo -e "\E[38;5;92m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
+echo -e "\E[38;5;92m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
 echo ""
 echo -e "       \033[1;91m[\033[1;31m⚠️ \033[1;91m] \033[1;97mINSTALANDO PYTHON \033[1;91m[\033[1;31m⚠️ \033[1;91m] \033[0m"
 echo ""
@@ -193,9 +193,9 @@ fun_bar "install_python3"
 # Redefinir a exibição do terminal
 tput reset
 # Exibir mensagem de espera com fundo azul e texto branco em negrito
-echo -e "\E[38;5;92m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
+echo -e "\E[38;5;92m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
 echo -e "\E[38;5;92m┃\E[44;1;37m              AGUARDE A INSTALAÇÃO               \E[0m\E[38;5;92m┃"
-echo -e "\E[38;5;92m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
+echo -e "\E[38;5;92m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
 echo ""
 echo -e "       \033[1;91m[\033[1;31m⚠️ \033[1;91m] \033[1;97mINSTALANDO PACOTES  \033[1;91m[\033[1;31m⚠️ \033[1;91m] \033[0m"
 echo ""
@@ -291,9 +291,9 @@ bash <(wget -qO- https://raw.githubusercontent.com/PhoenixxZ2023/RustyProxyOnly/
 # Redefinir a exibição do terminal novamente
 tput reset
 # Instala ferramentas de rede
-echo -e "\E[38;5;18m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
-echo -e "\E[38;5;18m┃\E[44;1;37m      INSTALANDO PACOTES DE REDE         \E[0m\E[38;5;18m┃"
-echo -e "\E[38;5;18m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
+echo -e "\E[38;5;18m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
+echo -e "\E[38;5;18m┃\E[44;1;37m       INSTALANDO PACOTES DE REDE         \E[0m\E[38;5;18m┃"
+echo -e "\E[38;5;18m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
 echo ""
 fun_bar "sudo apt-get install -y lsof >/dev/null 2>&1"
 fun_bar "sudo apt-get install -y htop >/dev/null 2>&1"
