@@ -1155,21 +1155,31 @@ fun_bar 'fun_instdep'
 fun_bar 'yum install epel-release -y'
 fun_bar 'yum install openvpn iptables openssl wget ca-certificates -y'
 }
-if [ ! -d "/etc/openvpn/easy-rsa" ]; then
-        curl -L -o /root/EasyRSA-3.2.1.tgz "https://github.com/OpenVPN/easy-rsa/releases/download/v3.2.1/EasyRSA-3.2.1.tgz" > /dev/null 2>&1 || error_exit "Falha ao baixar EasyRSA"
-        tar xzf /root/EasyRSA-3.2.1.tgz -C /root/ > /dev/null 2>&1 || error_exit "Falha ao extrair o EasyRSA"
-        mv -f /root/EasyRSA-3.2.1/ /etc/openvpn/easy-rsa/ > /dev/null 2>&1 || error_exit "Falha ao mover o EasyRSA"
-        chown -R root:root /etc/openvpn/easy-rsa/ > /dev/null 2>&1 || error_exit "Falha ao configurar permissões do EasyRSA"
-        rm -f /root/EasyRSA-3.2.1.tgz > /dev/null 2>&1 || error_exit "Falha ao remover o arquivo do EasyRSA"
-        cd /etc/openvpn/easy-rsa/ > /dev/null 2>&1 || error_exit "Falha ao acessar pasta do EasyRSA"
-        ./easyrsa --batch init-pki > /dev/null 2>&1 || error_exit "Falha ao iniciar pki"
-        ./easyrsa --batch build-ca nopass > /dev/null 2>&1 || error_exit "Falha ao gerar certificado"
-        ./easyrsa --batch gen-dh > /dev/null 2>&1 || error_exit "Falha ao gerar dh"
-        ./easyrsa --batch build-server-full server nopass > /dev/null 2>&1 || error_exit "Falha ao gerar certificado do servidor"
-        ./easyrsa --batch build-client-full client nopass > /dev/null 2>&1 || error_exit "Falha ao gerar certificado do cliente"
-        cp pki/ca.crt pki/private/ca.key pki/dh.pem pki/issued/server.crt pki/private/server.key /etc/openvpn  > /dev/null 2>&1 || error_exit "Falha ao copiar arquivos do openvpn"
-        openvpn --genkey --secret /etc/openvpn/ta.key  > /dev/null 2>&1 || error_exit "Falha ao gerar a chave"
-fi
+[[ -d /etc/openvpn/easy-rsa/ ]] && {
+rm -rf /etc/openvpn/easy-rsa/
+}
+# Adquirindo easy-rsa
+echo ""
+fun_dep() {
+    wget -O ~/EasyRSA-3.1.0.tgz "https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Install/EasyRSA-3.1.0.tgz"
+    [[ ! -e $HOME/EasyRSA-3.1.0.tgz ]] && {
+        wget -O ~/EasyRSA-3.1.0.tgz "https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Install/EasyRSA-3.1.0.tgz"
+    }
+    tar xzf ~/EasyRSA-3.1.0.tgz -C ~/
+    mv ~/EasyRSA-3.1.0/ /etc/openvpn/
+    mv /etc/openvpn/EasyRSA-3.1.0/ /etc/openvpn/easy-rsa/
+    chown -R root:root /etc/openvpn/easy-rsa/
+    rm -rf ~/EasyRSA-3.1.0.tgz
+    cd /etc/openvpn/easy-rsa/
+    ./easyrsa init-pki
+    ./easyrsa --batch build-ca nopass
+    ./easyrsa gen-dh
+    ./easyrsa build-server-full server nopass
+    ./easyrsa build-client-full SSHPLUS nopass
+    ./easyrsa gen-crl
+    cp pki/ca.crt pki/private/ca.key pki/dh.pem pki/issued/server.crt pki/private/server.key /etc/openvpn/easy-rsa/pki/crl.pem /etc/openvpn
+    chown nobody:$GROUPNAME /etc/openvpn/crl.pem
+    openvpn --genkey --secret /etc/openvpn/ta.key
     # Generando server.conf
     echo "port $porta
 proto $PROTOCOL
@@ -2118,7 +2128,7 @@ echo -e "\033[01;31m┣━━━━━━━━━━━━━━━━━━━
                                 sts4="\033[1;31m○ "
                         }
 			[[ "$(netstat -tlpn | grep 'proxy' | wc -l)" != '0' ]] && {
-				echo -e "\033[01;31m┃\033[1;32mSERVICO: \033[1;33mMULTI-PROXY \033[1;32mPORTA: \033[1;37m$(netstat -nplt | grep 'proxy' | awk {'print $4'} | cut -d: -f2 | xargs)"
+				echo -e "\033[01;31m┃\033[1;32mSERVICO: \033[1;33mMULTI-PROXY \033[1;32mPORTA: \033[1;37m$(netstat -nplt | grep 'proxy' | awk {'print $5'} | cut -d: -f2 | xargs)"
 				sts0="\033[1;32m◉ "
 			} || {
 				sts0="\033[1;31m○ "
