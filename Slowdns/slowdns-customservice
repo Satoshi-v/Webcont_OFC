@@ -188,8 +188,8 @@ Opcao3 () {
 echo -e "Downloading default key pair..."
 cd
 rm server.key server.pub
-wget https://raw.githubusercontent.com/powermx/dnstt/main/server.key
-wget https://raw.githubusercontent.com/powermx/dnstt/main/server.pub
+wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/Slowdns/main/server.key
+wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/Slowdns/main/server.pub
 sleep 1
 echo -e "Download Completed"
 sleep 1
@@ -265,8 +265,8 @@ slowdns
 opc_key2 () {
 echo -e "Downloading default key pair..."
 cd
-wget https://raw.githubusercontent.com/powermx/dnstt/main/server.key
-wget https://raw.githubusercontent.com/powermx/dnstt/main/server.pub
+wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/Slowdns/main/server.key
+wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/Slowdns/main/server.pub
 sleep 1
 echo -e "Download Completed"
 sleep 1
