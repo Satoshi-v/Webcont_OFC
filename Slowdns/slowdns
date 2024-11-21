@@ -40,21 +40,21 @@ else
     echo -e "${RED}NÃO INSTALADO\033[0m"
 fi
 echo -e "${GRAY}[${RED}-${GRAY}]${RED} ───────────────── /// ────────────────── ${YELLOW}"
-    echo -e "${YELLOW}[${GREEN}01${YELLOW}]${WHITE} | **INSTALAR SLOWDNS SSH**"
-    echo -e "${YELLOW}[${GREEN}02${YELLOW}]${WHITE} | **INSTALAR SLOWDNS SSL**"
-    echo -e "${YELLOW}[${GREEN}03${YELLOW}]${WHITE} | **INSTALAR SLOWDNS DROPBEAR**"
-    echo -e "${YELLOW}[${GREEN}04${YELLOW}]${WHITE} | **INSTALAR SLOWDNS SOCKS**"
-    echo -e "${YELLOW}[${GREEN}05${YELLOW}]${WHITE} | **INSTALAR SLOWDNS SERVIÇO PERSONALIZADO**"
-    echo -e "${YELLOW}[${GREEN}06${YELLOW}]${WHITE} | **VER INFORMAÇÕES**"
-    echo -e "${YELLOW}[${GREEN}07${YELLOW}]${WHITE} | **INICIAR SLOWDNS**"
-    echo -e "${YELLOW}[${GREEN}08${YELLOW}]${WHITE} | **REINICIAR SLOWDNS**"
-    echo -e "${YELLOW}[${GREEN}09${YELLOW}]${WHITE} | **PARAR SLOWDNS**"
-    echo -e "${YELLOW}[${GREEN}10${YELLOW}]${WHITE} | **REMOVER SLOWDNS**"
-    echo -e "${YELLOW}[${GREEN}11${YELLOW}]${WHITE} | **ATUALIZAR/REINSTALAR**"
-    echo -e "${YELLOW}[${GREEN}12${YELLOW}]${WHITE} | **REMOVER SCRIPT**"
-    echo -e "${YELLOW}[${GREEN}00${YELLOW}]${WHITE} | **SAIR**"
+    echo -e "\033[1m${YELLOW}[${GREEN}01${YELLOW}]${WHITE} | INSTALAR SLOWDNS SSH\033[0m"
+    echo -e "\033[1m${YELLOW}[${GREEN}02${YELLOW}]${WHITE} | INSTALAR SLOWDNS SSL\033[0m"
+    echo -e "\033[1m${YELLOW}[${GREEN}03${YELLOW}]${WHITE} | INSTALAR SLOWDNS DROPBEAR\033[0m"
+    echo -e "\033[1m${YELLOW}[${GREEN}04${YELLOW}]${WHITE} | INSTALAR SLOWDNS SOCKS\033[0m"
+    echo -e "\033[1m${YELLOW}[${GREEN}05${YELLOW}]${WHITE} | INSTALAR SLOWDNS SERVIÇO PERSONALIZADO\033[0m"
+    echo -e "\033[1m${YELLOW}[${GREEN}06${YELLOW}]${WHITE} | VER INFORMAÇÕES\033[0m"
+    echo -e "\033[1m${YELLOW}[${GREEN}07${YELLOW}]${WHITE} | INICIAR SLOWDNS\033[0m"
+    echo -e "\033[1m${YELLOW}[${GREEN}08${YELLOW}]${WHITE} | REINICIAR SLOWDNS\033[0m"
+    echo -e "\033[1m${YELLOW}[${GREEN}09${YELLOW}]${WHITE} | PARAR SLOWDNS\033[0m"
+    echo -e "\033[1m${YELLOW}[${GREEN}10${YELLOW}]${WHITE} | REMOVER SLOWDNS\033[0m"
+    echo -e "\033[1m${YELLOW}[${GREEN}11${YELLOW}]${WHITE} | ATUALIZAR/REINSTALAR\033[0m"
+    echo -e "\033[1m${YELLOW}[${GREEN}12${YELLOW}]${WHITE} | REMOVER SCRIPT\033[0m"
+    echo -e "\033[1m${YELLOW}[${GREEN}00${YELLOW}]${WHITE} | SAIR\033[0m"
     echo ""
-    echo -ne "${YELLOW}O QUE DESEJA FAZER?:\0033[m " && read option
+    echo -ne "\033[1m${YELLOW}O QUE DESEJA FAZER?:\0033[m " && read option
     case $option in
     1) Option1 ;;
     2) Option2 ;;
