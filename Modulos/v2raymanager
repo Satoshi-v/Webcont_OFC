@@ -619,8 +619,7 @@ EOF
     echo -e "\033[0;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
 
     fun_v2raymanager() {
-        while true $x != "ok"; do
-            [[ ! -e '/home/sshplus' ]] && exit 0
+        while true; do
             clear
             echo -e "\E[44;1;37m                MENU V2RAY                 \E[0m\n"
 
