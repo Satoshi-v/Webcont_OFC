@@ -1,38 +1,58 @@
 #!/bin/bash
 clear
+
+# Função para exibir uma barra de progresso enquanto executa comandos
 fun_bar () {
-comando[0]="$1"
-comando[1]="$2"
- (
-[[ -e $HOME/fim ]] && rm $HOME/fim
-${comando[0]} -y > /dev/null 2>&1
-${comando[1]} -y > /dev/null 2>&1
-touch $HOME/fim
- ) > /dev/null 2>&1 &
- tput civis
-echo -ne "  \033[1;33mWAIT \033[1;37m- \033[1;33m["
-while true; do
-   for((i=0; i<18; i++)); do
-   echo -ne "\033[1;31m#"
-   sleep 0.1s
-   done
-   [[ -e $HOME/fim ]] && rm $HOME/fim && break
-   echo -e "\033[1;33m]"
-   sleep 1s
-   tput cuu1
-   tput dl1
-   echo -ne "  \033[1;33mWAIT \033[1;37m- \033[1;33m["
-done
-echo -e "\033[1;33m]\033[1;37m -\033[1;32m OK !\033[1;37m"
-tput cnorm
+  comando[0]="$1" # Primeiro comando a ser executado
+  comando[1]="$2" # Segundo comando a ser executado
+  
+  (
+    # Remover o arquivo 'fim' se já existir, depois executar os comandos em segundo plano
+    [[ -e $HOME/fim ]] && rm $HOME/fim
+    ${comando[0]} -y > /dev/null 2>&1
+    ${comando[1]} -y > /dev/null 2>&1
+    touch $HOME/fim  # Criar o arquivo 'fim' quando terminar
+  ) > /dev/null 2>&1 &  # Redireciona a saída para /dev/null para não poluir o terminal
+
+  # Esconder o cursor enquanto a barra de progresso é exibida
+  tput civis
+  echo -ne "  \033[1;33mAGUARDE \033[1;37m- \033[1;33m["
+  
+  # Loop para exibir a barra de progresso
+  while true; do
+    for ((i=0; i<18; i++)); do
+      echo -ne "\033[1;31m#"  # Exibe o caractere '#'
+      sleep 0.1s
+    done
+    # Verificar se o arquivo 'fim' existe e sair do loop quando ele for criado
+    [[ -e $HOME/fim ]] && rm $HOME/fim && break
+    echo -e "\033[1;33m]"
+    sleep 1s
+    tput cuu1  # Move o cursor uma linha para cima
+    tput dl1   # Apaga a última linha
+    echo -ne "  \033[1;33mAGUARDE \033[1;37m- \033[1;33m["
+  done
+  echo -e "\033[1;33m]\033[1;37m -\033[1;32m CONCLUÍDO!\033[1;37m"
+  
+  # Restaurar o cursor
+  tput cnorm
 }
+
+# Exibir uma mensagem de início
 echo ""
-echo "  STOPPING SLOWDNS..."
+echo "  PARANDO O SLOWDNS..."
 echo ""
+
+# Função para desabilitar o SlowDNS, matando os processos do Screen
 fun_desable () {
-screen -ls | grep slowdns | cut -d. -f1 | awk '{print $1}' | xargs kill
-sleep 2
+  # Procurar pela sessão do screen relacionada ao SlowDNS e matar o processo
+  screen -ls | grep slowdns | cut -d. -f1 | awk '{print $1}' | xargs kill
+  sleep 2  # Aguardar um tempo para garantir que o processo foi terminado
 }
+
+# Chamar a função de barra de progresso enquanto desativa o SlowDNS
 fun_bar 'fun_desable'
+
+# Exibir mensagem de sucesso após desativar
 echo ""
-echo "  SlowDNS Deativated! [✔]"
+echo "  SlowDNS Desativado! [✔]"
