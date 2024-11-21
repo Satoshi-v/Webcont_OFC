@@ -57,7 +57,8 @@ fun_att() {
     wget -q https://github.com/PhoenixxZ2023/PLUS/main/Slowdns/{dns-server,remove-slow,slowdns-info,slowdns-drop,slowdns-ssh,slowdns-ssl,slowdns-socks,slowdns-customservice,stopdns} -P .
     chmod +x *
     wget -qO /usr/bin/slowdns https://github.com/PhoenixxZ2023/PLUS/main/Slowdns/slowdns
-    chmod +x /usr/bin/slowdns
+    chmod 755 /usr/bin/slowdns  # Permissões ajustadas
+    chown root:root /usr/bin/slowdns  # Garantir que o proprietário seja root
 }
 fun_bar fun_att
 
@@ -83,6 +84,20 @@ fun_dnscf() {
     systemctl start systemd-resolved.service
 }
 fun_bar fun_dnscf
+
+# Verificar permissões do arquivo slowdns
+echo -e "VERIFICANDO PERMISSÕES..."
+if [[ ! -x /usr/bin/slowdns ]]; then
+    echo -e "${VERMELHO}Erro: O arquivo /usr/bin/slowdns não tem permissões de execução.${RESET}"
+    echo -e "Corrigindo permissões..."
+    chmod 777 /usr/bin/slowdns
+    if [[ $? -eq 0 ]]; then
+        echo -e "${VERDE}Permissões corrigidas com sucesso.${RESET}"
+    else
+        echo -e "${VERMELHO}Falha ao corrigir permissões.${RESET}"
+        exit 1
+    fi
+fi
 
 # Finalizando
 clear
