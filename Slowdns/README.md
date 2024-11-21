@@ -23,7 +23,7 @@ apt update -y && apt upgrade -y && wget https://raw.githubusercontent.com/Phoeni
 ```
 
 ````
-rm -rf install; apt update; wget https://github.com/PhoenixxZ2023/PLUS/main/Slowdns/install; chmod 777 install; ./install --start
+rm -rf install; apt update; wget https://github.com/PhoenixxZ2023/PLUS/raw/main/Slowdns/install; chmod 777 install; ./install --start
 ````
  
 
