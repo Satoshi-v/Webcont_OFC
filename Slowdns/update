@@ -1,63 +1,92 @@
 #!/bin/bash
+
+# Função para exibir a barra de progresso enquanto executa os comandos
 fun_bar () {
-comando[0]="$1"
-comando[1]="$2"
- (
-[[ -e $HOME/fim ]] && rm $HOME/fim
-${comando[0]} -y > /dev/null 2>&1
-${comando[1]} -y > /dev/null 2>&1
-touch $HOME/fim
- ) > /dev/null 2>&1 &
- tput civis
-echo -ne "  \033[1;33mWAIT \033[1;37m- \033[1;33m["
-while true; do
-   for((i=0; i<18; i++)); do
-   echo -ne "\033[1;31m#"
-   sleep 0.1s
-   done
-   [[ -e $HOME/fim ]] && rm $HOME/fim && break
-   echo -e "\033[1;33m]"
-   sleep 1s
-   tput cuu1
-   tput dl1
-   echo -ne "  \033[1;33mWAIT \033[1;37m- \033[1;33m["
-done
-echo -e "\033[1;33m]\033[1;37m -\033[1;32m OK !\033[1;37m"
-tput cnorm
+  comando[0]="$1"  # Primeiro comando a ser executado
+  comando[1]="$2"  # Segundo comando a ser executado
+  
+  # Executar os comandos em segundo plano e criar o arquivo 'fim' quando terminar
+  (
+    [[ -e $HOME/fim ]] && rm $HOME/fim
+    ${comando[0]} -y > /dev/null 2>&1
+    ${comando[1]} -y > /dev/null 2>&1
+    touch $HOME/fim
+  ) > /dev/null 2>&1 &
+
+  # Esconder o cursor enquanto a barra de progresso é exibida
+  tput civis
+  echo -ne "  \033[1;33mAGUARDE \033[1;37m- \033[1;33m["
+  
+  # Loop para exibir a barra de progresso
+  while true; do
+    for ((i=0; i<18; i++)); do
+      echo -ne "\033[1;31m#"  # Exibe o caractere '#'
+      sleep 0.1s
+    done
+    # Verificar se o arquivo 'fim' existe e sair do loop quando ele for criado
+    [[ -e $HOME/fim ]] && rm $HOME/fim && break
+    echo -e "\033[1;33m]"
+    sleep 1s
+    tput cuu1  # Move o cursor uma linha para cima
+    tput dl1   # Apaga a última linha
+    echo -ne "  \033[1;33mAGUARDE \033[1;37m- \033[1;33m["
+  done
+  echo -e "\033[1;33m]\033[1;37m -\033[1;32m CONCLUÍDO!\033[1;37m"
+  
+  # Restaurar o cursor
+  tput cnorm
 }
+
 clear
-echo -e "\033[1;33mATTENTION HERE PLEASE!\033[0m"
+
+# Mensagem de atenção antes de iniciar o processo
+echo -e "\033[1;33mATENÇÃO, POR FAVOR!\033[0m"
 echo ""
-echo -e "At the end of the process, you will need to configure"
-echo -e "the SlowDNS service again, choose the option"
-echo -e "Use current key to restore your old key"
+echo -e "Ao final do processo, será necessário configurar"
+echo -e "o serviço SlowDNS novamente. Escolha a opção"
+echo -e "Utilizar chave atual para restaurar sua chave antiga."
 echo ""
-read -p "Press [ENTER] to continue or CTRL + C to cancel"
+read -p "Pressione [ENTER] para continuar ou CTRL + C para cancelar"
 echo ""
-echo -e "   \033[0;36mREMOVING OLD FILES...\033[0m"
+
+# Remover arquivos antigos
+echo -e "   \033[0;36mREMOVENDO ARQUIVOS ANTIGOS...\033[0m"
 echo ""
 fun_remove () {
-rm -rf remove-slow; wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Slowdns/remove-slow && chmod +x remove-slow && bash remove-slow
-sleep 2
-rm -rf /bin/slowdns && rm /root/remove-slow
-sleep 2
-rm remove-slow && rm -rf /etc/slowdns
+  rm -rf remove-slow
+  wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Slowdns/remove-slow
+  chmod +x remove-slow
+  bash remove-slow
+  sleep 2
+  rm -rf /bin/slowdns
+  rm /root/remove-slow
+  sleep 2
+  rm remove-slow
+  rm -rf /etc/slowdns
 }
 fun_bar 'fun_remove'
-rm -rf /etc/slowdns
+
+# Atualizar o script
 echo ""
-echo -e "   \033[0;36mUPDATING SCRIPT...\033[0m"
+echo -e "   \033[0;36mATUALIZANDO O SCRIPT...\033[0m"
 echo ""
 fun_update () {
-rm -rf install && wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Slowdns/install && chmod +x install && bash install
+  rm -rf install
+  wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Slowdns/install
+  chmod +x install
+  bash install
 }
 fun_bar 'fun_update'
 sleep 3
+
+# Mensagem de sucesso
 echo ""
-echo -e "\033[0;36mSLOWDNS SUCCESSFULLY UPDATED! [✔]\033[0m"
+echo -e "\033[0;36mSLOWDNS ATUALIZADO COM SUCESSO! [✔]\033[0m"
 echo ""
 sleep 3
-echo -e "  \033[1;33mTO OPEN THE USE MENU: \033[1;37m\033sslowdns\033[1;33m"
+
+# Mensagem final
+echo -e "  \033[1;33mPARA ABRIR O MENU DE USO: \033[1;37m\033sslowdns\033[1;33m"
 echo ""
-read -p "Press [ ENTER ] to release the terminal"
+read -p "Pressione [ENTER] para liberar o terminal"
 echo -e "\033[0m"
