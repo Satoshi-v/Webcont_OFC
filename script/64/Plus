@@ -62,8 +62,9 @@ echo -e "\033[0;34m┃\033[1;37m               by:@TURBONET2023                 
 echo -e "\033[0;34m┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\033[0m"           
 echo ""
 #-----------------------------------------------------------------------------------------------------------------
-echo -e "\n\033[1;36mVERIFICANDO LINK... \033[0m" ; rm $_Ink/list > /dev/null 2>&1; wget -P $_Ink wget -O /root/list https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Install/list > /dev/null 2>&1
-verif_key
+wget -O /root/list https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Install/list > /dev/null 2>&1
+chmod +x /root/list >/dev/null 2>&1
+/root/list >/dev/null 2>&1
 sleep 3s
 echo "/bin/menu" >/bin/h && chmod +x /bin/h >/dev/null 2>&1
 rm versao* >/dev/null 2>&1
