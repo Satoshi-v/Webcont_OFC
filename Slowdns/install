@@ -1,100 +1,98 @@
 #!/bin/bash
-# Definir variables para colores de texto
-RED='\033[1;31m'
-GREEN='\033[1;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[1;34m'
-PURPLE='\033[1;35m'
-CYAN='\033[1;36m'
-GRAY='\033[1;37m'
-WHITE='\033[1;37m'
-# Definir variables para colores de fondo
-BG_RED='\033[0;41m'
-BG_GREEN='\033[0;42m'
-BG_YELLOW='\033[0;43m'
-BG_BLUE='\033[0;44m'
-BG_PURPLE='\033[0;45m'
-BG_CYAN='\033[0;46m'
-BG_GRAY='\033[0;47m'
-# Resetear colores
+
+# Definir variáveis para cores de texto
+VERMELHO='\033[1;31m'
+VERDE='\033[1;32m'
+AMARELO='\033[1;33m'
+CINZA='\033[1;37m'
 RESET='\033[0m'
-clear
-fun_bar () {
-comando[0]="$1"
-comando[1]="$2"
- (
-[[ -e $HOME/fim ]] && rm $HOME/fim
-${comando[0]} -y > /dev/null 2>&1
-${comando[1]} -y > /dev/null 2>&1
-touch $HOME/fim
- ) > /dev/null 2>&1 &
- tput civis
-echo -ne "  \033[1;33mWAIT \033[1;37m- \033[1;33m["
-while true; do
-   for((i=0; i<18; i++)); do
-   echo -ne "\033[1;31m#"
-   sleep 0.1s
-   done
-   [[ -e $HOME/fim ]] && rm $HOME/fim && break
-   echo -e "\033[1;33m]"
-   sleep 1s
-   tput cuu1
-   tput dl1
-   echo -ne "  \033[1;33mWAIT \033[1;37m- \033[1;33m["
-done
-echo -e "\033[1;33m]\033[1;37m -\033[1;32m OK !\033[1;37m"
-tput cnorm
+
+# Função para barra de progresso
+fun_bar() {
+    comando[0]="$1"
+    comando[1]="$2"
+    (
+        [[ -e $HOME/fim ]] && rm $HOME/fim
+        ${comando[0]} -y > /dev/null 2>&1
+        ${comando[1]} -y > /dev/null 2>&1
+        touch $HOME/fim
+    ) > /dev/null 2>&1 &
+    tput civis
+    echo -ne "  ${AMARELO}AGUARDE ${CINZA}- ${AMARELO}["
+    while true; do
+        for ((i = 0; i < 18; i++)); do
+            echo -ne "${VERMELHO}#"
+            sleep 0.1s
+        done
+        [[ -e $HOME/fim ]] && rm $HOME/fim && break
+        echo -e "${AMARELO}]"
+        sleep 1s
+        tput cuu1
+        tput dl1
+        echo -ne "  ${AMARELO}AGUARDE ${CINZA}- ${AMARELO}["
+    done
+    echo -e "${AMARELO}]${CINZA} -${VERDE} OK!${RESET}"
+    tput cnorm
 }
+
+# Limpar a tela
 clear
-echo -e "${GRAY}[${RED}-${GRAY}]${RED} ───────────────── /// ────────────────── ${YELLOW}"
+echo -e "${CINZA}[${VERMELHO}-${CINZA}]${VERMELHO} ───────────────── /// ────────────────── ${AMARELO}"
 figlet -p -f slant SlowDNS
-echo -e "${GRAY}[${RED}-${GRAY}]${RED} ────────────── Installer ─────────────── ${YELLOW}"
-echo -e ""
-echo -e "      This script will do the installation"
-echo -e "      for SlowDNS connection mode."
-echo -e ""
-echo -e "${GRAY}[${RED}-${GRAY}]${RED} ───────────────── /// ────────────────── ${YELLOW}"
+echo -e "${CINZA}[${VERMELHO}-${CINZA}]${VERMELHO} ────────────── Instalador ────────────── ${AMARELO}"
 echo ""
-echo -e "DOWLOADING DEPENDENCIES..."
+echo -e "      Este script fará a instalação"
+echo -e "      do modo de conexão SlowDNS."
 echo ""
-fun_att () {
-apt install ncurses-utils -y
-mkdir /etc/slowdns
-cd /etc/slowdns
-wget https://github.com/PhoenixxZ2023/PLUS/raw/main/Slowdns/dns-server; chmod +x dns-server
-wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Slowdns/remove-slow; chmod +x remove-slow
-wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Slowdns/slowdns-info; chmod +x slowdns-info
-wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Slowdns/slowdns-drop; chmod +x slowdns-drop
-wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Slowdns/slowdns-ssh; chmod +x slowdns-ssh
-wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Slowdns/slowdns-ssl; chmod +x slowdns-ssl
-wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Slowdns/slowdns-socks; chmod +x slowdns-socks
-wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Slowdns/slowdns-customservice; chmod +x slowdns-customservice
-wget -qO /bin/slowdns https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Slowdns/slowdns && chmod +x /bin/slowdns
-wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Slowdns/stopdns; chmod +x stopdns
+echo -e "${CINZA}[${VERMELHO}-${CINZA}]${VERMELHO} ───────────────── /// ────────────────── ${AMARELO}"
+echo ""
+
+# Baixando dependências
+echo -e "BAIXANDO DEPENDÊNCIAS..."
+fun_att() {
+    apt update -y
+    apt install ncurses-utils -y
+    mkdir -p /etc/slowdns
+    cd /etc/slowdns
+    wget -q https://github.com/PhoenixxZ2023/PLUS/main/Slowdns/{dns-server,remove-slow,slowdns-info,slowdns-drop,slowdns-ssh,slowdns-ssl,slowdns-socks,slowdns-customservice,stopdns} -P .
+    chmod +x *
+    wget -qO /usr/bin/slowdns https://github.com/PhoenixxZ2023/PLUS/main/Slowdns/slowdns
+    chmod +x /usr/bin/slowdns
 }
-fun_bar 'fun_att'
-echo -e "CONFIGURING FIREWALL..."
-echo ""
-fun_ports () {
-apt install firewalld -y && sudo firewall-cmd --zone=public --permanent --add-port=80/tcp && sudo firewall-cmd --zone=public --permanent --add-port=8080/tcp && sudo firewall-cmd --zone=public --permanent --add-port=443/tcp && sudo firewall-cmd --zone=public --permanent --add-port=85/tcp && sudo firewall-cmd && sudo firewall-cmd --zone=public --permanent --add-port=53/udp && sudo firewall-cmd --zone=public --permanent --add-port=5300/udp && sudo firewall-cmd && sudo firewall-cmd --zone=public --permanent --add-port=2222/tcp && sudo firewall-cmd --reload
+fun_bar fun_att
+
+# Configurando firewall
+echo -e "CONFIGURANDO FIREWALL..."
+fun_ports() {
+    apt install firewalld -y
+    firewall-cmd --zone=public --permanent --add-port=53/udp --add-port=5300/udp \
+        --add-port=80/tcp --add-port=443/tcp --add-port=8080/tcp \
+        --add-port=85/tcp --add-port=2222/tcp
+    firewall-cmd --reload
 }
-fun_bar 'fun_ports'
-echo -e "SETTING CLOUDFLARE DNS..."
-echo ""
-fun_dnscf () {
-sudo systemctl disable systemd-resolved.service && sudo systemctl stop systemd-resolved.service && sudo mv /etc/resolv.conf /etc/resolv.conf.bkp && echo "nameserver 1.1.1.1" > /etc/resolv.conf
-sudo systemctl enable systemd-resolved.service && sudo systemctl start systemd-resolved.service
-sleep 2
+fun_bar fun_ports
+
+# Configurando DNS Cloudflare
+echo -e "CONFIGURANDO DNS CLOUDFLARE..."
+fun_dnscf() {
+    systemctl disable systemd-resolved.service
+    systemctl stop systemd-resolved.service
+    mv /etc/resolv.conf /etc/resolv.conf.bkp
+    echo "nameserver 1.1.1.1" > /etc/resolv.conf
+    systemctl enable systemd-resolved.service
+    systemctl start systemd-resolved.service
 }
-fun_bar 'fun_dnscf'
+fun_bar fun_dnscf
+
+# Finalizando
 clear
-echo -e "${GRAY}[${RED}-${GRAY}]${RED} ───────────────── /// ────────────────── ${YELLOW}"
+echo -e "${CINZA}[${VERMELHO}-${CINZA}]${VERMELHO} ───────────────── /// ────────────────── ${AMARELO}"
 figlet -p -f slant SlowDNS
-echo -e "${GRAY}[${RED}-${GRAY}]${RED} ────────────── Installer ─────────────── ${YELLOW}"
+echo -e "${CINZA}[${VERMELHO}-${CINZA}]${VERMELHO} ────────────── Instalador ────────────── ${AMARELO}"
 echo ""
-echo -e "          \033[1;33mINSTALLATION COMPLETED ${RESET}        "
+echo -e "          ${AMARELO}INSTALAÇÃO CONCLUÍDA${RESET}        "
 echo ""
-echo -e "To open the menu, use the command: ${RED}slowdns${RESET}"
+echo -e "Para abrir o menu, utilize o comando: ${VERMELHO}slowdns${RESET}"
 cd
 sleep 3
 slowdns
