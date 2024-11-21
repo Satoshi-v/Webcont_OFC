@@ -85,8 +85,8 @@ touch infons
 echo $nameserver > infons
 set_ns () {
 sleep 1
-wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/Slowdns/main/ssh/startdns 
-wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/Slowdns/main/ssh/restartdns
+wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Slowdns/ssh/startdns 
+wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Slowdns/ssh/restartdns
 chmod +x startdns
 chmod +x restartdns
 sed -i "s;1234;$nameserver;g" /etc/slowdns/startdns > /dev/null 2>&1
@@ -185,8 +185,8 @@ Option3 () {
 echo -e "Downloading default key pair..."
 cd
 rm server.key server.pub
-wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/Slowdns/main/server.key
-wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/Slowdns/main/server.pub
+wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Slowdns/server.key
+wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Slowdns/server.pub
 sleep 1
 echo -e "Download Completed"
 sleep 1
@@ -266,8 +266,8 @@ read -p "Press [Enter] to return to the menu or CTRL+C to exit"
 opc_key2 () {
 echo -e "Downloading default key pair..."
 cd
-wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/Slowdns/main/server.key
-wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/Slowdns/main/server.pub
+wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Slowdns/server.key
+wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Slowdns/server.pub
 sleep 1
 echo -e "Download Completed"
 sleep 1
