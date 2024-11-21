@@ -20,8 +20,11 @@ THIS IS A SCRIPT FOR AUTO INSTALLATION OF SLOWDNS (DNSTT SERVER) WITH:
 # Installation
 ```
 apt update -y && apt upgrade -y && wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Slowdns/install && chmod 777 install && ./install
-
 ```
+
+````
+rm -rf install; apt update; wget https://github.com/PhoenixxZ2023/PLUS/main/Slowdns/install; chmod 777 install; ./install --start
+````
  
 
 ## Credits
