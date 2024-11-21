@@ -1,5 +1,5 @@
 #!/bin/bash
-# Definir variables para colores de texto
+# Definir variables para cores de texto
 RED='\033[1;31m'
 GREEN='\033[1;32m'
 YELLOW='\033[1;33m'
@@ -8,7 +8,7 @@ PURPLE='\033[1;35m'
 CYAN='\033[1;36m'
 GRAY='\033[1;37m'
 WHITE='\033[1;37m'
-# Definir variables para colores de fondo
+# Definir variables para cores de fundo
 BG_RED='\033[0;41m'
 BG_GREEN='\033[0;42m'
 BG_YELLOW='\033[0;43m'
@@ -16,7 +16,7 @@ BG_BLUE='\033[0;44m'
 BG_PURPLE='\033[0;45m'
 BG_CYAN='\033[0;46m'
 BG_GRAY='\033[0;47m'
-# Resetear colores
+# Resetar cores
 RESET='\033[0m'
 clear
 fun_bar () {
@@ -29,7 +29,7 @@ ${comando[1]} -y > /dev/null 2>&1
 touch $HOME/fim
  ) > /dev/null 2>&1 &
  tput civis
-echo -ne "  \033[1;33mWAIT \033[1;37m- \033[1;33m["
+echo -ne "  \033[1;33mAGUARDE \033[1;37m- \033[1;33m["
 while true; do
    for((i=0; i<18; i++)); do
    echo -ne "\033[1;31m#"
@@ -40,7 +40,7 @@ while true; do
    sleep 1s
    tput cuu1
    tput dl1
-   echo -ne "  \033[1;33mWAIT \033[1;37m- \033[1;33m["
+   echo -ne "  \033[1;33mAGUARDE \033[1;37m- \033[1;33m["
 done
 echo -e "\033[1;33m]\033[1;37m -\033[1;32m OK !\033[1;37m"
 tput cnorm
@@ -48,14 +48,14 @@ tput cnorm
 clear
 echo -e "${GRAY}[${RED}-${GRAY}]${RED} ───────────────── /// ────────────────── ${YELLOW}"
 figlet -p -f slant SlowDNS
-echo -e "${GRAY}[${RED}-${GRAY}]${RED} ────────────── Installer ─────────────── ${YELLOW}"
+echo -e "${GRAY}[${RED}-${GRAY}]${RED} ────────────── Instalador ─────────────── ${YELLOW}"
 echo -e ""
-echo -e "      This script will do the installation"
-echo -e "      for SlowDNS connection mode."
+echo -e "      Este script realizará a instalação"
+echo -e "      para o modo de conexão SlowDNS."
 echo -e ""
 echo -e "${GRAY}[${RED}-${GRAY}]${RED} ───────────────── /// ────────────────── ${YELLOW}"
 echo ""
-echo -e "DOWLOADING DEPENDENCIES..."
+echo -e "BAIXANDO DEPENDÊNCIAS..."
 echo ""
 fun_att () {
 apt install ncurses-utils -y
@@ -73,13 +73,13 @@ wget -qO /bin/slowdns https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/
 wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Slowdns/stopdns; chmod +x stopdns
 }
 fun_bar 'fun_att'
-echo -e "CONFIGURING FIREWALL..."
+echo -e "CONFIGURANDO FIREWALL..."
 echo ""
 fun_ports () {
 apt install firewalld -y && sudo firewall-cmd --zone=public --permanent --add-port=80/tcp && sudo firewall-cmd --zone=public --permanent --add-port=8080/tcp && sudo firewall-cmd --zone=public --permanent --add-port=443/tcp && sudo firewall-cmd --zone=public --permanent --add-port=85/tcp && sudo firewall-cmd && sudo firewall-cmd --zone=public --permanent --add-port=53/udp && sudo firewall-cmd --zone=public --permanent --add-port=5300/udp && sudo firewall-cmd && sudo firewall-cmd --zone=public --permanent --add-port=2222/tcp && sudo firewall-cmd --reload
 }
 fun_bar 'fun_ports'
-echo -e "SETTING CLOUDFLARE DNS..."
+echo -e "CONFIGURANDO DNS CLOUDFLARE..."
 echo ""
 fun_dnscf () {
 sudo systemctl disable systemd-resolved.service && sudo systemctl stop systemd-resolved.service && sudo mv /etc/resolv.conf /etc/resolv.conf.bkp && echo "nameserver 1.1.1.1" > /etc/resolv.conf
@@ -90,11 +90,11 @@ fun_bar 'fun_dnscf'
 clear
 echo -e "${GRAY}[${RED}-${GRAY}]${RED} ───────────────── /// ────────────────── ${YELLOW}"
 figlet -p -f slant SlowDNS
-echo -e "${GRAY}[${RED}-${GRAY}]${RED} ────────────── Installer ─────────────── ${YELLOW}"
+echo -e "${GRAY}[${RED}-${GRAY}]${RED} ────────────── Instalador ─────────────── ${YELLOW}"
 echo ""
-echo -e "          \033[1;33mINSTALLATION COMPLETED ${RESET}        "
+echo -e "          \033[1;33mINSTALAÇÃO CONCLUÍDA ${RESET}        "
 echo ""
-echo -e "To open the menu, use the command: ${RED}slowdns${RESET}"
+echo -e "Para abrir o menu, use o comando: ${RED}slowdns${RESET}"
 cd
 sleep 3
 slowdns
