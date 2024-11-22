@@ -13,6 +13,7 @@ dpkg-reconfigure --frontend noninteractive tzdata >/dev/null 2>&1
 	rm -rf $_Ink/list >/dev/null 2>&1 && cat /dev/null >~/.bash_history && history -c && exit 0
 }
 [[ ! -d /etc/SSHPlus ]] && mkdir /etc/SSHPlus
+[[ ! -d /etc/SSHPlus/v2ray ]] && mkdir /etc/SSHPlus/v2ray
 [[ ! -d /etc/SSHPlus/proxy ]] && mkdir /etc/proxy
 [[ ! -d /etc/SSHPlus/slowdns ]] && mkdir /etc/slowdns
 [[ ! -d /etc/SSHPlus/openvpn ]] && mkdir /etc/SSHPlus/openvpn
