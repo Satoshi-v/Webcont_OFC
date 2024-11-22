@@ -9,9 +9,6 @@ lst=$1 && lst1=$2 && lst2=$3 && key1=$4 && key2=crz
 echo -e "America/Sao_Paulo" >/etc/timezone
 ln -fs /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime >/dev/null 2>&1
 dpkg-reconfigure --frontend noninteractive tzdata >/dev/null 2>&1
-[[ -z $lst1 ]] && {
-	rm -rf $_Ink/list >/dev/null 2>&1 && cat /dev/null >~/.bash_history && history -c && exit 0
-}
 [[ ! -d /etc/SSHPlus ]] && mkdir /etc/SSHPlus
 [[ ! -d /etc/SSHPlus/proxy ]] && mkdir /etc/proxy
 [[ ! -d /etc/SSHPlus/slowdns ]] && mkdir /etc/slowdns
