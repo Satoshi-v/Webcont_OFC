@@ -1,5 +1,6 @@
 #!/bin/bash
 clear
+if [[ -e /usr/lib/licence ]]; then
 database="/root/usuarios.db"
 tmp_now=$(printf '%(%H%M%S)T\n')
 fun_drop () {
@@ -100,4 +101,5 @@ echo ""
         fi
         echo -e "\033[0;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
     done < "$database"
+fi
 #exit
