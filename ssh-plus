@@ -12,7 +12,7 @@ SCOLOR='\033[0m'
 
 # - Verifica Execucao Como Root
 [[ "$EUID" -ne 0 ]] && {
-    echo -e "{RED}[x] VC PRECISA EXECUTAR O SCRIPT COMO USUÁRIO ROOT!{SCOLOR}"
+    echo -e "${RED}[x] VC PRECISA EXECUTAR COMO USUARIO ROOT !${SCOLOR}"
     exit 1
 }
 
@@ -32,15 +32,15 @@ esac
 
 # - Verifica OS Compativel
 if grep -qs "ubuntu" /etc/os-release; then
-	os_version=$(grep 'VERSION_ID' /etc/os-release | cut -d '"' -f 2 | tr -d '.')
-    [[ "$os_version" -lt 1804 ]] && {
-        echo -e "${RED}[x] VERSAO DO UBUNTU INCOMPATIVEL !\n${YELLOW}[!] REQUER UBUNTU 18.04 OU SUPERIOR !${SCOLOR}"
+    os_version=$(grep 'VERSION_ID' /etc/os-release | cut -d '"' -f 2 | tr -d '.')
+    [[ "$os_version" -lt 2004 ]] && {
+        echo -e "${RED}[x] VERSAO DO UBUNTU INCOMPATIVEL !\n${YELLOW}[!] REQUER UBUNTU 20.04 OU SUPERIOR !${SCOLOR}"
         exit 1
     }
 elif [[ -e /etc/debian_version ]]; then
-	os_version=$(grep -oE '[0-9]+' /etc/debian_version | head -1)
-    [[ "$os_version" -lt 9 ]] && {
-        echo -e "${RED}[x] VERSAO DO DEBIAN INCOMPATIVEL !\n${YELLOW}[!] REQUER DEBIAN 9 OU SUPERIOR !${SCOLOR}"
+    os_version=$(grep -oE '^[0-9]+' /etc/debian_version)
+    [[ "$os_version" -lt 10 ]] && {
+        echo -e "${RED}[x] VERSAO DO DEBIAN INCOMPATIVEL !\n${YELLOW}[!] REQUER DEBIAN 10 OU SUPERIOR !${SCOLOR}"
         exit 1
     }
 else
@@ -48,16 +48,11 @@ else
     exit 1
 fi
 
-echo -e "${VERDE}Configurando tarefa no crontab para executar 'iptables -F' a cada 6 horas...${RESET}"
-
-# Comando e linha do crontab
-LINHA_CRON="0 */6 * * * iptables -F"
-
-# Verifica e adiciona ao crontab se necessário
-crontab -l 2>/dev/null | grep -Fxq "$LINHA_CRON" || \
-{ (crontab -l 2>/dev/null; echo "$LINHA_CRON") | crontab - && \
-echo -e "${VERDE}Tarefa adicionada ao crontab com sucesso!${RESET}" || \
-echo -e "${VERMELHO}Erro ao adicionar a tarefa ao crontab.${RESET}"; }
+# - Verifica se wget esta instalado
+if ! command -v wget &> /dev/null; then
+    echo -e "${RED}[x] O WGET NAO ESTA INSTALADO! INSTALANDO...${SCOLOR}"
+    apt-get install wget -y
+fi
 
 # - Atualiza Lista/Pacotes/Sistema
 dpkg --configure -a
@@ -69,6 +64,6 @@ sysctl -w net.ipv6.conf.all.disable_ipv6=1 && sysctl -p
 echo 'net.ipv6.conf.all.disable_ipv6 = 1' > /etc/sysctl.d/70-disable-ipv6.conf
 sysctl -p -f /etc/sysctl.d/70-disable-ipv6.conf
 
-# - Execulta instalador
+# - Executa instalador
 [[ -e Plus ]] && rm Plus
-wget raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/script/64/Plus && chmod 777 Plus && ./Plus
+wget raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/script/${arch}/Plus && chmod 777 Plus && ./Plus
