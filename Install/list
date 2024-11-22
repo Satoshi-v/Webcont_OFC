@@ -1,24 +1,18 @@
-#!/bin/bash 
+#!/bin/bash
 clear
-_lvk=$(wget -qO- https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/versao)
+_lvk=$(wget -qO- https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Modulos/versao)
 IP=$(wget -qO- ipv4.icanhazip.com)
 IP2=$(wget -qO- http://whatismyip.akamai.com/)
 [[ "$IP" != "$IP2" ]] && ipdovps="$IP2" || ipdovps="$IP"
 echo -e "$ipdovps" >/etc/IP
-lst=$1 && lst1=$2 && lst2=$3 && key1=$4 && key2=crz
 echo -e "America/Sao_Paulo" >/etc/timezone
 ln -fs /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime >/dev/null 2>&1
 dpkg-reconfigure --frontend noninteractive tzdata >/dev/null 2>&1
 [[ ! -d /etc/SSHPlus ]] && mkdir /etc/SSHPlus
-[[ ! -d /etc/SSHPlus/proxy ]] && mkdir /etc/proxy
-[[ ! -d /etc/SSHPlus/slowdns ]] && mkdir /etc/slowdns
-[[ ! -d /etc/SSHPlus/openvpn ]] && mkdir /etc/SSHPlus/openvpn
-[[ ! -d /etc/SSHPlus/criarusuario ]] && mkdir /etc/SSHPlus/criarusuario
+[[ ! -d /etc/SSHPlus/v2ray ]] && mkdir /etc/SSHPlus/v2ray
 [[ ! -d /etc/SSHPlus/senha ]] && mkdir /etc/SSHPlus/senha
 [[ ! -e /etc/SSHPlus/Exp ]] && touch /etc/SSHPlus/Exp
-[[ ! -e /etc/SSHPlus/Exp ]] && touch /etc/SSHPlus/delscript
 [[ ! -d /etc/SSHPlus/userteste ]] && mkdir /etc/SSHPlus/userteste
-[[ ! -d /etc/SSHPlus/suspenderusuario ]] && mkdir /etc/SSHPlus/suspenderusuario
 [[ ! -d /etc/SSHPlus/.tmp ]] && mkdir /etc/SSHPlus/.tmp
 [[ ! -d /etc/bot ]] && mkdir /etc/bot
 [[ ! -d /etc/bot/info-users ]] && mkdir /etc/bot/info-users
@@ -41,7 +35,7 @@ for _arq in ${_mdls[@]}; do
 	if [ -f "$_dir1/$_arq" ]; then
 		rm -f "$_dir1/$_arq"
 	fi
-	wget -c -O "$_dir1/$_arq" https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Modulos/$_arq
+	wget -c -O "$_dir1/$_arq" https://raw.githubusercontent.com/root719/TMY-SSH-PLUS-V3/main/Modulos/$_arq
 	chmod +x $_dir1/$_arq
 done
 mv $_dir1/cabecalho $_dir1/bot $_dir1/open.py $_dir1/proxy.py $_dir1/wsproxy.py $_dir2
@@ -64,7 +58,7 @@ clear
 #INICIO AUTOMATICO' >/etc/autostart
 	chmod +x /etc/autostart
 } || {
-	[[ $(ps x | grep "bot_plus" | grep -v grep | wc -l) != '0' ]] && wget -qO- https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Install/ShellBot.sh
+	[[ $(ps x | grep "bot_plus" | grep -v grep | wc -l) != '0' ]] && wget -qO- https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Modulos/ShellBot.sh
 	for proc in $(ps x | grep 'dmS' | grep -v 'grep' | awk {'print $1'}); do
 		screen -r -S "$proc" -X quit	
 done
@@ -83,7 +77,7 @@ crontab -r >/dev/null 2>&1
 	echo "0 */6 * * * /bin/uexpired"
 ) | crontab -
 echo "$_lvk" >/bin/versao && cat /bin/versao > /home/sshplus
-wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Install/jq-linux64 >/dev/null 2>&1
+wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/raw/main/Install/jq-linux64 >/dev/null 2>&1
 chmod +x jq-linux64 && mv jq-linux64 $(which jq)
 service cron restart >/dev/null 2>&1
 service ssh restart >/dev/null 2>&1
