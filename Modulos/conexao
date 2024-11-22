@@ -60,7 +60,9 @@ SCOLOR='\033[0m'
 			slowdns
 		} || {
 			cd $HOME
-			rm -rf install; apt update; wget https://github.com/PhoenixxZ2023/PLUS/raw/main/Slowdns/install; chmod 777 install; ./install --start
+			wget -qO- https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Slowdns/install -O > /dev/null
+			chmod 777 install
+			./install
 		}
 
 	}
@@ -2126,7 +2128,7 @@ echo -e "\033[01;31m┣━━━━━━━━━━━━━━━━━━━
                                 sts4="\033[1;31m○ "
                         }
 			[[ "$(netstat -tlpn | grep 'proxy' | wc -l)" != '0' ]] && {
-				echo -e "\033[01;31m┃\033[1;32mSERVICO: \033[1;33mMULTI-PROXY \033[1;32mPORTA: \033[1;37m$(netstat -nplt | grep 'proxy' | awk -F '[: ]+' '{print $5}' | xargs)"
+				echo -e "\033[01;31m┃\033[1;32mSERVICO: \033[1;33mMULTI-PROXY \033[1;32mPORTA: \033[1;37m$(netstat -nplt | grep 'proxy' | awk {'print $4'} | cut -d: -f2 | xargs)"
 				sts0="\033[1;32m◉ "
 			} || {
 				sts0="\033[1;31m○ "
@@ -2225,7 +2227,6 @@ echo -e "\033[01;31m┃\033[1;31m\033[1;34m[\033[1;37m 00 •\033[1;34m]\033[1;3
 			;;
 			10)
 			v2raymanager
-			exit
 			;;
 			11)
 			trojan-go
