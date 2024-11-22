@@ -16,6 +16,7 @@ dpkg-reconfigure --frontend noninteractive tzdata >/dev/null 2>&1
 [[ ! -d /etc/SSHPlus/criarusuario ]] && mkdir /etc/SSHPlus/criarusuario
 [[ ! -d /etc/SSHPlus/senha ]] && mkdir /etc/SSHPlus/senha
 [[ ! -e /etc/SSHPlus/Exp ]] && touch /etc/SSHPlus/Exp
+[[ ! -e /etc/SSHPlus/Exp ]] && touch /etc/SSHPlus/delscript
 [[ ! -d /etc/SSHPlus/userteste ]] && mkdir /etc/SSHPlus/userteste
 [[ ! -d /etc/SSHPlus/suspenderusuario ]] && mkdir /etc/SSHPlus/suspenderusuario
 [[ ! -d /etc/SSHPlus/.tmp ]] && mkdir /etc/SSHPlus/.tmp
@@ -87,7 +88,7 @@ chmod +x jq-linux64 && mv jq-linux64 $(which jq)
 service cron restart >/dev/null 2>&1
 service ssh restart >/dev/null 2>&1
 [[ -d /var/www/html/openvpn ]] && service apache2 restart >/dev/null 2>&1
-rm -rf $lst1/list >/dev/null 2>&1
+rm -rf /root/list
 mkdir /opt/sshplus
 echo > /opt/sshplus/sshplus
 cd /etc/SSHPlus/ && wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Modulos/WebSocket && wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Modulos/pub.key && wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Modulos/priv.pem && chmod 777 WebSocket && cd $HOME
