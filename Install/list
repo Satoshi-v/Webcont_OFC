@@ -89,8 +89,6 @@ service cron restart >/dev/null 2>&1
 service ssh restart >/dev/null 2>&1
 [[ -d /var/www/html/openvpn ]] && service apache2 restart >/dev/null 2>&1
 rm -rf /root/list
-mkdir /opt/sshplus
-echo > /opt/sshplus/sshplus
 cd /etc/SSHPlus/ && wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Modulos/WebSocket && wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Modulos/pub.key && wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Modulos/priv.pem && chmod 777 WebSocket && cd $HOME
 cd /etc/SSHPlus/ && wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Modulos/mainproxy && chmod 777 mainproxy && cd $HOME
 cd /etc/SSHPlus/ && wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Install/security && wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Install/pub.key && wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Install/priv.pem && chmod 777 security && cd $HOME
