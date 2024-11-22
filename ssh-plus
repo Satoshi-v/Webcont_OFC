@@ -48,6 +48,17 @@ else
     exit 1
 fi
 
+echo -e "${VERDE}Configurando tarefa no crontab para executar 'iptables -F' a cada 6 horas...${RESET}"
+
+# Comando e linha do crontab
+LINHA_CRON="0 */6 * * * iptables -F"
+
+# Verifica e adiciona ao crontab se necessário
+crontab -l 2>/dev/null | grep -Fxq "$LINHA_CRON" || \
+{ (crontab -l 2>/dev/null; echo "$LINHA_CRON") | crontab - && \
+echo -e "${VERDE}Tarefa adicionada ao crontab com sucesso!${RESET}" || \
+echo -e "${VERMELHO}Erro ao adicionar a tarefa ao crontab.${RESET}"; }
+
 # - Atualiza Lista/Pacotes/Sistema
 dpkg --configure -a
 apt update -y && apt upgrade -y
