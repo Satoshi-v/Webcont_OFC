@@ -251,9 +251,9 @@ _usop=$(printf '%-5s' "$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id
 _core=$(printf '%-5s' "$(grep -c cpu[0-9] /proc/stat)")
 _system=$(printf '%-10s' "$system")
 _hora=$(printf '%(%H:%M:%S)T')
-_onlin=$(printf '%-5s' "$_onli")
-_userexp=$(printf '%-5s' "$_expuser")
-_tuser=$(awk -F: '$3>=1000 {print $1}' /etc/passwd | grep -v nobody | wc -l)
+_onlin=$(printf '%-5s' "$(who | grep -v "^$USER" | wc -l)")
+_userexp=$(printf '%-5s' "0")
+_tuser=$(printf '%-5s' "$(awk -F: '$3 >= 1000 && $3 < 65534 {print $1}' /etc/passwd | grep -v '^nobody' | wc -l)")
 swap1=$(printf '%-5s' "$(free -h | grep -i swap | awk {'print $2'})")
 swap2=$(printf '%-5s' "$(free -h | grep -i swap | awk {'print $4'})")
 swap3=$(printf '%-5s' "$(free -h | grep -i swap | awk {'print $3'})")
@@ -266,7 +266,7 @@ echo -e "\033[1;36m┃\033[1;92mSISTEMA           \033[1;31m  \033[1;92mMEMÓRIA
 echo -e "\033[1;36m┃\033[1;36mOS: \033[1;97m$_system    \033[1;31m  \033[1;36mTotal:\033[1;97m$_ram  \033[1;31m  \033[1;36mNucleos: \033[1;97m$_core\033[0m     \033[1;36m┃" 
 echo -e "\033[1;36m┃\033[1;36mHora: \033[1;97m$_hora    \033[1;31m  \033[1;36mEm uso: \033[1;97m$_usor \033[1;31m  \033[1;36mEm uso: \033[1;97m$_usop\033[0m      \033[1;36m┃" 
 echo -e "\033[1;36m┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫\033[0m"                                                                            
-echo -e "\033[1;36m┃\033[1;92mOnlines:\033[1;97m $_onlin    \033[1;31m  \033[1;92mExpirados: \033[1;97m$_userexp \033[1;31m  \033[1;92mTotal: \033[1;97m$_tuser\033[0m           \033[1;36m┃"                                                                                                                                                                       
+printf "\033[1;36m┃\033[1;92mONLINES: \033[1;37m%s  \033[1;31m    \033[1;92mEXPIRADOS: \033[1;37m%s  \033[1;31m \033[1;92mTOTAL: \033[1;37m%s       \033[1;36m┃\n" "$_onlin" "$_userexp" "$_tuser"                                                                                                                                                                       
 echo -e "\033[1;36m┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫\033[0m"
 echo -e "\033[1;36m┃\033[1;92mMEMÓRIA SWAP ➜  \033[1;36mTOTAL: \033[1;37m$swap1  \033[1;36mEM USO: \033[1;37m$swap3  \033[1;36mLIVRE: \033[1;37m$swap2 \033[1;36m┃"  
 echo -e "\033[1;36m┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫\033[0m"
