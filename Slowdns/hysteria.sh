@@ -57,9 +57,9 @@ echo '{
 }
 ' >> /etc/hysteria/config.json
 
-chmod 755 /etc/hysteria/config.json
-chmod 755 /etc/hysteria/hysteria.crt
-chmod 755 /etc/hysteria/hysteria.key
+chmod 777 /etc/hysteria/config.json
+chmod 777 /etc/hysteria/hysteria.crt
+chmod 777 /etc/hysteria/hysteria.key
 }
 }
 
@@ -75,8 +75,8 @@ curl  https://get.acme.sh | sh
 ~/.acme.sh/acme.sh --register-account -m firenetdev@gmail.com --server zerossl
 ~/.acme.sh/acme.sh --issue -d "${domain}" --standalone -k ec-256
 ~/.acme.sh/acme.sh --installcert -d "${domain}" --fullchainpath /etc/hysteria/hysteria.crt --keypath /etc/hysteria/hysteria.key --ecc
-chmod 755 /etc/hysteria/hysteria.crt
-chmod 755 755 /etc/hysteria/hysteria.key
+chmod 777 /etc/hysteria/hysteria.crt
+chmod 777 777 /etc/hysteria/hysteria.key
 }
 }
 
