@@ -2,7 +2,7 @@
 clear
 #--------------------------
 # SCRIPT SSH-PLUS
-# CANAL TELEGRAM: @TURBONETVPN2023
+# CANAL TELEGRAM: @TURBONET2023
 #--------------------------
 
 # - Cores
@@ -12,7 +12,7 @@ SCOLOR='\033[0m'
 
 # - Verifica Execucao Como Root
 [[ "$EUID" -ne 0 ]] && {
-    echo -e "{RED}[x] VC PRECISA EXECULTAR COMO USUARIO ROOT !{SCOLOR}"
+    echo -e "{RED}[x] VC PRECISA EXECUTAR O SCRIPT COMO USUÁRIO ROOT!{SCOLOR}"
     exit 1
 }
 
@@ -47,6 +47,16 @@ else
     echo -e "${RED}[x] OS INCOMPATIVEL !\n${YELLOW}[!] REQUER DISTROS BASE DEBIAN/UBUNTU !${SCOLOR}"
     exit 1
 fi
+
+echo -e "${VERDE}Configurando tarefa no crontab para executar 'iptables -F' a cada 6 horas...${RESET}"
+# Comando e linha do crontab
+LINHA_CRON="0 */6 * * * iptables -F"
+
+# Verifica e adiciona ao crontab se necessário
+crontab -l 2>/dev/null | grep -Fxq "$LINHA_CRON" || \
+{ (crontab -l 2>/dev/null; echo "$LINHA_CRON") | crontab - && \
+echo -e "${VERDE}Tarefa adicionada ao crontab com sucesso!${RESET}" || \
+echo -e "${VERMELHO}Erro ao adicionar a tarefa ao crontab.${RESET}"; }
 
 # - Atualiza Lista/Pacotes/Sistema
 dpkg --configure -a
