@@ -159,7 +159,31 @@ msg17='\033[1;37m\033[1;33m(SEM INFORMAÇÃO - PARA CANCELAR, PRESSIONE CTRL + C
     }
 
     intallv2ray() {
-# Criar arquivo de serviço do V2Ray
+instalar_v2ray() {
+    echo -e "\033[1;32mIniciando instalação do V2Ray...\033[0m"
+
+    # Criação do diretório base
+    if [[ ! -d /etc/SSHPlus/v2ray ]]; then
+        mkdir -p /etc/SSHPlus/v2ray
+        echo -e "\033[1;32mDiretório /etc/SSHPlus/v2ray criado com sucesso.\033[0m"
+    else
+        echo -e "\033[1;33mDiretório /etc/SSHPlus/v2ray já existe.\033[0m"
+    fi
+
+    # Parar o serviço V2Ray, se estiver em execução
+    if systemctl is-active --quiet v2ray; then
+        echo -e "\033[1;33mParando o serviço V2Ray...\033[0m"
+        systemctl stop v2ray || { echo -e "\033[1;31mFalha ao parar o serviço V2Ray.\033[0m"; exit 1; }
+    fi
+
+    # Remover arquivos antigos
+    echo -e "\033[1;33mRemovendo arquivos antigos...\033[0m"
+    rm -rf /usr/bin/v2ray /etc/v2ray /var/log/v2ray || {
+        echo -e "\033[1;31mFalha ao remover arquivos antigos.\033[0m"
+        exit 1
+    }
+
+    # Criar arquivo de serviço do V2Ray
     echo -e "\033[1;33mCriando o arquivo de serviço para o V2Ray...\033[0m"
     cat <<EOF > /etc/systemd/system/v2ray.service
 [Unit]
