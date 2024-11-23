@@ -132,9 +132,9 @@ awk -F : "$3 >= 500 { print $1 "1" }" /etc/passwd | grep -v "^nobody" > $HOME/us
 # Redefinir a exibição do terminal
 tput reset
 # Exibir mensagem de espera com fundo azul e texto branco em negrito
-echo -e "\E[38;5;92m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
-echo -e "\E[38;5;92m┃\E[44;1;37m            AGUARDE A INSTALAÇÃO              \E[0m\E[38;5;92m┃"
-echo -e "\E[38;5;92m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
+echo -e "\E[38;5;18m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
+echo -e "\E[38;5;18m┃\E[44;1;37m           AGUARDE A INSTALAÇÃO         \E[0m\E[38;5;18m┃"
+echo -e "\E[38;5;18m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
 echo ""
 echo -e "       \033[1;91m[\033[1;31m⚠️ \033[1;37m] \033[1;97mATUALIZANDO SISTEMA \033[1;37m[\033[1;31m⚠️ \033[1;91m]\033[0m"
 echo ""
@@ -161,14 +161,18 @@ fun_bar "fun_attlist"
 # Redefinir a exibição do terminal
 tput reset
 # Exibir mensagem de espera com fundo azul e texto branco em negrito
-echo -e "\E[38;5;92m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
-echo -e "\E[38;5;92m┃\E[44;1;37m            AGUARDE A INSTALAÇÃO              \E[0m\E[38;5;92m┃"
-echo -e "\E[38;5;92m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
+echo -e "\E[38;5;18m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
+echo -e "\E[38;5;18m┃\E[44;1;37m           AGUARDE A INSTALAÇÃO          \E[0m\E[38;5;18m┃"
+echo -e "\E[38;5;18m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
 echo ""
 echo -e "       \033[1;91m[\033[1;31m⚠️ \033[1;91m] \033[1;97mINSTALANDO PYTHON \033[1;91m[\033[1;31m⚠️ \033[1;91m] \033[0m"
 echo ""
 echo -e "        \033[1;93mCOSTUMA DEMORAR UM POUCO!\033[0m"
 echo ""
+
+# Instala Python2
+sudo apt-get install python python2 -y >/dev/null 2>&1
+
 # Função para instalar Python3 baseado na versão do sistema
 install_python3() {
     . /etc/os-release
@@ -184,119 +188,54 @@ install_python3() {
         echo -e "\033[1;31m[SISTEMA NÃO SUPORTADO] Apenas Ubuntu 20.04, Ubuntu 22.04, Debian 11 e Debian 12 são compatíveis.\033[0m"
         exit 1
     fi
-    # INSTALA PIP
-    apt install pip -y
-    apt install python3-pip -y
-    # INSTALA SOCAT
-    apt install socat -y
+
+    # Instala pip para Python2 e Python3
+    sudo apt install python-pip python3-pip -y >/dev/null 2>&1
+
+    # Instala socat
+    sudo apt install socat -y >/dev/null 2>&1
 }
+
 # Chama a função de instalação do Python3 com barra de progresso
 fun_bar "install_python3"
 
 # Redefinir a exibição do terminal
 tput reset
 # Exibir mensagem de espera com fundo azul e texto branco em negrito
-echo -e "\E[38;5;92m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
-echo -e "\E[38;5;92m┃\E[44;1;37m            AGUARDE A INSTALAÇÃO              \E[0m\E[38;5;92m┃"
-echo -e "\E[38;5;92m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
+echo -e "\E[38;5;18m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
+echo -e "\E[38;5;18m┃\E[44;1;37m           AGUARDE A INSTALAÇÃO          \E[0m\E[38;5;18m┃"
+echo -e "\E[38;5;18m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
 echo ""
 echo -e "       \033[1;91m[\033[1;31m⚠️ \033[1;91m] \033[1;97mINSTALANDO PACOTES  \033[1;91m[\033[1;31m⚠️ \033[1;91m] \033[0m"
 echo ""
 echo -e " \033[1;93mALGUNS PACOTES SÃO EXTREMAMENTE NECESSÁRIOS!\033[0m"
 echo ""
-# Função para instalar pacotes necessários e configurar o firewall
+
+# Função para instalar pacotes
 inst_pct() {
-    # Lista de pacotes para instalação
-    pacotes=("bc" "screen" "nano" "unzip" "lsof" "dos2unix" \
-             "nload" "jq" "curl" "figlet" "python3-pip" "firewalld")
-
-    # Instalando pacotes necessários
-    echo -e "\e[1;32mINSTALANDO PACOTES NECESSÁRIOS...\e[0m"
-    for prog in "${pacotes[@]}"; do
-        if ! dpkg -l | grep -q "^ii.*$prog"; then
-            apt install -y "$prog" || {
-                echo -e "\e[1;31mFALHA AO INSTALAR O PACOTE: $prog\e[0m"
-                exit 1
-            }
-        else
-            echo -e "\e[1;34m$prog JÁ INSTALADO\e[0m"
-        fi
-    done
-
-    # Instalando o Speedtest-CLI
-    echo -e "\e[1;32mINSTALANDO SPEEDTEST-CLI...\e[0m"
-    pip3 install speedtest-cli || {
-        echo -e "\e[1;31mFALHA AO INSTALAR SPEEDTEST-CLI\e[0m"
-        exit 1
-    }
-
-    # Configuração de firewall
-    # Listas de portas TCP e UDP
-    portas_tcp=(80 1194 8989 5454 8888 8080 443 2053 8081 8443)
-    portas_udp=(7200 7300 7400 7500)
-
-    echo -e "\e[1;32mCONFIGURANDO FIREWALL...\e[0m"
-
-    # Configuração para firewalld
-    if systemctl is-active --quiet firewalld; then
-        echo -e "\e[1;32mCONFIGURANDO FIREWALLD...\e[0m"
-        
-        # Configurar portas TCP
-        for porta in "${portas_tcp[@]}"; do
-            firewall-cmd --zone=public --permanent --add-port="$porta/tcp" || {
-                echo -e "\e[1;31mFALHA AO CONFIGURAR A PORTA $porta/TCP EM FIREWALLD\e[0m"
-            }
-        done
-
-        # Configurar portas UDP
-        for porta in "${portas_udp[@]}"; do
-            firewall-cmd --zone=public --permanent --add-port="$porta/udp" || {
-                echo -e "\e[1;31mFALHA AO CONFIGURAR A PORTA $porta/UDP EM FIREWALLD\e[0m"
-            }
-        done
-
-        # Recarregar firewalld para aplicar mudanças
-        firewall-cmd --reload
-    else
-        echo -e "\e[1;33mFIREWALLD NÃO ESTÁ ATIVO. PULANDO CONFIGURAÇÃO DE FIREWALLD.\e[0m"
-    fi
-
-    # Configuração para UFW
-    if [[ -x "/usr/sbin/ufw" ]]; then
-        echo -e "\e[1;32mCONFIGURANDO UFW...\e[0m"
-        
-        # Configurar portas TCP
-        for porta in "${portas_tcp[@]}"; do
-            ufw allow "$porta/tcp" || {
-                echo -e "\e[1;31mFALHA AO CONFIGURAR A PORTA $porta/TCP EM UFW\e[0m"
-            }
-        done
-
-        # Configurar portas UDP
-        for porta in "${portas_udp[@]}"; do
-            ufw allow "$porta/udp" || {
-                echo -e "\e[1;31mFALHA AO CONFIGURAR A PORTA $porta/UDP EM UFW\e[0m"
-            }
-        done
-    else
-        echo -e "\e[1;33mUFW NÃO ENCONTRADO. PULANDO CONFIGURAÇÃO DE UFW.\e[0m"
-    fi
+_pacotes=("bc" "screen" "nano" "unzip" "lsof" "netstat" "net-tools" "dos2unix" "nload" "jq" "curl" "figlet" "python3" "python-pip" "firewalld")
+for _prog in ${_pacotes[@]}; do
+apt install $_prog -y
+done
+pip install speedtest-cli
+sudo firewall-cmd --zone=public --permanent --add-port=80/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=8989/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=5454/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=8888/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=8080/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=7300/udp ; sudo firewall-cmd --zone=public --permanent --add-port=443/tcp ; sudo firewall-cmd --zone=public --permanent --add-port=8080/tcp ; sudo firewall-cmd --reload
 }
-
-# Executar a função inst_pct
-fun_bar inst_pct
+fun_bar 'inst_pct'
+#-----------------------------------------------------------------------------------------------------------------
+[[ -f "/usr/sbin/ufw" ]] && ufw allow 443/tcp ; ufw allow 80/tcp ; ufw allow 3128/tcp ; ufw allow 8799/tcp ; ufw allow 8080/tcp
+#-----------------------------------------------------------------------------------------------------------------
 
 # Redefinir a exibição do terminal novamente
 tput reset
-# Proxy Multi-Protocolos
-bash <(wget -qO- https://raw.githubusercontent.com/PhoenixxZ2023/RustyProxyOnly/refs/heads/main/install.sh)
+# instalando rustyproxy by @UlekBR
+bash <(wget -qO- https://raw.githubusercontent.com/PhoenixxZ2023/RustyProxyOnly/refs/heads/master/install.sh)
 
 # Redefinir a exibição do terminal novamente
 tput reset
 # Instala ferramentas de rede
-echo -e "\E[38;5;18m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
-echo -e "\E[38;5;18m┃\E[44;1;37m        INSTALANDO PACOTES DE REDE        \E[0m\E[38;5;18m┃"
-echo -e "\E[38;5;18m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
+echo -e "\E[38;5;18m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
+echo -e "\E[38;5;18m┃\E[44;1;37m      INSTALANDO PACOTES DE REDE         \E[0m\E[38;5;18m┃"
+echo -e "\E[38;5;18m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
 echo ""
 fun_bar "sudo apt-get install -y lsof >/dev/null 2>&1"
 fun_bar "sudo apt-get install -y htop >/dev/null 2>&1"
@@ -306,6 +245,8 @@ fun_bar "sudo apt-get install -y netcat >/dev/null 2>&1"
 
 # Redefinir a exibição do terminal
 tput reset
+echo""
+
 # Instalando DNS personalizados
 echo -e         "\033[1;36mINSTALANDO DNS PERSONALIZADOS\033[0m"
 echo ""
