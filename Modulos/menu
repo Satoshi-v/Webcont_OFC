@@ -373,9 +373,9 @@ _usop=$(printf '%-5s' "$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id
 _core=$(printf '%-5s' "$(grep -c cpu[0-9] /proc/stat)")
 _system=$(printf '%-10s' "$system")
 _hora=$(printf '%(%H:%M:%S)T')
-_onlin=$(printf '%-5s' "$(who | wc -l)") 
-_userexp=$(printf '%-5s' "0")  # Substituir "0" pela lógica para calcular usuários expirados
-_tuser=$(printf '%-5s' "$(awk -F: '$3 >= 1000 && $3 < 65534 {print $1}' /etc/passwd | wc -l)")
+_onlin=$(printf '%-5s' "$(who | grep -v "^$USER" | wc -l)")
+_userexp=$(printf '%-5s' "0")
+_tuser=$(printf '%-5s' "$(awk -F: '$3 >= 1000 && $3 < 65534 {print $1}' /etc/passwd | grep -v '^nobody' | wc -l)")
 [[ -e /etc/Plus-torrent ]] && stsf=$(echo -e "\033[0;92m(ON ⬤") || stsf=$(echo -e "\033[0;31m(OFF ⬤ ") 
 stsbot=$(ps x | grep "bot_plus"|grep -v grep > /dev/null && echo -e "\033[0;92m⬤  " || echo -e "\033[0;31m⬤  ")
 stsl=$(ps x | grep "limiter"|grep -v grep > /dev/null && echo -e "\033[0;93m⬤ " || echo -e "\033[0;31m⬤ ")
@@ -394,7 +394,7 @@ echo -e "\033[1;36m┃\033[1;92mSISTEMA           \033[1;31m  \033[1;92mMEMÓRIA
 echo -e "\033[1;36m┃\033[1;36mOS: \033[1;97m$_system    \033[1;31m  \033[1;36mTotal: \033[1;97m$_ram  \033[1;31m \033[1;36mNucleos: \033[1;97m$_core\033[0m     \033[1;36m┃"
 echo -e "\033[1;36m┃\033[1;36mHora: \033[1;97m$_hora    \033[1;31m  \033[1;36mEm uso: \033[1;97m$_usor  \033[1;31m \033[1;36mEm uso: \033[1;97m$_usop\033[0m      \033[1;36m┃"  
 echo -e "\033[1;36m┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫\033[0m"
-printf "\033[1;36m┃\033[1;92mONLINES: \033[1;37m%s  \033[1;31m    \033[1;92mEXPIRADOS: \033[1;37m%s  \033[1;31m  \033[1;92mTOTAL: \033[1;37m%s     \033[1;36m┃\n" "$_onlin" "$_userexp" "$_tuser"
+printf "\033[1;36m┃\033[1;92mONLINES: \033[1;37m%s  \033[1;31m    \033[1;92mEXPIRADOS: \033[1;37m%s  \033[1;31m \033[1;92mTOTAL: \033[1;37m%s       \033[1;36m┃\n" "$_onlin" "$_userexp" "$_tuser"
 echo -e "\033[1;36m┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫\033[0m"
 echo -e "\033[1;36m┃\033[1;92mBADVPN-PRO/UDP \033[1;37m$stsu      \033[1;31m              \033[1;31m  \033[1;92mLIMITADOR-SSH \033[1;37m$stsl   \033[1;36m┃"
 echo -e "\033[1;36m┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫\033[0m"
