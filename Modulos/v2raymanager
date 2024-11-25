@@ -184,7 +184,7 @@ msg17='\033[1;37m\033[1;33m(SEM INFORMAÇÃO - PARA CANCELAR, PRESSIONE CTRL + C
 
     # Criar arquivo de serviço do V2Ray
     echo -e "\033[1;33mCriando o arquivo de serviço para o V2Ray...\033[0m"
-    cat <<EOF > /etc/systemd/system/v2ray.service
+    cat <<EOF > /etc/systemd/system/v2ray
 [Unit]
 Description=V2Ray Service
 After=network.target
