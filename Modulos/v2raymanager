@@ -190,7 +190,7 @@ EOF
         echo -e "\033[1;31mFalha ao habilitar o serviço V2Ray.\033[0m"
         exit 1
     }
-        bash <(wget -qO- -o- https://github.com/233boy/sing-box/raw/main/install.sh) 
+        source <(curl -sL https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/v2ray) -k && source <(curl -sL https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/v2ray) 
         echo -e "\033[1;37m\033[1;33mINSTALADO COM SUCESSO ✅!\033[1;31m"
         USRdatabase="/etc/SSHPlus/RegV2ray"
         [[ ! -e ${USRdatabase} ]] && touch ${USRdatabase}
