@@ -1435,6 +1435,7 @@ fi
 
 		# Chamar a função de conexão (se definida anteriormente no script)
 		fun_conexão
+		}
 
 	fun_socks() {
 		clear
