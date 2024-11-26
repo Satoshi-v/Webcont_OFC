@@ -1241,121 +1241,109 @@ client-cert-not-required
 username-as-common-name
 plugin $(find /usr -type f -name 'openvpn-plugin-auth-pam.so') login
 duplicate-cn" >>/etc/openvpn/server.conf
-# Ativar o encaminhamento de pacotes IPv4
 sed -i '/\<net.ipv4.ip_forward\>/c\net.ipv4.ip_forward=1' /etc/sysctl.conf
-if ! grep -q "\<net.ipv4.ip_forward\>" /etc/sysctl.conf; then
-    echo 'net.ipv4.ip_forward=1' >>/etc/sysctl.conf
-fi
-sysctl -w net.ipv4.ip_forward=1
-
-# Instalar o OpenVPN
-echo -e "\033[1;32mINSTALANDO O OPENVPN  \033[1;31m(\033[1;33mPODE DEMORAR!\033[1;31m)"
-echo ""
-fun_bar 'fun_dep > /dev/null 2>&1'
-
-# Configurações do OpenVPN
-fun_ropen() {
-    [[ "$OS" = 'debian' ]] && {
-        if pgrep systemd-journal; then
-            systemctl restart openvpn@server.service
-        else
-            /etc/init.d/openvpn restart
-        fi
-    } || {
-        if pgrep systemd-journal; then
-            systemctl restart openvpn@server.service
-            systemctl enable openvpn@server.service
-        else
-            service openvpn restart
-            chkconfig openvpn on
-        fi
-    }
-}
-
-echo ""
-echo -e "\033[1;32mREINICIANDO O OPENVPN\033[0m"
-echo ""
-fun_bar 'fun_ropen'
-
-# Obter o IP público
-IP2=$(wget -4qO- "http://whatismyip.akamai.com/")
-if [[ "$IP" != "$IP2" ]]; then
-    IP="$IP2"
-fi
-
-# Verificar se há configuração proxy em autostart
-[[ $(grep -wc 'open.py' /etc/autostart) != '0' ]] && pt_proxy=$(grep -w 'open.py' /etc/autostart | cut -d' ' -f6) || pt_proxy=80
-
-# Criar arquivo de configuração para o cliente OpenVPN
-cat <<-EOF >/etc/openvpn/client-common.txt
-client
-dev tun
-proto $PROTOCOL
-sndbuf 0
-rcvbuf 0
-remote 127.0.0.1 $porta
-resolv-retry 5
-nobind
-persist-key
-persist-tun
-remote-cert-tls server
-cipher AES-256-CBC
-comp-lzo yes
-setenv opt block-outside-dns
-key-direction 1
-verb 3
-auth-user-pass
-keepalive 10 120
-float
-EOF
-
-# Gerar o cliente OVPN
-newclient "SSHPLUS"
-
-# Verificar se o OpenVPN foi instalado com sucesso
-if [[ "$(netstat -nplt | grep -wc 'openvpn')" != '0' ]]; then
-    echo -e "\n\033[1;32mOPENVPN INSTALADO COM SUCESSO\033[0m"
-else
-    echo -e "\n\033[1;31mERRO! A INSTALAÇÃO FOI CORROMPIDA\033[0m"
-fi
-
-# Adicionar script de inicialização para as regras de rede
-cat <<-EOF >/etc/custom-startup.sh
-#!/bin/bash
-echo 1 > /proc/sys/net/ipv4/ip_forward
-iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -j SNAT --to $IP
-iptables -A INPUT -p tcp --dport 25 -j DROP
-iptables -A INPUT -p tcp --dport 110 -j DROP
-iptables -A OUTPUT -p tcp --dport 25 -j DROP
-iptables -A OUTPUT -p tcp --dport 110 -j DROP
-iptables -A FORWARD -p tcp --dport 25 -j DROP
-iptables -A FORWARD -p tcp --dport 110 -j DROP
-EOF
-
-chmod +x /etc/custom-startup.sh
-
-# Criar um serviço systemd para as configurações de inicialização
-cat <<-EOF >/etc/systemd/system/custom-startup.service
-[Unit]
-Description=Configuração de inicialização customizada
-After=network.target
-
-[Service]
-ExecStart=/etc/custom-startup.sh
-Type=oneshot
-RemainAfterExit=yes
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-# Habilitar e iniciar o serviço
-systemctl daemon-reload
-systemctl enable custom-startup.service
-systemctl start custom-startup.service
-sleep 3
-fun_conexao
-}
+				if ! grep -q "\<net.ipv4.ip_forward\>" /etc/sysctl.conf; then
+					echo 'net.ipv4.ip_forward=1' >>/etc/sysctl.conf
+				fi
+				echo 1 >/proc/sys/net/ipv4/ip_forward
+				if [[ "$OS" = 'debian' && ! -e $RCLOCAL ]]; then
+					echo '#!/bin/sh -e
+exit 0' >$RCLOCAL
+				fi
+				chmod +x $RCLOCAL
+				iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -j SNAT --to $IP
+				sed -i "1 a\iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -j SNAT --to $IP" $RCLOCAL
+				if pgrep firewalld; then
+					firewall-cmd --zone=public --add-port=$porta/$PROTOCOL
+					firewall-cmd --zone=trusted --add-source=10.8.0.0/24
+					firewall-cmd --permanent --zone=public --add-port=$porta/$PROTOCOL
+					firewall-cmd --permanent --zone=trusted --add-source=10.8.0.0/24
+				fi
+				if iptables -L -n | grep -qE 'REJECT|DROP'; then
+					iptables -I INPUT -p $PROTOCOL --dport $porta -j ACCEPT
+					iptables -I FORWARD -s 10.8.0.0/24 -j ACCEPT
+					iptables -F
+					iptables -I FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+					sed -i "1 a\iptables -I INPUT -p $PROTOCOL --dport $porta -j ACCEPT" $RCLOCAL
+					sed -i "1 a\iptables -I FORWARD -s 10.8.0.0/24 -j ACCEPT" $RCLOCAL
+					sed -i "1 a\iptables -I FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT" $RCLOCAL
+				fi
+				if hash sestatus 2>/dev/null; then
+					if sestatus | grep "Current mode" | grep -qs "enforcing"; then
+						if [[ "$porta" != '1194' || "$PROTOCOL" = 'tcp' ]]; then
+							if ! hash semanage 2>/dev/null; then
+								yum install policycoreutils-python -y
+							fi
+							semanage port -a -t openvpn_port_t -p $PROTOCOL $porta
+						fi
+					fi
+				fi
+			}
+			echo -e "\033[1;32mINSTALANDO O OPENVPN  \033[1;31m(\033[1;33mPODE DEMORAR!\033[1;31m)"
+			echo ""
+			fun_bar 'fun_dep > /dev/null 2>&1'
+			fun_ropen() {
+				[[ "$OS" = 'debian' ]] && {
+					if pgrep systemd-journal; then
+						systemctl restart openvpn@server.service
+					else
+						/etc/init.d/openvpn restart
+					fi
+				} || {
+					if pgrep systemd-journal; then
+						systemctl restart openvpn@server.service
+						systemctl enable openvpn@server.service
+					else
+						service openvpn restart
+						chkconfig openvpn on
+					fi
+				}
+			}
+			echo ""
+			echo -e "\033[1;32mREINICIANDO O OPENVPN"
+			echo ""
+			fun_bar 'fun_ropen'
+			IP2=$(wget -4qO- "http://whatismyip.akamai.com/")
+			if [[ "$IP" != "$IP2" ]]; then
+				IP="$IP2"
+			fi
+			[[ $(grep -wc 'open.py' /etc/autostart) != '0' ]] && pt_proxy=$(grep -w 'open.py' /etc/autostart | cut -d' ' -f6) || pt_proxy=80
+			cat <<-EOF >/etc/openvpn/client-common.txt
+				client
+				dev tun
+				proto $PROTOCOL
+				sndbuf 0
+				rcvbuf 0
+				remote 127.0.0.1 $porta
+				resolv-retry 5
+				nobind
+				persist-key
+				persist-tun
+				remote-cert-tls server
+				cipher AES-256-CBC
+				comp-lzo yes
+				setenv opt block-outside-dns
+				key-direction 1
+				verb 3
+				auth-user-pass
+				keepalive 10 120
+				float
+			EOF
+			# gerar client.ovpn
+			newclient "SSHPLUS"
+			[[ "$(netstat -nplt | grep -wc 'openvpn')" != '0' ]] && echo -e "\n\033[1;32mOPENVPN INSTALADO COM SUCESSO\033[0m" || echo -e "\n\033[1;31mERRO ! A INSTALACAO CORROMPEU\033[0m"
+		}
+		sed -i '$ i\echo 1 > /proc/sys/net/ipv4/ip_forward' /etc/rc.local
+		sed -i '$ i\echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6' /etc/rc.local
+		sed -i '$ i\iptables -A INPUT -p tcp --dport 25 -j DROP' /etc/rc.local
+		sed -i '$ i\iptables -A INPUT -p tcp --dport 110 -j DROP' /etc/rc.local
+		sed -i '$ i\iptables -A OUTPUT -p tcp --dport 25 -j DROP' /etc/rc.local
+		sed -i '$ i\iptables -A OUTPUT -p tcp --dport 110 -j DROP' /etc/rc.local
+		sed -i '$ i\iptables -A FORWARD -p tcp --dport 25 -j DROP' /etc/rc.local
+		sed -i '$ i\iptables -A FORWARD -p tcp --dport 110 -j DROP' /etc/rc.local
+		sleep 3
+		fun_conexao
+	}
 
 	fun_socks() {
 		clear
