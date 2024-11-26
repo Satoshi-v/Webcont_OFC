@@ -1353,7 +1353,9 @@ EOF
 systemctl daemon-reload
 systemctl enable custom-startup.service
 systemctl start custom-startup.service
-
+sleep 3
+fun_conexao
+}
 
 	fun_socks() {
 		clear
