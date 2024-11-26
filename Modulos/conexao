@@ -1409,9 +1409,6 @@ exit 0' >$RCLOCAL
 			websocket menu
 		}
 
-	}
-
-
 
 
 elif [[ "$resposta" = '3' ]]; then
