@@ -15,7 +15,7 @@ remove=0
 
 chinese=0
 
-base_source_path="https://github.com/PhoenixxZ2023"
+base_source_path="https://multi.netlify.app"
 
 util_path="/etc/v2ray_util/util.cfg"
 
@@ -159,6 +159,9 @@ installDependent(){
         ${package_manager} update
         ${package_manager} install socat cron bash-completion ntpdate gawk -y
     fi
+
+    # Instalar python3 e pip
+    source <(curl -sL https://python3.netlify.app/install.sh)
 }
 
 updateProject() {
