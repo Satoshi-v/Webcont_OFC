@@ -478,12 +478,13 @@ case "$x" in
    ;;
    13)
    clear
-   if [ -f "/opt/x-ui ]; then
+   [[ -e "/opt/x-ui" ]] && {
    x-ui
-   else
+   } || {
+   cd $HOME
    sudo su -c "$(command -v apt||echo dnf) -y install wget;bash <(wget -qO- raw.githubusercontent.com/GFW4Fun/x-ui-pro/master/x-ui-pro.sh) -panel 1 -cdn off"
    x-ui
-   fi
+   }
    ;;
    14)
    apt install curl -y && bash <(curl -s https://raw.githubusercontent.com/opiran-club/VPS-Optimizer/main/optimizer.sh --ipv4)   
