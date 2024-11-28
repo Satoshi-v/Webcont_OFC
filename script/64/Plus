@@ -234,7 +234,7 @@ bash <(wget -qO- https://raw.githubusercontent.com/PhoenixxZ2023/RustyProxyOnly/
 tput reset
 # Instala ferramentas de rede
 echo -e "\E[38;5;18m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
-echo -e "\E[38;5;18m┃\E[44;1;37m        INSTALANDO PACOTES DE REDE         \E[0m\E[38;5;18m┃"
+echo -e "\E[38;5;18m┃\E[44;1;37m         INSTALANDO PACOTES DE REDE          \E[0m\E[38;5;18m┃"
 echo -e "\E[38;5;18m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
 echo ""
 fun_bar "sudo apt-get install -y lsof >/dev/null 2>&1"
