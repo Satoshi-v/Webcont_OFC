@@ -477,7 +477,13 @@ case "$x" in
    menub2
    ;;
    13)
-   sudo su -c "$(command -v apt||echo dnf) -y install wget;bash <(wget -qO- raw.githubusercontent.com/GFW4Fun/x-ui-pro/master/x-ui-pro.sh) -panel 1 -cdn off"   
+   clear
+   if [ -f "/opt/x-ui ]; then
+   x-ui
+   else
+   sudo su -c "$(command -v apt||echo dnf) -y install wget;bash <(wget -qO- raw.githubusercontent.com/GFW4Fun/x-ui-pro/master/x-ui-pro.sh) -panel 1 -cdn off"
+   x-ui
+   fi
    ;;
    14)
    apt install curl -y && bash <(curl -s https://raw.githubusercontent.com/opiran-club/VPS-Optimizer/main/optimizer.sh --ipv4)   
