@@ -226,12 +226,12 @@ inst_pct() {
     fi
   done
 
-  # Instalar speedtest-cli via pip
-  if ! command -v speedtest-cli &> /dev/null; then
-    pip3 install speedtest-cli
-  else
-    echo "speedtest-cli já instalado."
-  fi
+  # Instalando o Speedtest-CLI
+    echo -e "\e[1;32mINSTALANDO SPEEDTEST-CLI...\e[0m"
+    pip3 install speedtest-cli || {
+        echo -e "\e[1;31mFALHA AO INSTALAR SPEEDTEST-CLI\e[0m"
+        exit 1
+    }
 
   # Configurar regras do firewall
   sudo firewall-cmd --zone=public --permanent --add-port=80/tcp
