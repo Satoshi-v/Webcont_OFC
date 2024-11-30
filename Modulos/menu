@@ -345,7 +345,8 @@ case "$x" in
    sleep 2
 esac
 }
-while [[ $x != "ok" ]]; do
+while true $x != "ok"
+do
     stsl=$(pgrep "limiter" > /dev/null && echo -e "\033[0;92m(ON⬤)" || echo -e "\033[0;31m(OFF ⬤)")
     stson=$(pgrep "onlineapp" > /dev/null && echo -e "\033[0;92m(ON⬤)" || echo -e "\033[0;31m(OFF ⬤)")
     stsu=$(pgrep "udpvpn" > /dev/null && echo -e "\033[0;92m(ON⬤)" || echo -e "\033[0;31m(OFF ⬤)")
@@ -382,9 +383,6 @@ while [[ $x != "ok" ]]; do
     swap1=$(printf '%-5s' "$(free -h | grep -i swap | awk {'print $2'})")
     swap2=$(printf '%-5s' "$(free -h | grep -i swap | awk {'print $4'})")
     swap3=$(printf '%-5s' "$(free -h | grep -i swap | awk {'print $3'})")
-
-    # Aqui você pode continuar com a lógica do seu script
-done
 clear
 echo -e "\033[1;36m┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\033[0m"
 echo -e "\033[1;36m┃\E[46;1;97m                   TURBONET SCRIPT-SSHPLUS                \E[0m\033[1;36m┃"
