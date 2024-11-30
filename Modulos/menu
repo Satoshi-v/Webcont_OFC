@@ -382,6 +382,8 @@ while [[ $x != "ok" ]]; do
     swap1=$(printf '%-5s' "$(free -h | grep -i swap | awk {'print $2'})")
     swap2=$(printf '%-5s' "$(free -h | grep -i swap | awk {'print $4'})")
     swap3=$(printf '%-5s' "$(free -h | grep -i swap | awk {'print $3'})")
+
+    # Aqui você pode continuar com a lógica do seu script
 done
 clear
 echo -e "\033[1;36m┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\033[0m"
