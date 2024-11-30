@@ -345,7 +345,8 @@ case "$x" in
    sleep 2
 esac
 }
-while [[ $x != "ok" ]]; do
+while true $x != "ok"
+do
 if [[ "$(grep -c "Ubuntu" /etc/issue.net)" = "1" ]]; then
 system=$(cut -d' ' -f1 /etc/issue.net)
 system+=$(echo ' ')
