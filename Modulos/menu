@@ -329,7 +329,7 @@ case "$x" in
    tcptweaker.sh
    ;;
    32)
-   autoreboot.sh
+   auto-reboot.sh
    ;;
    33)
    menu
