@@ -2003,8 +2003,6 @@ ShellBot.regHandleFunction --function fun_add_teste --callback_data _criarteste2
 ShellBot.regHandleFunction --function fun_deluser --callback_data _deluser2
 ShellBot.regHandleFunction --function fun_sususer --callback_data _sususer2
 ShellBot.regHandleFunction --function fun_atiuser --callback_data _ativauser2
-ShellBot.regHandleFunction --function fun_sususer --callback_data _sususer
-ShellBot.regHandleFunction --function fun_atiuser --callback_data _ativauser
 ShellBot.regHandleFunction --function alterar_senha --callback_data _altsenha2
 ShellBot.regHandleFunction --function alterar_limite --callback_data _altlimite2
 ShellBot.regHandleFunction --function alterar_data --callback_data _altdata2
