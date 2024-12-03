@@ -6,9 +6,10 @@ sudo apt-get install curl -y &>/dev/null 2>&1
 sudo apt-get install git -y &>/dev/null 2>&1 
 sudo apt-get install figlet boxes -y &>/dev/null 2>&1 
 sudo apt-get install net-tools -y &>/dev/null 2>&1
-sudo apt-get install uuid-runtime
+sudo apt-get install uuid-runtime -y >/dev/null 2>&1
 sudo apt-get install python-minimal -y >/dev/null 2>&1
 sudo apt-get install libpython-stdlib -y >/dev/null 2>&1
+sudo apt-get install procps -y >/dev/null 2>&1
 
 # Verificação se o usuário é root
 cd $HOME
