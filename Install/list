@@ -1,6 +1,6 @@
 #!/bin/bash 
 clear
-_lvk=$(wget -qO- https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/versao)
+_lvk=$(wget -qO- https://raw.githubusercontent.com/Satoshi-V/Webcont_OFC/main/versao)
 IP=$(wget -qO- ipv4.icanhazip.com)
 IP2=$(wget -qO- http://whatismyip.akamai.com/)
 [[ "$IP" != "$IP2" ]] && ipdovps="$IP2" || ipdovps="$IP"
@@ -42,7 +42,7 @@ rm $_dir2/ShellBot.sh $_dir2/cabecalho $_dir2/open.py $_dir2/proxy.py $_dir2/wsp
 _mdls=("addhost" "ajuda" "alterarlimite" "alterarsenha" "apache2menu" "auto-reboot.sh" "badvpn-udpgw-plus" "tcptweaker.sh" "checkers" "utili" "multi" "check" "chuser" "limit" "rps_cpu" "attscript" "Autobackup" "backup_mail.sh" "badvpn" "banner" "bashtop" "ddos" "blocksite" "blockt" "blockuser" "bot" "botssh" "cabecalho" "conexao" "criarteste" "criarusuario" "delhost" "delscript" "detalhes" "dns-netflix.sh" "droplimiter" "expcleaner" "ban.sh" "fr" "GoLang.sh" "infousers" "inst-botteste" "initcheck" "instsqd" "limiter" "mainproxy" "menu" "menub" "menub2" "menuudp" "mudardata" "mtuning" "multi" "onlineapp" "openvpn.sh" "open.py" "otimizar" "painelv2ray" "prissh" "prnet.sh" "proxy" "proxydt" "proxy.py" "psiphon.sh" "reiniciarservicos" "reiniciarsistema" "remover" "rustyproxy" "security" "senharoot" "ShellBot.sh" "slowdns" "slow_dns" "speedtest" "sshmonitor" "suspenderusuario.sh" "swapmemory" "trafegototal" "trojan-go" "uexpired" "userbackup" "velocity" "verifatt" "verifbot" "v2raymanager" "v2ray" "webmin.sh" "websocket.sh" "wireguard.sh" "wsproxy.py" "pkill.sh")
 for _arq in ${_mdls[@]}; do
 	[[ -e $_dir1/$_arq ]] && rm $_dir1/$_arq >/dev/null 2>&1
-	wget -c -P $_dir1 https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Modulos/$_arq
+	wget -c -P $_dir1 https://raw.githubusercontent.com/Satoshi-V/Webcont_OFC/main/Modulos/$_arq
 	chmod +x $_dir1/$_arq
 done
 mv $_dir1/cabecalho $_dir1/bot $_dir1/open.py $_dir1/proxy.py $_dir1/wsproxy.py $_dir2
@@ -65,7 +65,7 @@ clear
 #INICIO AUTOMATICO' >/etc/autostart
 	chmod +x /etc/autostart
 } || {
-	[[ $(ps x | grep "bot_plus" | grep -v grep | wc -l) != '0' ]] && wget -qO- https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Modulos/ShellBot.sh
+	[[ $(ps x | grep "bot_plus" | grep -v grep | wc -l) != '0' ]] && wget -qO- https://raw.githubusercontent.com/Satoshi-V/Webcont_OFC/main/Modulos/ShellBot.sh
 	for proc in $(ps x | grep 'dmS' | grep -v 'grep' | awk {'print $1'}); do
 		screen -r -S "$proc" -X quit	
 done
@@ -84,7 +84,7 @@ crontab -r >/dev/null 2>&1
 	echo "0 */6 * * * /bin/uexpired"
 ) | crontab -
 echo "$_lvk" | sed -n '1 p' | cut -d' ' -f2 >/bin/versao && cat /bin/versao >/home/sshplus
-wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Install/jq-linux64 >/dev/null 2>&1
+wget https://raw.githubusercontent.com/Satoshi-V/Webcont_OFC/main/Install/jq-linux64 >/dev/null 2>&1
 chmod +x jq-linux64 && mv jq-linux64 $(which jq)
 service cron restart >/dev/null 2>&1
 service ssh restart >/dev/null 2>&1
@@ -92,7 +92,7 @@ service ssh restart >/dev/null 2>&1
 rm -rf $lst1/list >/dev/null 2>&1
 mkdir /opt/sshplus
 echo > /opt/sshplus/sshplus
-cd /etc/SSHPlus/ && wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Modulos/WebSocket && wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Modulos/pub.key && wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Modulos/priv.pem && chmod 777 WebSocket && cd $HOME
-cd /etc/SSHPlus/ && wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Modulos/mainproxy && chmod 777 mainproxy && cd $HOME
-cd /etc/SSHPlus/ && wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Install/security && wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Install/pub.key && wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Install/priv.pem && chmod 777 security && cd $HOME
-cd /etc/SSHPlus/ && wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Install/proxydt && chmod 777 proxydt && cd $HOME
+cd /etc/SSHPlus/ && wget https://raw.githubusercontent.com/Satoshi-V/Webcont_OFC/main/Modulos/WebSocket && wget https://raw.githubusercontent.com/Satoshi-V/Webcont_OFC/main/Modulos/pub.key && wget https://raw.githubusercontent.com/Satoshi-V/Webcont_OFC/main/Modulos/priv.pem && chmod 777 WebSocket && cd $HOME
+cd /etc/SSHPlus/ && wget https://raw.githubusercontent.com/Satoshi-V/Webcont_OFC/main/Modulos/mainproxy && chmod 777 mainproxy && cd $HOME
+cd /etc/SSHPlus/ && wget https://raw.githubusercontent.com/Satoshi-V/Webcont_OFC/main/Install/security && wget https://raw.githubusercontent.com/Satoshi-V/Webcont_OFC/main/Install/pub.key && wget https://raw.githubusercontent.com/Satoshi-V/Webcont_OFC/main/Install/priv.pem && chmod 777 security && cd $HOME
+cd /etc/SSHPlus/ && wget https://raw.githubusercontent.com/Satoshi-V/Webcont_OFC/main/Install/proxydt && chmod 777 proxydt && cd $HOME
