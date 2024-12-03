@@ -1,4 +1,4 @@
-<h2 align="center" color="red">SCRIPT SSHPLUS 2023</h2>
+<h2 align="center" color="red">WEBCONT SCRIPT 2025</h2>
 
 ## FUNCIONALIDADES:
 
@@ -65,14 +65,14 @@ bash <(wget -qO- https://raw.githubusercontent.com/PhoenixxZ2023/senharoot/main/
 Opção 1:
 
 ````
-apt update -y && apt upgrade -y && wget -y; bash <(wget -qO- raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/ssh-plus)
+apt update -y && apt upgrade -y && wget -y; bash <(wget -qO- raw.githubusercontent.com/Satoshi-v/Webcont_OFC/main/ssh-plus)
 ````
 
 Opção 2:
 
 ````
-apt update -y && apt upgrade -y && wget https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/ssh-plus && chmod 777 ssh-plus && ./ssh-plus
+apt update -y && apt upgrade -y && wget https://raw.githubusercontent.com/Satoshi-v/Webcont_OFC/main/ssh-plus && chmod 777 ssh-plus && ./ssh-plus
 ````
 
-## TELEGRAM: [@TURBONET2023](https://t.me/TURBONET2023)
+## TELEGRAM: [@NET_SATOSHI](https://t.me/WEBCONT_OFC)
 
