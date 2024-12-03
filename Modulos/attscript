@@ -52,7 +52,7 @@ fun_atts() {
   [[ -e /home/versao ]] && rm /home/versao
   [[ -e /tmp/att ]] && rm /tmp/att
 
-  wget -c -P /home -q -O- raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Install/versao | bash || { echo "Erro ao baixar o arquivo de versão."; exit 1; }
+  wget -c -P /home -q -O- raw.githubusercontent.com/Satoshi-V/Webcont_OFC/main/Install/versao | bash || { echo "Erro ao baixar o arquivo de versão."; exit 1; }
   [[ -f "/home/versao" ]] && mv /home/versao /tmp/att
   [[ ! -e /bin/versao ]] && rm -rf /bin/menu
 } > /dev/null 2>&1
@@ -97,7 +97,7 @@ else
   if [[ "$res" = s || "$res" = S ]]; then
     echo -e "\n\033[1;32m  INICIANDO ATUALIZACAO..."
     sleep 3
-    wget -q -O- raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/ssh-plus > Plus || { echo "Erro ao baixar o novo script."; exit 1; }
+    wget -q -O- raw.githubusercontent.com/Satoshi-V/Webcont_OFC/main/ssh-plus > Plus || { echo "Erro ao baixar o novo script."; exit 1; }
     chmod +x Plus
     ./Plus
     clear
