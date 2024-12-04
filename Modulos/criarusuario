@@ -102,7 +102,7 @@ fun_edithost() {
     clear
     echo -e "\E[44;1;37m          ALTERAR HOST OVPN            \E[0m"
     echo ""
-    echo -e "\033[1;33mHOST EM USO\033[1;37m: \033[1;32m$Host"
+    echo -e "\033[1;33mHOST EN USO\033[1;37m: \033[1;32m$Host"
     echo ""
     echo -e "\033[1;31m[\033[1;36m1\033[1;31m] \033[1;33mVIVO RECARGA"
     echo -e "\033[1;31m[\033[1;36m2\033[1;31m] \033[1;33mVIVO NAVEGUE PRE"
@@ -114,10 +114,10 @@ fun_edithost() {
     echo -e "\033[1;31m[\033[1;36m8\033[1;31m] \033[1;33mEDITAR MANUALMENTE"
     echo -e "\033[1;31m[\033[1;36m0\033[1;31m] \033[1;33mVOLTAR"
     echo ""
-    echo -ne "\033[1;32mQUAL HOST DESEJA ULTILIZAR \033[1;33m?\033[1;37m "
+    echo -ne "\033[1;32mCUAL HOST DESEA ULTILIZAR\033[1;33m?\033[1;37m "
     read respo
     [[ -z "$respo" ]] && {
-        echo -e "\n\033[1;31mOpcao invalida!"
+        echo -e "\n\033[1;31mOpcion invalida!"
         sleep 2
         fun_edithost
     }
@@ -129,7 +129,7 @@ fun_edithost() {
             sed -i "7i\remote $rmt2 $_Port\nhttp-proxy-option CUSTOM-HEADER Host $vivo1\nhttp-proxy $IP 80" $cert01
         }
         fun_bar 'fun_althost'
-        echo -e "\n\033[1;32mHOST ALTERADO COM SUCESSO!\033[0m"
+        echo -e "\n\033[1;32mHOST ALTERADO CON ÉXITO!\033[0m"
         fun_geraovpn
         sleep 1.5
     elif [[ "$respo" = '2' ]]; then
@@ -140,7 +140,7 @@ fun_edithost() {
             sed -i "7i\remote $rmt2 $_Port\nhttp-proxy-option CUSTOM-HEADER Host $vivo3\nhttp-proxy $IP 80" $cert01
         }
         fun_bar 'fun_althost2'
-        echo -e "\n\033[1;32mHOST ALTERADO COM SUCESSO!\033[0m"
+        echo -e "\n\033[1;32mHOST ALTERADO CON ÉXITO!\033[0m"
         fun_geraovpn
         sleep 1.5
     elif [[ "$respo" = '3' ]]; then
@@ -151,7 +151,7 @@ fun_edithost() {
             sed -i "7i\remote $rmt2 $_Port\n$payload1\nhttp-proxy $IP 8080" $cert01
         }
         fun_bar 'fun_althostpay1'
-        echo -e "\n\033[1;32mHOST ALTERADO COM SUCESSO!\033[0m"
+        echo -e "\n\033[1;32mHOST ALTERADO CON ÉXITO!\033[0m"
         fun_geraovpn
         sleep 1.5
     elif [[ "$respo" = '4' ]]; then
@@ -162,7 +162,7 @@ fun_edithost() {
             sed -i "7i\remote $rmt2 $_Port\n$payload2\nhttp-proxy $IP 80" $cert01
         }
         fun_bar 'fun_althostpay2'
-        echo -e "\n\033[1;32mHOST ALTERADO COM SUCESSO!\033[0m"
+        echo -e "\n\033[1;32mHOST ALTERADO CON ÉXITO!\033[0m"
         fun_geraovpn
         sleep 1.5
     elif [[ "$respo" = '5' ]]; then
@@ -173,7 +173,7 @@ fun_edithost() {
             sed -i "7i\remote $rmt3\nhttp-proxy-option CUSTOM-HEADER Host $vivo3\nhttp-proxy $prx:$_Port" $cert01
         }
         fun_bar 'fun_althost5'
-        echo -e "\n\033[1;32mHOST ALTERADO COM SUCESSO!\033[0m"
+        echo -e "\n\033[1;32mHOST ALTERADO CON ÉXITO!\033[0m"
         fun_geraovpn
         sleep 1.5
     elif [[ "$respo" = '6' ]]; then
@@ -184,7 +184,7 @@ fun_edithost() {
             sed -i "7i\remote $IP $_Port\nroute $IP 255.255.255.255 net_gateway\nhttp-proxy 127.0.0.1 8989" $cert01
         }
         fun_bar 'fun_althost6'
-        echo -e "\n\033[1;32mHOST ALTERADO COM SUCESSO!\033[0m"
+        echo -e "\n\033[1;32mHOST ALTERADO CON ÉXITO!\033[0m"
         fun_geraovpn
         sleep 1.5
     elif [[ "$respo" = '7' ]]; then
@@ -220,20 +220,20 @@ fun_edithost() {
             cd $HOME && rm -rf /root/OVPN >/dev/null 2>&1
         }
         fun_bar 'fun_packhost'
-        echo -e "\n\033[1;32mHOST ALTERADO COM SUCESSO!\033[0m"
+        echo -e "\n\033[1;32mHOST ALTERADO CON ÉXITO!\033[0m"
         sleep 1.5
     elif [[ "$respo" = '8' ]]; then
         echo ""
-        echo -e "\033[1;32mALTERANDO ARQUIVO OVPN!\033[0m"
+        echo -e "\033[1;32mALTERANDO ARCHIVO OVPN!\033[0m"
         echo ""
-        echo -e "\033[1;31mATENCAO!\033[0m"
+        echo -e "\033[1;31mATENCIÓN!\033[0m"
         echo ""
-        echo -e "\033[1;33mPARA SALVAR USE AS TECLAS \033[1;32mctrl x y\033[0m"
+        echo -e "\033[1;33mPARA GUARDAR USE LAS TECLAS \033[1;32mctrl x y\033[0m"
         sleep 4
         clear
         nano /etc/openvpn/client-common.txt
         echo ""
-        echo -e "\033[1;32mALTERADO COM SUCESSO!\033[0m"
+        echo -e "\033[1;32mALTERADO CON ÉXITO!\033[0m"
         fun_geraovpn
         sleep 1.5
     elif [[ "$respo" = '0' ]]; then
@@ -242,7 +242,7 @@ fun_edithost() {
         sleep 2
     else
         echo ""
-        echo -e "\033[1;31mOpcao invalida !\033[0m"
+        echo -e "\033[1;31mOpción invalida !\033[0m"
         sleep 2
         fun_edithost
     fi
@@ -250,13 +250,13 @@ fun_edithost() {
 
 clear
 [[ ! -e /usr/lib/sshplus ]] && exit 0
-tput setaf 7;tput setab 4;tput bold;printf '%30s%s%-15s\n' "CRIAR USUÁRIO SSH";tput sgr0
+tput setaf 7;tput setab 4;tput bold;printf '%30s%s%-15s\n' "CRIER USUARIO SSH";tput sgr0
 #echo -ne "\033[1;32m📝 NOME:\033[1;37m ";read namee
 #[[ -z $namee ]] && {
-#	echo -e "\n${cor1}Nome vazio ou invalido!${scor}\n"
+#	echo -e "\n${cor1}Nombre Vacío o invalido!${scor}\n"
 #	exit 1
 #}
-echo -ne "\033[1;32m🗣️ USUÁRIO:\033[1;37m ";read username
+echo -ne "\033[1;32m🗣️ USUARIO:\033[1;37m ";read username
 [[ -z $username ]] && {
 	echo -e "\n${cor1}usuário vazio ou invalido!${scor}\n"
 	exit 1
@@ -267,50 +267,50 @@ echo -ne "\033[1;32m🗣️ USUÁRIO:\033[1;37m ";read username
 }
 sizemin=$(echo ${#username})
 [[ $sizemin -lt 2 ]] && {
-	echo -e "\n${cor1}Você digitou um nome de usuário muito curto${scor}"
-	echo -e "${cor1}use no mínimo dois caracteres!${scor}\n"
+	echo -e "\n${cor1}Usted digito un nombre de usuario muy corto${scor}"
+	echo -e "${cor1}use minimo dos catacteres!${scor}\n"
 	exit 1
 }
 sizemax=$(echo ${#username})
 [[ $sizemax -gt 25 ]] && {
-	echo -e "\n${cor1}Você digitou um nome de usuário muito grande"
-	echo -e "${cor1}use no máximo 25 caracteres!${scor}\n"
+	echo -e "\n${cor1}Usted digito un nombre de usuario muy grande"
+	echo -e "${cor1}use máximo 25 caracteres!${scor}\n"
 	exit 1
 }
-echo -ne "\033[1;32m🔑 SENHA:\033[1;37m ";read password
+echo -ne "\033[1;32m🔑 Contraseña:\033[1;37m ";read password
 [[ -z $password ]] && {
-	echo -e "\n${cor1}Senha vazia ou invalida!${scor}\n"
+	echo -e "\n${cor1}Contraseña vacía o invalida!${scor}\n"
 	exit 1
 }
 sizepass=$(echo ${#password})
 [[ $sizepass -lt 4 ]] && {
-	echo -e "\n${cor1}Senha curta!, use no mínimo 4 caracteres${scor}\n"
+	echo -e "\n${cor1}Contraseña corta!, use mínimo 4 caracteres${scor}\n"
 	exit 1
 }
-echo -ne "\033[1;32m⌛ DIAS PARA EXPIRA:\033[1;37m ";read dias
+echo -ne "\033[1;32m⌛ DIAS PARA EXPIRAR:\033[1;37m ";read dias
 [[ -z $dias ]] && {
-	echo -e "\n${cor1}Numero de dias vazio!${scor}\n"
+	echo -e "\n${cor1}Numero de dias vacío!${scor}\n"
 	exit 1
 }
 [[ ${dias} != ?(+|-)+([0-9]) ]] && {
-	echo -e "\n${cor1}Você digitou um número de dias inválido!${scor}\n"
+	echo -e "\n${cor1}Usted digito un número de dias inválido!${scor}\n"
 	exit 1
 }
 [[ $dias -lt 1 ]] && {
-	echo -e "\n${cor1}O número deve ser maior que zero!${scor}\n"
+	echo -e "\n${cor1}El número deve ser mayor que cero!${scor}\n"
 	exit 1
 }
-echo -ne "\033[1;32m📲 LIMITE DE CONEXÕES:\033[1;37m ";read sshlimiter
+echo -ne "\033[1;32m📲 LIMITE DE CONEXIONES:\033[1;37m ";read sshlimiter
 [[ -z $sshlimiter ]] && {
-	echo -e "\n${cor1}Você deixou o limite de conexões vazio!${scor}\n"
+	echo -e "\n${cor1}Usted dejo el limite de conexiones vacío!${scor}\n"
 	exit 1
 }
 [[ ${sshlimiter} != ?(+|-)+([0-9]) ]] && {
-	echo -e "\n${cor1}Você digitou um número de conexões inválido!${scor}\n"
+	echo -e "\n${cor1}Usted digito un número de conexiones inválido!${scor}\n"
 	exit 1
 }
 [[ $sshlimiter -lt 1 ]] && {
-	echo -e "\n${cor1}Número de conexões simultâneas deve ser maior que zero!${scor}\n"
+	echo -e "\n${cor1}Número de conexiones simultaneas deve ser mayor que cero!${scor}\n"
 	exit 1
     }
     final=$(date "+%Y-%m-%d" -d "+$dias days")
@@ -320,13 +320,13 @@ echo -ne "\033[1;32m📲 LIMITE DE CONEXÕES:\033[1;37m ";read sshlimiter
     echo "$password" >/etc/SSHPlus/senha/$username
     echo "$username $sshlimiter" >>/root/usuarios.db
     [[ -e /etc/openvpn/server.conf ]] && {
-        echo -ne "\033[1;32mGerar Arquivo Ovpn \033[1;31m? \033[1;33m[s/n]:\033[1;37m "
+        echo -ne "\033[1;32mGenerar Archivo Ovpn \033[1;31m? \033[1;33m[s/n]:\033[1;37m "
         read resp
         [[ "$resp" = @(s|S) ]] && {
             rm $username.zip $username.ovpn >/dev/null 2>&1
-            echo -ne "\033[1;32mGerar Com usuário e Senha \033[1;31m? \033[1;33m[s/n]:\033[1;37m "
+            echo -ne "\033[1;32mGenerar Con usuario y contraseña \033[1;31m? \033[1;33m[s/n]:\033[1;37m "
             read respost
-            echo -ne "\033[1;32mHost Atual\033[1;37m: \033[1;31m(\033[1;37m$Host\033[1;31m) \033[1;37m- \033[1;32mAlterar \033[1;31m? \033[1;33m[s/n]:\033[1;37m "
+            echo -ne "\033[1;32mHost Actual\033[1;37m: \033[1;31m(\033[1;37m$Host\033[1;31m) \033[1;37m- \033[1;32mAlterar \033[1;31m? \033[1;33m[s/n]:\033[1;37m "
             read oprc
             [[ "$oprc" = @(s|S) ]] && {
                 fun_edithost
@@ -340,12 +340,12 @@ echo -ne "\033[1;32m📲 LIMITE DE CONEXÕES:\033[1;37m ";read sshlimiter
                 }
             }
             clear
-		#echo -e "\033[1;32m 📝NOME: \033[1;37m$nomee"
-		echo -e "\E[44;1;37m======🦸DADOS DE ACESSO🦸‍♀️======\E[0m"
+		#echo -e "\033[1;32m 📝NOMBRE: \033[1;37m$nomee"
+		echo -e "\E[44;1;37m======🦸DATOS DE ACCESO🦸‍♀️======\E[0m"
 		echo -e "\033[1;32m 🗣️USUARIO: \033[1;37m$username"
-		echo -e "\033[1;32m 🔑SENHA: \033[1;37m$password"
-		echo -e "\033[1;32m ⌛EXPIRA EM: \033[1;37m$gui"
-		echo -e "\033[1;32m 📲LIMITE DE CONEXÃO: \033[1;37m$sshlimiter"
+		echo -e "\033[1;32m 🔑CONTRASEÑA: \033[1;37m$password"
+		echo -e "\033[1;32m ⌛EXPIRA: \033[1;37m$gui"
+		echo -e "\033[1;32m 📲LIMITE DE DISPOSITIVOS: \033[1;37m$sshlimiter"
 		sleep 1
             function aguarde() {
                 helice() {
@@ -360,7 +360,7 @@ echo -ne "\033[1;32m📲 LIMITE DE CONEXÕES:\033[1;37m ";read sshlimiter
                     tput cnorm
                 }
                 echo ""
-                echo -ne "\033[1;31mCRIANDO OVPN\033[1;33m.\033[1;31m. \033[1;32m"
+                echo -ne "\033[1;31mCREANDO OVPN\033[1;33m.\033[1;31m. \033[1;32m"
                 helice
                 echo -e "\e[1DOK"
             }
@@ -380,21 +380,21 @@ echo -ne "\033[1;32m📲 LIMITE DE CONEXÕES:\033[1;37m ";read sshlimiter
             }
         } || {
             clear
-		#echo -e "\033[1;32m 📝NOME: \033[1;37m$nomee"
-		echo -e "\E[44;1;37m======🦸DADOS DE ACESSO🦸‍♀️======\E[0m"
+		#echo -e "\033[1;32m 📝NOMBRE: \033[1;37m$nomee"
+		echo -e "\E[44;1;37m======🦸DATOS DE ACCESO🦸‍♀️======\E[0m"
 		echo -e "\033[1;32m 🗣️USUARIO: \033[1;37m$username"
-		echo -e "\033[1;32m 🔑SENHA: \033[1;37m$password"
-		echo -e "\033[1;32m ⌛EXPIRA EM: \033[1;37m$gui"
-		echo -e "\033[1;32m 📲LIMITE DE CONEXÃO: \033[1;37m$sshlimiter"
-echo -ne "\n\033[1;33mENTER \033[1;33mPARA VOLTAR AO \033[1;33mMENU!\033[0m"; read
+		echo -e "\033[1;32m 🔑VONTRASEÑA: \033[1;37m$password"
+		echo -e "\033[1;32m ⌛EXPIRA: \033[1;37m$gui"
+		echo -e "\033[1;32m 📲LIMITE DE DISPOSITIVOS: \033[1;37m$sshlimiter"
+echo -ne "\n\033[1;33mENTER \033[1;33mPARA VOLVER AL \033[1;33mMENU!\033[0m"; read
 	}
     } || {
         clear
-		#echo -e "\033[1;32m 📝NOME: \033[1;37m$nomee"
-		echo -e "\E[44;1;37m======🦸DADOS DE ACESSO🦸‍♀️======\E[0m"
+		#echo -e "\033[1;32m 📝NOMBRE: \033[1;37m$nomee"
+		echo -e "\E[44;1;37m======🦸DATOS DE ACCESO🦸‍♀️======\E[0m"
 		echo -e "\033[1;32m 🗣️USUARIO: \033[1;37m$username"
-		echo -e "\033[1;32m 🔑SENHA: \033[1;37m$password"
-		echo -e "\033[1;32m ⌛EXPIRA EM: \033[1;37m$gui"
-		echo -e "\033[1;32m 📲LIMITE DE CONEXÃO: \033[1;37m$sshlimiter"
-echo -ne "\n\033[1;33mENTER \033[1;33mPARA VOLTAR AO \033[1;33mMENU!\033[0m"; read
+		echo -e "\033[1;32m 🔑CONTRASEÑA: \033[1;37m$password"
+		echo -e "\033[1;32m ⌛EXPIRA: \033[1;37m$gui"
+		echo -e "\033[1;32m 📲LIMITE DE DISPOSITIVOS: \033[1;37m$sshlimiter"
+echo -ne "\n\033[1;33mENTER \033[1;33mPARA VOLVER AL \033[1;33mMENU!\033[0m"; read
 }
