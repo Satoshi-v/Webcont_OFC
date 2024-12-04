@@ -245,12 +245,8 @@ _ons=$(ps -x | grep sshd | grep -v root | grep priv | wc -l)
 [[ -e /etc/openvpn/openvpn-status.log ]] && _onop=$(grep -c "10.8.0" /etc/openvpn/openvpn-status.log) || _onop="0"
 [[ -e /etc/default/dropbear ]] && _drp=$(ps aux | grep dropbear | grep -v grep | wc -l) _ondrp=$(($_drp - 1)) || _ondrp="0"
 _onli=$(($_ons + $_onop + $_ondrp))
-_ram_total=$(free -m | awk 'NR==2{print $2}')
-_ram_usado=$(free -m | awk 'NR==2{print $3}')
-_ram_total_gi=$(awk "BEGIN {printf \"%.2f\", $_ram_total/1024}")
-_ram_usado_gi=$(awk "BEGIN {printf \"%.2f\", $_ram_usado/1024}")
-_usor=$(printf '%-8s' "$(awk "BEGIN {printf \"%.2f%%\", ($_ram_usado/$_ram_total)*100}")")
-_ram=$(printf '%-9s' "${_ram_total_gi}Gi")
+_ram=$(printf '%-9s' "$(free -h | grep -i mem | awk '{print $2}')")
+_usor=$(printf '%-8s' "$(free -m | awk 'NR==2{printf "%.2f%%", $3*100/$2 }')")
 _usop=$(printf '%-5s' "$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100 - $1"%"}')")
 _core=$(printf '%-5s' "$(grep -c cpu[0-9] /proc/stat)")
 _system=$(printf '%-10s' "$system")
@@ -367,13 +363,9 @@ _ons=$(ps -x | grep sshd | grep -v root | grep priv | wc -l)
 [[ -e /etc/openvpn/openvpn-status.log ]] && _onop=$(grep -c "10.8.0" /etc/openvpn/openvpn-status.log) || _onop="0"
 [[ -e /etc/default/dropbear ]] && _drp=$(ps aux | grep dropbear | grep -v grep | wc -l) _ondrp=$(($_drp - 1)) || _ondrp="0"
 _onli=$(($_ons + $_onop + $_ondrp))
-_ram_total=$(free -m | awk 'NR==2{print $2}')
-_ram_usado=$(free -m | awk 'NR==2{print $3}')
-_ram_total_gi=$(awk "BEGIN {printf \"%.2f\", $_ram_total/1024}")
-_ram_usado_gi=$(awk "BEGIN {printf \"%.2f\", $_ram_usado/1024}")
-_usor=$(printf '%-8s' "$(awk "BEGIN {printf \"%.2f%%\", ($_ram_usado/$_ram_total)*100}")")
-_ram=$(printf '%-9s' "${_ram_total_gi}Gi")
-_usop=$(printf '%-5s' "$(mpstat 1 1 | grep "Average" | awk '{print 100 - $12 "%"}')")
+_ram=$(printf '%-9s' "$(free -h | grep -i mem | awk '{print $2}')")
+_usor=$(printf '%-8s' "$(free -m | awk 'NR==2{printf "%.2f%%", $3*100/$2 }')")
+_usop=$(printf '%-5s' "$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100 - $1"%"}')")
 _core=$(printf '%-5s' "$(grep -c cpu[0-9] /proc/stat)")
 _system=$(printf '%-10s' "$system")
 _hora=$(printf '%(%H:%M:%S)T')
@@ -401,8 +393,8 @@ echo -e "\033[1;36m┃\033[1;92mBADVPN-PRO/UDP \033[1;37m$stsu      \033[1;31m  
 echo -e "\033[1;36m┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫\033[0m"
 echo -e "\033[1;36m┃\033[1;92mMEMÓRIA SWAP ➜  \033[1;36mTOTAL: \033[1;37m$swap1  \033[1;36mEM USO: \033[1;37m$swap3  \033[1;36mLIVRE: \033[1;37m$swap2 \033[1;36m┃"
 echo -e "\033[1;36m┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫\033[0m"
-echo -e "\033[1;36m┃\033[1;31m[\033[1;96m01\033[1;31m] \033[1;93m• \033[1;97mCRIAR USUÁRIO \033[0;31m             \033[1;31m[\033[1;96m15\033[1;31m] \033[1;93m• \033[1;97mSPEEDTEST  \033[1;36m      ┃"       
-echo -e "\033[1;36m┃\033[1;31m[\033[1;96m02\033[1;31m] \033[1;93m• \033[1;97mCRIAR TESTE         \033[0;31m       \033[1;31m[\033[1;96m16\033[1;31m] \033[1;93m• \033[1;97mBANNER  \033[1;36m         ┃"         
+echo -e "\033[1;36m┃\033[1;31m[\033[1;96m01\033[1;31m] \033[1;93m• \033[1;97mCREAR USUARIO \033[0;31m             \033[1;31m[\033[1;96m15\033[1;31m] \033[1;93m• \033[1;97mSPEEDTEST  \033[1;36m      ┃"       
+echo -e "\033[1;36m┃\033[1;31m[\033[1;96m02\033[1;31m] \033[1;93m• \033[1;97mCREAR TEST         \033[0;31m       \033[1;31m[\033[1;96m16\033[1;31m] \033[1;93m• \033[1;97mBANNER  \033[1;36m         ┃"         
 echo -e "\033[1;36m┃\033[1;31m[\033[1;96m03\033[1;31m] \033[1;93m\033[1;93m• \033[1;97mREMOVER USUARIOS \033[0;31m          \033[1;31m[\033[1;96m17\033[1;31m] \033[1;93m• \033[1;97mTRAFEGO \033[1;36m         ┃" 
 echo -e "\033[1;36m┃\033[1;31m[\033[1;96m04\033[1;31m] \033[1;93m• \033[1;97mMONITOR ONLINE \033[0;31m            \033[1;31m[\033[1;96m18\033[1;31m] \033[1;93m• \033[1;97mOTIMIZAR-PLUS  \033[1;36m  ┃"      
 echo -e "\033[1;36m┃\033[1;31m[\033[1;96m05\033[1;31m] \033[1;93m• \033[1;97mMUDAR DATA \033[0;31m                \033[1;31m[\033[1;96m19\033[1;31m] \033[1;93m• \033[1;97mBACKUP  \033[1;36m         ┃"         
