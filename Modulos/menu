@@ -260,7 +260,7 @@ swap3=$(printf '%-5s' "$(free -h | grep -i swap | awk {'print $3'})")
 clear
 echo -e "\033[1;37mSEU IP 👉 \033[38;5;82m$IP            \033[1;36mTELEGRAM 😎\033 \033[1;37m @NET_SATOSHI"
 echo -e "\033[1;36m┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\033[0m"
-echo -e "\033[1;36m┃\E[46;1;37m                   WEBCONT SCRIPT OFC                \E[0m\033[1;36m┃" 
+echo -e "\033[1;36m┃\E[46;1;37m                   WEBCONT SCRIPT OFC                     \E[0m\033[1;36m┃" 
 echo -e "\033[1;36m┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫\033[0m"
 echo -e "\033[1;36m┃\033[1;92mSISTEMA           \033[1;31m  \033[1;92mMEMÓRIA RAM      \033[1;31m \033[1;92m PROCESSADOR        \033[1;36m┃" 
 echo -e "\033[1;36m┃\033[1;36mOS: \033[1;97m$_system    \033[1;31m  \033[1;36mTotal:\033[1;97m$_ram  \033[1;31m  \033[1;36mNucleos: \033[1;97m$_core\033[0m     \033[1;36m┃" 
@@ -381,7 +381,7 @@ swap2=$(printf '%-5s' "$(free -h | grep -i swap | awk {'print $4'})")
 swap3=$(printf '%-5s' "$(free -h | grep -i swap | awk {'print $3'})")
 clear
 echo -e "\033[1;36m┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\033[0m"
-echo -e "\033[1;36m┃\E[46;1;97m                   WEBCONT SCRIPT OFC                \E[0m\033[1;36m┃"
+echo -e "\033[1;36m┃\E[46;1;97m                   WEBCONT SCRIPT OFC                     \E[0m\033[1;36m┃"
 echo -e "\033[1;36m┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫\033[0m"
 echo -e "\033[1;36m┃\033[1;92mSISTEMA           \033[1;31m  \033[1;92mMEMÓRIA RAM       \033[1;31m \033[1;92mPROCESSADOR        \033[1;36m┃"
 echo -e "\033[1;36m┃\033[1;36mOS: \033[1;97m$_system    \033[1;31m  \033[1;36mTotal: \033[1;97m$_ram  \033[1;31m \033[1;36mNucleos: \033[1;97m$_core\033[0m     \033[1;36m┃"
