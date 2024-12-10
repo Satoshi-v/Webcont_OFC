@@ -12,22 +12,22 @@ clear
 # Loop to display the menu until the user chooses to exit
 while [ "$op" != "0" ]; do
   clear
-  echo -e "\E[44;1;37m             BLOQUEAR USUÁRIO SSH            \E[0m"
+  echo -e "\E[44;1;37m             BLOQUEAR USUARIO SSH            \E[0m"
   echo ""
   echo -e "\n"
-  echo -e "\033[1;34m[\033[1;37m01 •\033[1;34m]\033[1;37m ➩ \033[1;33mBLOQUEAR USUÁRIO \033[0;32m"
-  echo -e "\033[1;34m[\033[1;37m02 •\033[1;34m]\033[1;37m ➩ \033[1;33mDESBLOQUEAR USUÁRIO \033[1;37m"
-  echo -e "\033[1;34m[\033[1;37m03 •\033[1;34m]\033[1;37m ➩ \033[1;33mLISTAR USUÁRIOS BLOQUEADOS \033[0;32m"
-  echo -e "\033[1;34m[\033[1;37m00 •\033[1;34m]\033[1;37m ➩ \033[1;33mSAIR \033[0;32m"
+  echo -e "\033[1;34m[\033[1;37m01 •\033[1;34m]\033[1;37m ➩ \033[1;33mBLOQUEAR USUARIO \033[0;32m"
+  echo -e "\033[1;34m[\033[1;37m02 •\033[1;34m]\033[1;37m ➩ \033[1;33mDESBLOQUEAR USUARIO \033[1;37m"
+  echo -e "\033[1;34m[\033[1;37m03 •\033[1;34m]\033[1;37m ➩ \033[1;33mLISTA USUARIOS BLOQUEADOS \033[0;32m"
+  echo -e "\033[1;34m[\033[1;37m00 •\033[1;34m]\033[1;37m ➩ \033[1;33mSALIR \033[0;32m"
   echo -e "\n"
 
   # Read user input for the menu option
-  read -p "Escolha uma opção: " op
+  read -p "Escoja una opcion: " op
 
   case $op in
     1)  # Block user
       clear
-      echo -e "\E[44;1;37m Usuario         Senha       limite      validade \E[0m"
+      echo -e "\E[44;1;37m Usuario         Contraseña      dispositivos     validez \E[0m"
       echo ""
 
       for users in $(awk -F : '$3 > 900 { print $1 }' /etc/passwd | sort | grep -v "nobody" | grep -vi polkitd | grep -vi system-); do
@@ -50,7 +50,7 @@ while [ "$op" != "0" ]; do
           databr=$(date -d "$datauser" +"%Y%m%d")
           hoje=$(date -d today +"%Y%m%d")
           if [ "$hoje" -ge "$databr" ]; then
-            data="\033[1;31mVenceu\033[0m"
+            data="\033[1;31mVencido\033[0m"
           else
             dat=$(date -d"$datauser" '+%Y-%m-%d')
             data=$(echo -e "$((($(date -ud $dat +%s) - $(date -ud $(date +%Y-%m-%d) +%s)) / 86400)) \033[1;37mDias\033[0m")
@@ -72,37 +72,37 @@ while [ "$op" != "0" ]; do
       [[ -e /etc/openvpn/openvpn-status.log ]] && _onop=$(grep -c "10.8.0" /etc/openvpn/openvpn-status.log) || _onop="0"
       [[ -e /etc/default/dropbear ]] && _drp=$(ps aux | grep dropbear | grep -v grep | wc -l) _ondrp=$(($_drp - 1)) || _ondrp="0"
       _onli=$(($_ons + $_onop + $_ondrp))
-      echo -e "\033[1;33m• \033[1;36mTOTAL USUARIOS\033[1;37m $_tuser \033[1;33m• \033[1;32mONLINES\033[1;37m: $_onli \033[1;33m• \033[1;31mVENCIDOS\033[1;37m: $_expuser \033[1;33m•\033[0m"
+      echo -e "\033[1;33m• \033[1;36mTOTAL USUARIOS\033[1;37m $_tuser \033[1;33m• \033[1;32mONLINE\033[1;37m: $_onli \033[1;33m• \033[1;31mVENCIDOS\033[1;37m: $_expuser \033[1;33m•\033[0m"
 
-      echo " DIGITE O NOME DE USUÁRIO QUE DESEJA BLOQUEAR : "
+      echo " DIGITE EL NOMBRE DE USUARIO QUE DESEA BLOQUEAR : "
       read lock
       passwd -l $lock && echo "$lock" >> /root/bloqueado
-      echo -e "\033[1;34m\033[1;37m\033[1;34m\033[1;37m \033[1;33mUSUÁRIO BLOQUEADO COM SUCESSO \033[0;32m"
+      echo -e "\033[1;34m\033[1;37m\033[1;34m\033[1;37m \033[1;33mUSUARIO BLOQUEADO CON ÉXITO\033[0;32m"
       echo -e ""
-      echo -ne "\n\033[1;33mENTER \033[1;33mPARA VOLTAR AO \033[1;33mMENU!\033[0m"
+      echo -ne "\n\033[1;33mENTER \033[1;33mPARA VOLVER AL \033[1;33mMENU!\033[0m"
       read
       ;;
     2)  # Unblock user
       clear
       cat /root/bloqueado
-      echo " DIGITE O NOME DE USUÁRIO QUE DESEJA DESBLOQUEAR : "
+      echo " DIGITE EL NOMBRE DE USUARIO QUE DESEA DESBLOQUEAR : "
       read unlock
       passwd -u $unlock
-      echo -e "\033[1;34m\033[1;37m\033[1;34m\033[1;37m \033[1;33mUSUÁRIO DESBLOQUEADO COM SUCESSO \033[0;32m"
+      echo -e "\033[1;34m\033[1;37m\033[1;34m\033[1;37m \033[1;33mUSUARIO DESBLOQUEADO CON ÉXITO\033[0;32m"
       echo -e ""
-      echo -ne "\n\033[1;33mENTER \033[1;33mPARA VOLTAR AO \033[1;33mMENU!\033[0m"
+      echo -ne "\n\033[1;33mENTER \033[1;33mPARA VOLVER AL \033[1;33mMENU!\033[0m"
       read
       ;;
     3)  # List blocked users
       clear
       if [ -e /root/bloqueado ]; then
-        echo -e "\E[44;1;37m USUÁRIOS BLOQUEADOS \E[0m"
+        echo -e "\E[44;1;37m USUARIOS BLOQUEADOS \E[0m"
         cat /root/bloqueado
       else
-        echo -e "\033[1;31mNenhum usuário bloqueado encontrado.\033[0m"
+        echo -e "\033[1;31mNingun usuario bloqueado encontrado.\033[0m"
       fi
       echo -e ""
-      echo -ne "\n\033[1;33mENTER \033[1;33mPARA VOLTAR AO \033[1;33mMENU!\033[0m"
+      echo -ne "\n\033[1;33mENTER \033[1;33mPARA VOLVER AL \033[1;33mMENU!\033[0m"
       read
       ;;
     0)  # Exit
@@ -113,7 +113,7 @@ while [ "$op" != "0" ]; do
       ;;
     *)  # Invalid option
       clear
-      echo "Opcao Invalida ..."
+      echo "Opción Invalida ..."
       ;;
   esac
 done
