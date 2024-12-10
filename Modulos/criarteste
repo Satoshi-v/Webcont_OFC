@@ -39,7 +39,7 @@ echo ""
 tput setaf 7 ; tput setab 1 ; tput bold ; echo "" ; echo "Dispositivo vacío o invalido." ; echo "" ; tput sgr0
 	exit 1
 fi
-echo -ne "\033[1;32mMinutos \033[1;33m(\033[1;31mEx: \033[1;37m60\033[1;33m)\033[1;37m: "; read u_temp
+echo -ne "\033[1;32mMinutos \033[1;33m(\033[1;31mEj: \033[1;37m60\033[1;33m)\033[1;37m: "; read u_temp
 if [[ -z $limit ]]
 then
 echo ""
