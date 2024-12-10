@@ -35,7 +35,7 @@ do
 done
 }
 echo -e "\033[0;34m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
-echo -e "\033[0;34m┃\E[44;1;37m USUARIO         STATUS       CONEXAO     TEMPO   \E[0m\033[0;34m┃"
+echo -e "\033[0;34m┃\E[44;1;37m USUARIO         STATUS      CONEXION     TIEMPO   \E[0m\033[0;34m┃"
 echo -e "\033[0;34m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m\n"
 
  while read usline
