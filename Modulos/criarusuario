@@ -391,7 +391,7 @@ echo -ne "\n\033[1;33mENTER \033[1;33mPARA VOLVER AL \033[1;33mMENU!\033[0m"; re
     } || {
         clear
 		#echo -e "\033[1;32m 📝NOMBRE: \033[1;37m$nomee"
-		echo -e "\E[44;1;37m======🦸DATOS DE ACCESO🦸‍♀️======\E[0m"
+		echo -e "\E[44;1;37m======🛸DATOS DE ACCESO🛸======\E[0m"
 		echo -e "\033[1;32m 🗣️USUARIO: \033[1;37m$username"
 		echo -e "\033[1;32m 🔑CONTRASEÑA: \033[1;37m$password"
 		echo -e "\033[1;32m ⌛EXPIRA: \033[1;37m$gui"
