@@ -52,9 +52,11 @@ fun_bar() {
     tput cnorm
 }
 
+#!/bin/bash
+
 # Función para validar la clave
 function validar_clave() {
-    clave_valida="WEBCONT:SSS1"  # Cambia esto por tu clave válida
+    clave_valida="CLAVE_SECRETA"  # Cambia esto por tu clave válida
     echo -e "\n\033[1;36mVERIFICANDO CLAVE DE INSTALACIÓN...\033[0m"
     read -p "Ingresa la clave de instalación: " clave_usuario
 
@@ -65,7 +67,33 @@ function validar_clave() {
         echo -e "\033[1;31mClave inválida. La instalación no puede continuar.\033[0m"
         exit 1  # Terminar el script con error
     fi
-} 
+}
+
+# Validar la clave antes de continuar
+validar_clave
+
+# Resto del script de instalación
+echo -e "\033[1;33mIniciando la instalación de paquetes...\033[0m"
+sudo apt-get install lolcat -y &>/dev/null 2>&1
+sudo apt-get install toilet -y &>/dev/null 2>&1
+sudo apt-get install curl -y &>/dev/null 2>&1
+sudo apt-get install git -y &>/dev/null 2>&1
+sudo apt-get install figlet boxes -y &>/dev/null 2>&1
+sudo apt-get install net-tools -y &>/dev/null 2>&1
+sudo apt-get install uuid-runtime -y >/dev/null 2>&1
+sudo apt-get install python-minimal -y >/dev/null 2>&1
+sudo apt-get install libpython-stdlib -y >/dev/null 2>&1
+sudo apt-get install procps -y >/dev/null 2>&1
+
+# Verificación si el usuario es root
+cd $HOME
+if [[ "$(whoami)" != "root" ]]; then
+    echo -e "\033[1;33m[\033[1;31mErro\033[1;33m] \033[1;37m- \033[1;33mVOCÊ PRECISA EXECUTAR A INSTALAÇÃO DO SCRIPT COMO USUÁRIO ROOT\033[0m"
+    rm $HOME/Plus >/dev/null 2>&1
+    exit 1  # Usar exit 1 para indicar error
+fi
+
+# Resto del script... 
 
 # Redefinir a exibição do terminal
 tput reset
