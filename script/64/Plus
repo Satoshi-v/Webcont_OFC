@@ -72,7 +72,7 @@ function validar_clave() {
 #!/bin/bash
 
 # Configuración de la base de datos remota
-DB_HOST="x14.x10hosting.com:3306"  # Cambia por la dirección del servidor MySQL
+DB_HOST="https://x14.x10hosting.com:3306"  # Cambia por la dirección del servidor MySQL
 DB_USER="zirwnpxo_Key"        # Cambia por el usuario de la base de datos
 DB_PASS="2btLPpnTKzPZRWz5Kr7U" # Cambia por la contraseña de la base de datos
 DB_NAME="zirwnpxo_Key"        # Cambia por el nombre de la base de datos
