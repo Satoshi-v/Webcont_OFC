@@ -52,16 +52,18 @@ fun_bar() {
     tput cnorm
 }
 
-# Função para verificação de chave
-function verif_key() {
-    krm=$(echo "5:q-3gs2.o7%8:1" | rev)
-    chmod +x $_Ink/list > /dev/null 2>&1
+# Función para validar la clave
+function validar_clave() {
+    clave_valida="WEBCONT:SSS1"  # Cambia esto por tu clave válida
+    echo -e "\n\033[1;36mVERIFICANDO CLAVE DE INSTALACIÓN...\033[0m"
+    read -p "Ingresa la clave de instalación: " clave_usuario
 
-    if [[ ! -e "$_Ink/list" ]]; then
-        echo -e "\n\033[1;31mKEY INVÁLIDA!\033[0m"
-        rm -rf $HOME/Plus > /dev/null 2>&1
-        tput reset
-        exit 1  # Indica erro com código de saída
+    if [[ "$clave_usuario" == "$clave_valida" ]]; then
+        echo -e "\033[1;32mClave válida. Continuando con la instalación...\033[0m"
+        return 0  # Clave válida
+    else
+        echo -e "\033[1;31mClave inválida. La instalación no puede continuar.\033[0m"
+        exit 1  # Terminar el script con error
     fi
 } 
 
