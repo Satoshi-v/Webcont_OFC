@@ -55,7 +55,7 @@ fun_bar() {
 #!/bin/bash
 
 # URL del archivo PHP en el hosting
-URL="https://tudominio.com/validar_clave.php"
+URL="https://webcont.x10.mx/vps/validar_clave.php"
 
 # Función para validar la clave
 function validar_clave() {
