@@ -54,25 +54,21 @@ fun_bar() {
 
 #!/bin/bash
 
-# Configuración de la base de datos remota
-DB_HOST="bjg6urftcm7nev2ji6u9-mysql.services.clever-cloud.com"  # Cambia por la dirección del servidor MySQL
-DB_PORT="3306"                                                  # Puerto de la base de datos
-DB_USER="utg9qpxrzhm8fddi"                                      # Cambia por el usuario de la base de datos
-DB_PASS="ZMiM5YJclmn16QwBUynp"                                  # Cambia por la contraseña de la base de datos
-DB_NAME="bjg6urftcm7nev2ji6u9"                                  # Cambia por el nombre de la base de datos
-DB_TABLE="claves"                                               # Nombre de la tabla
+# URL del archivo PHP en el hosting
+URL="https://tudominio.com/validar_clave.php"
 
 # Función para validar la clave
 function validar_clave() {
     echo -e "\n\033[1;36mVERIFICANDO CLAVE DE INSTALACIÓN...\033[0m"
     read -p "Ingresa la clave de instalación: " clave_usuario
 
-    # Obtener la clave válida desde la base de datos remota
-    clave_valida=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USER" -p"$DB_PASS" -D "$DB_NAME" -sN -e "SELECT clave FROM $DB_TABLE LIMIT 1;" 2>/dev/null)
+    # Obtener la clave válida desde el servidor
+    respuesta=$(curl -s "$URL")
+    clave_valida=$(echo "$respuesta" | grep -oP '"clave_valida":"\K[^"]+')
 
-    # Verificar si la conexión fue exitosa
-    if [[ $? -ne 0 ]]; then
-        echo -e "\033[1;31mError: No se pudo conectar a la base de datos.\033[0m"
+    # Verificar si se obtuvo una clave válida
+    if [[ -z "$clave_valida" ]]; then
+        echo -e "\033[1;31mError: No se pudo obtener la clave válida desde el servidor.\033[0m"
         exit 1
     fi
 
