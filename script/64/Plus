@@ -72,10 +72,10 @@ function validar_clave() {
 #!/bin/bash
 
 # Configuración de la base de datos remota
-DB_HOST="sql302.infinityfree.com"  # Cambia por la dirección del servidor MySQL
-DB_USER="if0_38381267"        # Cambia por el usuario de la base de datos
-DB_PASS="eO40unWFd4TUi" # Cambia por la contraseña de la base de datos
-DB_NAME="if0_38381267_key"        # Cambia por el nombre de la base de datos
+DB_HOST="bjg6urftcm7nev2ji6u9-mysql.services.clever-cloud.com:3306"  # Cambia por la dirección del servidor MySQL
+DB_USER="utg9qpxrzhm8fddi"        # Cambia por el usuario de la base de datos
+DB_PASS="ZMiM5YJclmn16QwBUynp" # Cambia por la contraseña de la base de datos
+DB_NAME="bjg6urftcm7nev2ji6u9"        # Cambia por el nombre de la base de datos
 DB_TABLE="claves"             # Nombre de la tabla
 
 # Función para validar la clave
