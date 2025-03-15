@@ -375,7 +375,6 @@ echo ""
 {
     echo "clear"
     echo 'DATE=$(date +"%d-%m-%y")'
-    echo 'TIME=$(date +"%T")'
     echo 'figlet -k WEBCONT | lolcat'
     echo 'echo -e " NOMBRE DEL SERVIDOR : $HOSTNAME"'
     echo 'echo -e " DATA : $DATE"'
