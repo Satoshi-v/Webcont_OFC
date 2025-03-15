@@ -352,6 +352,7 @@ sudo chattr +i /etc/resolv.conf
 
 # Redefinir a exibição do terminal
 tput reset
+
 # Exibir a mensagem de finalização
 echo -e "\E[38;5;18m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
 echo -e "\E[38;5;18m┃\E[44;1;37m         FINALIZANDO INSTALACION         \E[0m\E[38;5;18m┃"
