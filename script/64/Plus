@@ -352,7 +352,6 @@ sudo chattr +i /etc/resolv.conf
 
 # Redefinir a exibição do terminal
 tput reset
-
 # Exibir a mensagem de finalização
 echo -e "\E[38;5;18m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
 echo -e "\E[38;5;18m┃\E[44;1;37m         FINALIZANDO INSTALACION         \E[0m\E[38;5;18m┃"
@@ -376,6 +375,7 @@ echo ""
 {
     echo "clear"
     echo 'DATE=$(date +"%d-%m-%y")'
+    
     echo 'figlet -k WEBCONT | lolcat'
     echo 'echo -e " NOMBRE DEL SERVIDOR : $HOSTNAME"'
     echo 'echo -e " DATA : $DATE"'
@@ -424,12 +424,3 @@ done
 rm -rf $HOME/Plus
 cat /dev/null > ~/.bash_history
 history -c
-
-# Limpiar el terminal
-clear
-
-# Restablecer el formato del texto
-echo -e "\033[0m"
-
-# Mostrar el prompt correctamente
-echo "root@avi:~#"
