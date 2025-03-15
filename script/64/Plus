@@ -423,3 +423,12 @@ done
 rm -rf $HOME/Plus
 cat /dev/null > ~/.bash_history
 history -c
+
+# Limpiar el terminal
+clear
+
+# Restablecer el formato del texto
+echo -e "\033[0m"
+
+# Mostrar el prompt correctamente
+echo "root@avi:~#"
