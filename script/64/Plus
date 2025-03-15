@@ -379,7 +379,7 @@ echo ""
     echo 'figlet -k WEBCONT | lolcat'
     echo 'echo -e " NOMBRE DEL SERVIDOR : $HOSTNAME"'
     echo 'echo -e " DATA : $DATE"'
-    echo 'echo -e " HORA : $TIME"'
+    echo -e "\033[1;32mHora actual: $(date)\033[0m"
     echo 'echo -e " (TELEGRAM)--@NET_SATOSHI"'
     echo 'echo -e "\033[1;31m DIGITE ( menu ) PARA ENTRAR\033[0m."'
     echo 'echo -e ""'
