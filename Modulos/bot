@@ -9,7 +9,9 @@
 #===================================================
 mkdir -p /etc/SSHPlus
 mkdir -p /etc/bot
+echo "Depuración: Verificando ShellBot.sh" 
 [[ -e ShellBot.sh ]] || wget -qO ShellBot.sh https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Modulos/ShellBot.sh
+echo "Depuración: Cargando ShellBot.sh" 
 source ShellBot.sh
 api_bot=$1
 id_admin=$2
@@ -2565,3 +2567,6 @@ while :; do
     done
 done
 #FIM
+
+chmod +x /etc/SSHPlus/bot
+chmod +x /etc/SSHPlus/ShellBot.sh
