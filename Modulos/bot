@@ -220,16 +220,18 @@ criar_user() {
     senha=$(sed -n '2 p' $file_user | cut -d' ' -f2)
     limite=$(sed -n '3 p' $file_user | cut -d' ' -f2)
     data=$(sed -n '4 p' $file_user | cut -d' ' -f2)
-
-    # ✅ Añadir esta validación (solo para revendedores)
+    
+    # Definir info_data para todos los casos
+    info_data="$data"
+    
+    # Forzar 31 días solo para revendedores
     if [[ "${message_from_id[$id]}" != "$id_admin" ]]; then
-        data=$(date '+%d/%m/%Y' -d "+31 days")  # Forzar 31 días
-        info_data="$data"  # Actualizar variable para el archivo
+        data=$(date '+%d/%m/%Y' -d "+31 days")
+        info_data="$data"
     fi
 
     validade=$(echo "$data" | awk -F'/' '{print $2FS$1FS$3}' | xargs -i date -d'{}' +%Y-%m-%d)
     
-    # Resto de la función (sin cambios)...
     if /usr/sbin/useradd -M -N -s /bin/false $usuario -e $validade; then
         (echo "${senha}";echo "${senha}") | passwd "${usuario}"
     else
