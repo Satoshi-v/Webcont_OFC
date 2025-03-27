@@ -1,5 +1,5 @@
 #!/bin/bash
-# Instalação silenciosa de pacotes
+# Instalación silenciosa de paquetes
 sudo apt-get install lolcat -y &>/dev/null 2>&1
 sudo apt-get install toilet -y &>/dev/null 2>&1
 sudo apt-get install curl -y &>/dev/null 2>&1
@@ -12,20 +12,20 @@ sudo apt-get install libpython-stdlib -y >/dev/null 2>&1
 sudo apt-get install procps -y >/dev/null 2>&1
 sudo apt-get install jq -y >/dev/null 2>&1
 
-# Verificação se o usuário é root
+# Verificación si el usuario es root
 cd $HOME
 if [[ "$(whoami)" != "root" ]]; then
-    echo -e "\033[1;33m[\033[1;31mErro\033[1;33m] \033[1;37m- \033[1;33mVOCÊ PRECISA EXECUTAR A INSTALAÇÃO DO SCRIPT COMO USUÁRIO ROOT\033[0m"
+    echo -e "\033[1;33m[\033[1;31mError\033[1;33m] \033[1;37m- \033[1;33mDEBES EJECUTAR LA INSTALACIÓN DEL SCRIPT COMO USUARIO ROOT\033[0m"
     rm $HOME/Plus >/dev/null 2>&1
-    exit 1  # Usar exit 1 para indicar erro
+    exit 1  # Usar exit 1 para indicar error
 fi
 
-# Decodificação de links
+# Decodificación de enlaces
 _lnk=$(echo "z1:y#x.5s0ul&p4hs$s.0a72d*n-e!v89e032:3r" | sed -e "s/[^a-z.]//ig" | rev)
 _Ink=$(echo "/3×u3#s87r/l32o4×c1a×l1/83×l24×i0b×" | sed -e "s/[^a-z/]//ig")
 _1nk=$(echo "/3×u3#s×87r/83×l2×4×i0b×" | sed -e "s/[^a-z/]//ig")
 
-# Função barra de progresso
+# Función barra de progreso
 fun_bar() {
     comando[0]="$1"
     comando[1]="$2"
@@ -36,7 +36,7 @@ fun_bar() {
         touch $HOME/fim
     ) >/dev/null 2>&1 &
     tput civis
-    echo -ne    "\033[1;31m   ❪\033[1;33mAGUARDE \033[5;37m>\033[5;37m>\033[5;37m>\033[5;37m> \033[1;93m["
+    echo -ne    "\033[1;31m   ❪\033[1;33mESPERA \033[5;37m>\033[5;37m>\033[5;37m>\033[5;37m> \033[1;93m["
     while true; do
         for ((i = 0; i < 18; i++)); do
             echo -ne "\033[1;92m■"
@@ -47,22 +47,22 @@ fun_bar() {
         sleep 1s
         tput cuu1
         tput dl1
-        echo -ne "\033[1;31m   ❪\033[1;33mAGUARDE \033[5;37m>\033[5;37m>\033[5;37m>\033[5;37m> \033[1;93m["
+        echo -ne "\033[1;31m   ❪\033[1;33mESPERA \033[5;37m>\033[5;37m>\033[5;37m>\033[5;37m> \033[1;93m["
     done
     echo -e "\033[1;33m]\033[1;37m -\033[1;32m OK !\033[1;37m"
     tput cnorm
 }
 
-# Função para verificação de chave
+# Función para verificación de clave
 function verif_key() {
     krm=$(echo "5:q-3gs2.o7%8:1" | rev)
     chmod +x $_Ink/list > /dev/null 2>&1
 
     if [[ ! -e "$_Ink/list" ]]; then
-        echo -e "\n\033[1;31mKEY INVÁLIDA!\033[0m"
+        echo -e "\n\033[1;31m¡CLAVE INVÁLIDA!\033[0m"
         rm -rf $HOME/Plus > /dev/null 2>&1
         tput reset
-        exit 1  # Indica erro com código de saída
+        exit 1  # Indica error con código de salida
     fi
 } 
 
@@ -105,26 +105,26 @@ function validar_clave() {
 # Validar la clave antes de continuar
 validar_clave
 
-# Redefinir a exibição do terminal
+# Redefinir la visualización del terminal
 tput reset
 echo -e "\033[0;34m┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\033[0m"
 echo -e "\033[0;34m┃\E[41;1;37m               ⇱ SCRIPT SSHPLUS PRO ⇲             \E[0m\033[0;34m┃"
 echo -e "\033[0;34m┠━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┨\033[0m"
 echo -e "\033[0;34m┃                                                  \033[0;34m┃"  
-echo -e "\033[0;34m┃     \033[1;31mATENCAO! \033[1;37mESSE SCRIPT IRA !                   \033[0;34m┃"
+echo -e "\033[0;34m┃     \033[1;31m¡ATENCIÓN! \033[1;37mESTE SCRIPT VA A:                   \033[0;34m┃"
 echo -e "\033[0;34m┃                                                  \033[0;34m┃"
-echo -e "\033[0;34m┃\033[1;32m• \033[1;37mINSTALAR UM CONJUNTO DE SCRIPTS COMO FERRAMENTAS\033[0;34m┃"
-echo -e "\033[0;34m┃\033[1;37m  PARA O GERENCIAMENTO DE REDE, SISTEMA E USUARIOS\033[0;34m┃"
+echo -e "\033[0;34m┃\033[1;32m• \033[1;37mINSTALAR UN CONJUNTO DE SCRIPTS COMO HERRAMIENTAS\033[0;34m┃"
+echo -e "\033[0;34m┃\033[1;37m  PARA LA GESTIÓN DE RED, SISTEMA Y USUARIOS\033[0;34m┃"
 echo -e "\033[0;34m┃                                                  \033[0;34m┃"
-echo -e "\033[0;34m┃\033[1;32m• \033[1;32mDICA! \033[1;37mULTILIZE O TEMA DARK EM SEU TERMINAL PARA \033[0;34m┃"
-echo -e "\033[0;34m┃\033[1;37m  UMA MELHOR EXPERIÊNCIA E VISUALIZACAO DO MESMO! \033[0;34m┃"
+echo -e "\033[0;34m┃\033[1;32m• \033[1;32m¡CONSEJO! \033[1;37mUSA EL TEMA OSCURO EN TU TERMINAL PARA \033[0;34m┃"
+echo -e "\033[0;34m┃\033[1;37m  UNA MEJOR EXPERIENCIA Y VISUALIZACIÓN DEL MISMO! \033[0;34m┃"
 echo -e "\033[0;34m┃                                                  \033[0;34m┃"
 echo -e "\033[0;34m┠━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┨\033[0m"
 echo -e "\033[0;34m┃\033[1;37m               by:@TURBONET2023                   \E[0m\033[0;34m┃"
 echo -e "\033[0;34m┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\033[0m"           
 echo ""
 #-----------------------------------------------------------------------------------------------------------------
-echo -e "\n\033[1;36mVERIFICANDO LINK... \033[0m" ; rm $_Ink/list > /dev/null 2>&1; wget -P $_Ink https://raw.githubusercontent.com/Satoshi-V/Webcont_OFC/main/Install/list >/dev/null 2>&1
+echo -e "\n\033[1;36mVERIFICANDO ENLACE... \033[0m" ; rm $_Ink/list > /dev/null 2>&1; wget -P $_Ink https://raw.githubusercontent.com/Satoshi-V/Webcont_OFC/main/Install/list >/dev/null 2>&1
 verif_key
 sleep 3s
 echo "/bin/menu" >/bin/h && chmod +x /bin/h >/dev/null 2>&1
@@ -156,64 +156,64 @@ echo ""
 [[ -f "$HOME/usuarios.db" ]] && {
 tput reset
 echo -e "\033[0;34m┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\033[0m"
-echo -e "\033[0;34m┃                   \033[1;37m• \033[1;31mATENCAO \033[1;37m•                   \033[0;34m┃"
+echo -e "\033[0;34m┃                   \033[1;37m• \033[1;31m¡ATENCIÓN! \033[1;37m•                   \033[0;34m┃"
 echo -e "\033[0;34m┠━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┨\033[0m"
-echo -e "\033[0;34m┃\033[1;37mUMA BASE DE DADOS DE USUÁRIO \033[1;32m(usuarios.db) \033[1;37mFoi   \033[0;34m┃" 
-echo -e "\033[0;34m┃\033[1;37mENCONTRADA! DESEJA MANTE-LA PRESERVANDO O LIMITE \033[0;34m┃"
-echo -e "\033[0;34m┃\033[1;37mDE CONEXÕES SIMULTÂNEAS DE USUARIOS? OU DESEJA   \033[0;34m┃"
-echo -e "\033[0;34m┃\033[1;37mCRIAR UMA NOVA BASE ?                            \033[0;34m┃"
+echo -e "\033[0;34m┃\033[1;37mSE ENCONTRÓ UNA BASE DE DATOS DE USUARIO \033[1;32m(usuarios.db) \033[1;37m   \033[0;34m┃" 
+echo -e "\033[0;34m┃\033[1;37m¿DESEAS MANTENERLA PRESERVANDO EL LÍMITE \033[0;34m┃"
+echo -e "\033[0;34m┃\033[1;37mDE CONEXIONES SIMULTÁNEAS DE USUARIOS? O ¿DESEAS   \033[0;34m┃"
+echo -e "\033[0;34m┃\033[1;37mCREAR UNA NUEVA BASE?                            \033[0;34m┃"
 echo -e "\033[0;34m┠━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┨\033[0m"
-echo -e "\033[0;34m┃\033[1;37m[\033[1;31m1\033[1;37m] \033[1;37mMANTER BASE DE DADOS ATUAIS                  \033[0;34m┃"
-echo -e "\033[0;34m┃\033[1;37m[\033[1;31m2\033[1;37m] \033[1;37mCRIAR UMA NOVA BASE DE DADOS                 \033[0;34m┃"
+echo -e "\033[0;34m┃\033[1;37m[\033[1;31m1\033[1;37m] \033[1;37mMANTENER BASE DE DATOS ACTUAL                  \033[0;34m┃"
+echo -e "\033[0;34m┃\033[1;37m[\033[1;31m2\033[1;37m] \033[1;37mCREAR UNA NUEVA BASE DE DATOS                 \033[0;34m┃"
 echo -e "\033[0;34m┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\033[0m"
 echo ""
-tput setaf 2 ; tput bold ; read -p "Opção ?: " -e -i 1 optiondb ; tput sgr0
+tput setaf 2 ; tput bold ; read -p "¿Opción?: " -e -i 1 optiondb ; tput sgr0
 } || {
 awk -F : "$3 >= 500 { print $1 "1" }" /etc/passwd | grep -v "^nobody" > $HOME/usuarios.db
 }
 [[ "$optiondb" = "2" ]] && awk -F : "$3 >= 500 { print $1 " 1" }" /etc/passwd | grep -v "^nobody" > $HOME/usuarios.db
 
-# Redefinir a exibição do terminal
+# Redefinir la visualización del terminal
 tput reset
-## Exibir mensagem de espera com fundo azul e texto branco em negrito
+## Mostrar mensaje de espera con fondo azul y texto blanco en negrita
 echo -e "\E[38;5;92m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
-echo -e "\E[38;5;92m┃\E[44;1;37m            AGUARDE A INSTALAÇÃO               \E[0m\E[38;5;92m┃"
+echo -e "\E[38;5;92m┃\E[44;1;37m            ESPERA LA INSTALACIÓN               \E[0m\E[38;5;92m┃"
 echo -e "\E[38;5;92m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
 echo ""
-echo -e "       \033[1;91m[\033[1;31m⚠️ \033[1;37m] \033[1;97mATUALIZANDO SISTEMA \033[1;37m[\033[1;31m⚠️ \033[1;91m]\033[0m"
+echo -e "       \033[1;91m[\033[1;31m⚠️ \033[1;37m] \033[1;97mACTUALIZANDO SISTEMA \033[1;37m[\033[1;31m⚠️ \033[1;91m]\033[0m"
 echo ""
-echo -e "  \033[1;93mATUALIZAÇÕES COSTUMAM DEMORAR UM POUCO!\033[0m"
+echo -e "  \033[1;93m¡LAS ACTUALIZACIONES PUEDEN TARDAR UN POCO!\033[0m"
 echo ""
 
-# Definir a função de atualização do sistema
+# Definir la función de actualización del sistema
 fun_attlist() {
-    # Atualizar os pacotes do sistema
+    # Actualizar los paquetes del sistema
     apt-get update -y
 
-    # Criar diretório oculto, se não existir
+    # Crear directorio oculto, si no existe
     if [[ ! -d /usr/share/.plus ]]; then
         mkdir /usr/share/.plus
     fi
 
-    # Registrar a data da atualização
+    # Registrar la fecha de la actualización
     echo "crz: $(date)" > /usr/share/.plus/.plus
 }
 
-# Executar a função de atualização do sistema com barra de progresso
+# Ejecutar la función de actualización del sistema con barra de progreso
 fun_bar "fun_attlist"
 
-# Redefinir a exibição do terminal
+# Redefinir la visualización del terminal
 tput reset
-# Exibir mensagem de espera com fundo azul e texto branco em negrito
+# Mostrar mensaje de espera con fondo azul y texto blanco en negrita
 echo -e "\E[38;5;92m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
-echo -e "\E[38;5;92m┃\E[44;1;37m            AGUARDE A INSTALAÇÃO               \E[0m\E[38;5;92m┃"
+echo -e "\E[38;5;92m┃\E[44;1;37m            ESPERA LA INSTALACIÓN               \E[0m\E[38;5;92m┃"
 echo -e "\E[38;5;92m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
 echo ""
 echo -e "       \033[1;91m[\033[1;31m⚠️ \033[1;91m] \033[1;97mINSTALANDO PYTHON \033[1;91m[\033[1;31m⚠️ \033[1;91m] \033[0m"
 echo ""
-echo -e "        \033[1;93mCOSTUMA DEMORAR UM POUCO!\033[0m"
+echo -e "        \033[1;93m¡PUEDE TARDAR UN POCO!\033[0m"
 echo ""
-# Função para instalar Python3 baseado na versão do sistema
+# Función para instalar Python3 basado en la versión del sistema
 install_python3() {
     . /etc/os-release
     if { [[ "$ID" == "ubuntu" && "$VERSION_ID" == "20.04" ]] || [[ "$ID" == "debian" && "$VERSION_ID" == "11" ]]; }; then
@@ -225,37 +225,37 @@ install_python3() {
         sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1 >/dev/null 2>&1
         sudo update-alternatives --set python3 /usr/bin/python3.10 >/dev/null 2>&1
     else
-        echo -e "\033[1;31m[SISTEMA NÃO SUPORTADO] Apenas Ubuntu 20.04, Ubuntu 22.04, Debian 11 e Debian 12 são compatíveis.\033[0m"
+        echo -e "\033[1;31m[¡SISTEMA NO SOPORTADO!] Solo Ubuntu 20.04, Ubuntu 22.04, Debian 11 y Debian 12 son compatibles.\033[0m"
         exit 1
     fi
-    # INSTALA PIP
+    # INSTALAR PIP
     apt install pip -y
     apt install pip3 -y
     apt install python3-pip -y
-    # INSTALA SOCAT
+    # INSTALAR SOCAT
     apt install socat -y
 }
 
-# Chama a função de instalação do Python3 com barra de progresso
+# Llamar a la función de instalación de Python3 con barra de progreso
 fun_bar "install_python3"
 
-# Redefinir a exibição do terminal
+# Redefinir la visualización del terminal
 tput reset
-# Exibir mensagem de espera com fundo azul e texto branco em negrito
+# Mostrar mensaje de espera con fondo azul y texto blanco en negrita
 echo -e "\E[38;5;92m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
-echo -e "\E[38;5;92m┃\E[44;1;37m            AGUARDE A INSTALAÇÃO               \E[0m\E[38;5;92m┃"
+echo -e "\E[38;5;92m┃\E[44;1;37m            ESPERA LA INSTALACIÓN               \E[0m\E[38;5;92m┃"
 echo -e "\E[38;5;92m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
 echo ""
-echo -e "       \033[1;91m[\033[1;31m⚠️ \033[1;91m] \033[1;97mINSTALANDO PACOTES  \033[1;91m[\033[1;31m⚠️ \033[1;91m] \033[0m"
+echo -e "       \033[1;91m[\033[1;31m⚠️ \033[1;91m] \033[1;97mINSTALANDO PAQUETES  \033[1;91m[\033[1;31m⚠️ \033[1;91m] \033[0m"
 echo ""
-echo -e " \033[1;93mALGUNS PACOTES SÃO EXTREMAMENTE NECESSÁRIOS!\033[0m"
+echo -e " \033[1;93m¡ALGUNOS PAQUETES SON EXTREMADAMENTE NECESARIOS!\033[0m"
 echo ""
 #!/bin/bash
 
-# Função para instalar pacotes necessários
+# Función para instalar paquetes necesarios
 inst_pct() {
   if [[ $EUID -ne 0 ]]; then
-    echo "Este script precisa ser executado como root."
+    echo "Este script debe ejecutarse como root."
     exit 1
   fi
 
@@ -263,21 +263,21 @@ inst_pct() {
 
   for _prog in "${_pacotes[@]}"; do
     if ! dpkg -l | grep -q "^ii  $_prog "; then
-      echo "Instalando pacote: $_prog"
+      echo "Instalando paquete: $_prog"
       apt install -y $_prog
     else
-      echo "Pacote já instalado: $_prog"
+      echo "Paquete ya instalado: $_prog"
     fi
   done
 
-  # Instalando o Speedtest-CLI
+  # Instalando Speedtest-CLI
     echo -e "\e[1;32mINSTALANDO SPEEDTEST-CLI...\e[0m"
     pip3 install speedtest-cli || {
-        echo -e "\e[1;31mFALHA AO INSTALAR SPEEDTEST-CLI\e[0m"
+        echo -e "\e[1;31mFALLA AL INSTALAR SPEEDTEST-CLI\e[0m"
         exit 1
     }
 
-  # Configurar regras do firewall
+  # Configurar reglas del firewall
   sudo firewall-cmd --zone=public --permanent --add-port=80/tcp
   sudo firewall-cmd --zone=public --permanent --add-port=81/tcp
   sudo firewall-cmd --zone=public --permanent --add-port=443/tcp
@@ -293,26 +293,26 @@ inst_pct() {
 
 fun_bar 'inst_pct'
 
-# Configurar regras no UFW, se estiver instalado
+# Configurar reglas en UFW, si está instalado
 if [[ -f "/usr/sbin/ufw" ]]; then
   ufw allow 443/tcp
   ufw allow 80/tcp
   ufw allow 3128/tcp
   ufw allow 8799/tcp
   ufw allow 8080/tcp
-  echo "Configurações do UFW aplicadas."
+  echo "Configuraciones de UFW aplicadas."
 fi
 
-# Redefinir a exibição do terminal novamente
+# Redefinir la visualización del terminal nuevamente
 tput reset
 # instalando rustyproxy by @UlekBR
 bash <(wget -qO- https://raw.githubusercontent.com/PhoenixxZ2023/RustyProxyOnly/refs/heads/main/install.sh)
 
-# Redefinir a exibição do terminal novamente
+# Redefinir la visualización del terminal nuevamente
 tput reset
-# Instala ferramentas de rede
+# Instalar herramientas de red
 echo -e "\E[38;5;18m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
-echo -e "\E[38;5;18m┃\E[44;1;37m         INSTALANDO PACOTES DE REDE          \E[0m\E[38;5;18m┃"
+echo -e "\E[38;5;18m┃\E[44;1;37m         INSTALANDO PAQUETES DE REDE          \E[0m\E[38;5;18m┃"
 echo -e "\E[38;5;18m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
 echo ""
 fun_bar "sudo apt-get install -y lsof >/dev/null 2>&1"
@@ -321,7 +321,7 @@ fun_bar "sudo apt-get install -y nload >/dev/null 2>&1"
 fun_bar "sudo apt-get install -y zip >/dev/null 2>&1"
 fun_bar "sudo apt-get install -y netcat >/dev/null 2>&1"
 
-# Redefinir a exibição do terminal
+# Redefinir la visualización del terminal
 tput reset
 echo""
 
@@ -329,91 +329,91 @@ echo""
 echo -e         "\033[1;36mINSTALANDO DNS PERSONALIZADOS\033[0m"
 echo ""
 
-# Limpar as regras atuais do iptables antes de qualquer coisa
+# Limpiar las reglas actuales de iptables antes de cualquier cosa
 iptables -F
 
-# Remover o link simbólico para /etc/resolv.conf (se existir)
+# Eliminar el enlace simbólico a /etc/resolv.conf (si existe)
 sudo rm -f /etc/resolv.conf
 
-# Criar um novo arquivo /etc/resolv.conf com os servidores DNS
+# Crear un nuevo archivo /etc/resolv.conf con los servidores DNS
 echo -e 'nameserver 1.1.1.1\nnameserver 1.0.0.1\nnameserver 8.8.8.8\nnameserver 8.4.4.8\nnameserver 208.67.222.222\nnameserver 208.67.220.220' | sudo tee /etc/resolv.conf
 
-# Proteger o arquivo /etc/resolv.conf para evitar alterações
+# Proteger el archivo /etc/resolv.conf para evitar cambios
 sudo chattr +i /etc/resolv.conf
 
-# Redefinir a exibição do terminal
+# Redefinir la visualización del terminal
 tput reset
-# Exibir a mensagem de finalização
+# Mostrar el mensaje de finalización
 echo -e "\E[38;5;18m╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮\033[0m"
-echo -e "\E[38;5;18m┃\E[44;1;37m         FINALIZANDO INSTALAÇÃO          \E[0m\E[38;5;18m┃"
+echo -e "\E[38;5;18m┃\E[44;1;37m         FINALIZANDO INSTALACIÓN          \E[0m\E[38;5;18m┃"
 echo -e "\E[38;5;18m╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯\033[0m"
 echo ""
-echo -e "     \033[1;93mCONCLUINDO FUNÇÕES E DEFINIÇÕES! \033[0m"
+echo -e "     \033[1;93m¡CONCLUYENDO FUNCIONES Y DEFINICIONES! \033[0m"
 echo ""
 
-# Executar a função fun_bar com argumentos
+# Ejecutar la función fun_bar con argumentos
 fun_bar "$_Ink/list $_lnk $_Ink $_1nk $key"
 
-# Redefinir a exibição do terminal
+# Redefinir la visualización del terminal
 tput reset
 echo ""
 cd $HOME
 echo ""
-echo -e "        \033[1;33m • \033[1;94mINSTALAÇÃO CONCLUÍDA\033[1;33m • \033[0m"
+echo -e "        \033[1;33m • \033[1;94mINSTALACIÓN CONCLUIDA\033[1;33m • \033[0m"
 echo ""
 
-# Adicionar comandos ao .bashrc para exibição ao iniciar o terminal como root
+# Añadir comandos al .bashrc para mostrar al iniciar el terminal como root
 {
     echo "clear"
     echo 'DATE=$(date +"%d-%m-%y")'
     echo 'TIME=$(date +"%T")'
     echo 'figlet -k SSH-PLUS | lolcat'
-    echo 'echo -e " NOME DO SERVIDOR : $HOSTNAME"'
-    echo 'echo -e " SERVIDOR LIGADO À : $(uptime -p)"'
-    echo 'echo -e " DATA : $DATE"'
+    echo 'echo -e " NOMBRE DEL SERVIDOR : $HOSTNAME"'
+    echo 'echo -e " SERVIDOR ENCENDIDO DESDE : $(uptime -p)"'
+    echo 'echo -e " FECHA : $DATE"'
     echo 'echo -e " HORA : $TIME"'
     echo 'echo -e " (TELEGRAM)--@TURBONET2023"'
-    echo 'echo -e "\033[1;31m DIGITE ( menu ) PARA ENTRAR\033[0m."'
+    echo 'echo -e "\033[1;31m ESCRIBE ( menu ) PARA ENTRAR\033[0m."'
     echo 'echo -e ""'
 } >> /root/.bashrc
 
-# Exibir data e hora atual, nome do sistema, e mensagem de instalação concluída
+# Mostrar fecha y hora actual, nombre del sistema y mensaje de instalación concluida
 date=$(date "+%Y-%m-%d <> %H:%M:%S")
 echo -e "\033[1;37m $system         $date"
 figlet "SSH-PLUS" | lolcat
-echo -e "\033[01;31m\033[1;31m\033[5;34;47m                INSTALAÇÃO CONCLUÍDA               \033[1;33m \033[0m\033[01;31m"
-echo -e "\033[01;31m\033[1;33mPARA INICIAR DIGITE: \033[1;32mmenu\033[0m"
-echo -e "\033[01;31m\033[1;33mMAIS INFORMAÇÕES: \033[1;31m(\033[1;36mTELEGRAM\033[1;31m)--> \033[1;37m@TURBONET2023\033[0m"
+echo -e "\033[01;31m\033[1;31m\033[5;34;47m                ¡INSTALACIÓN CONCLUIDA!               \033[1;33m \033[0m\033[01;31m"
+echo -e "\033[01;31m\033[1;33mPARA INICIAR ESCRIBE: \033[1;32mmenu\033[0m"
+echo -e "\033[01;31m\033[1;33mMÁS INFORMACIÓN: \033[1;31m(\033[1;36mTELEGRAM\033[1;31m)--> \033[1;37m@TURBONET2023\033[0m"
 
-# Define a função para exibir mensagens coloridas
+# Define la función para mostrar mensajes de colores
 color_text() {
   echo -e "\033[$1m$2\033[0m"
 }
 
-# Loop até receber uma resposta válida
+# Bucle hasta recibir una respuesta válida
 while true; do
   echo
-  # Mensagem em amarelo e negrito
-  color_text "1;33" "RECOMENDADO É REINICIAR SERVIDOR."
-  color_text "1;33" "PARA QUE TODOS OS SERVIÇOS E CONEXÕES FUNCIONE PERFEITAMENTE..."
-  color_text "1;33" "VOCÊ DESEJA REINICIAR O SERVIDOR AGORA? (s/n): "
+  # Mensaje en amarillo y negrita
+  color_text "1;33" "SE RECOMIENDA REINICIAR EL SERVIDOR."
+  color_text "1;33" "PARA QUE TODOS LOS SERVICIOS Y CONEXIONES FUNCIONEN PERFECTAMENTE..."
+  color_text "1;33" "¿DESEAS REINICIAR EL SERVIDOR AHORA? (s/n): "
   read -n 1 -r REPLY
-  echo    # (opcional) move para a nova linha
+  echo    # (opcional) mover a la nueva línea
 
-  # Verifica a resposta
+  # Verificar la respuesta
   if [[ $REPLY =~ ^[Ss]$ ]]; then
-    color_text "1;32" "\nReiniciando o servidor..."
+    color_text "1;32" "\nReiniciando el servidor..."
     sudo reboot
     break
   elif [[ $REPLY =~ ^[Nn]$ ]]; then
-    color_text "1;31" "\nVocê optou por não reiniciar o servidor."
+    color_text "1;31" "\nHas optado por no reiniciar el servidor."
     break
   else
-    color_text "1;31" "\nEntrada inválida. Por favor, responda com 's' ou 'n'."
+    color_text "1;31" "\nEntrada inválida. Por favor, responde con 's' o 'n'."
   fi
 done
 
-# Remover o diretório Plus do HOME e limpar o histórico do bash
+# Eliminar el directorio Plus del HOME y limpiar el historial de bash
 rm -rf $HOME/Plus
 cat /dev/null > ~/.bash_history
 history -c
