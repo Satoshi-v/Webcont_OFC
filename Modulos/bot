@@ -210,29 +210,39 @@ criar_user() {
     file_user=$1
     usuario=$(sed -n '1 p' $file_user | cut -d' ' -f2)
     senha=$(sed -n '2 p' $file_user | cut -d' ' -f2)
-    limite=1  # Establecer siempre el límite de conexión en 1
-validade=$(date -d "+31 days" +"%Y-%m-%d")  # Establecer 31 días de validez desde la fecha actual
+    
+    # Valores fijos para revendedores (1 conexión y 31 días)
+    limite="1"  # Límite fijo de 1 conexión
+    data="31"   # 31 días de validez
+    
+    # Convertir la fecha al formato correcto (YYYY-MM-DD)
+    validade=$(date -d "+$data days" +%Y-%m-%d)
+    info_data=$(date -d "+$data days" +%d/%m/%Y)
 
     if /usr/sbin/useradd -M -N -s /bin/false $usuario -e $validade; then
-        (echo "${senha}";echo "${senha}") | passwd "${usuario}"
+        (echo "${senha}"; echo "${senha}") | passwd "${usuario}"
     else
         ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
                 --text "$(echo -e "❌ ERROR AL CREAR EL USUARIO ❌")" \
                 --parse_mode html
         return 0
     fi
+    
     [[ "${message_from_id[$id]}" != "$id_admin" ]] && {
         echo "$usuario:$senha:$info_data:$limite" >/etc/bot/revenda/${message_from_username}/usuarios/$usuario
         echo "$usuario:$senha:$info_data:$limite" >/etc/bot/info-users/$usuario
     }
+    
     echo "$usuario $limite" >>/root/usuarios.db
     echo "$senha" >/etc/SSHPlus/senha/$usuario
+    
     [[ -e "/etc/openvpn/server.conf" ]] && {
         cd /etc/openvpn/easy-rsa/
         ./easyrsa build-client-full $usuario nopass
         newclient "$usuario"
     }
-    echo "usuario $usuario $validade $senha criado"
+    
+    echo "Usuario $usuario creado - Conexiones: $limite - Válido hasta: $validade"
 }
 
 fun_deluser() {
@@ -344,13 +354,15 @@ alterar_limite() {
 alterar_limite_user() {
     usuario=$1
     limite=$2
-    database="/root/usuarios.db"
-    [[ "${message_from_id[$id]}" == "$id_admin" ]] && {
-        grep -v ^$usuario[[:space:]] /root/usuarios.db >/tmp/a
-        mv /tmp/a /root/usuarios.db
-        echo $usuario $limite >>/root/usuarios.db
-        return 0
-    }
+
+    # Verificar si el usuario que ejecuta el comando es revendedor (no admin)
+    if [[ "$(grep -w "${message_from_username}" $ativos | grep -c 'revenda')" != '0' && "${message_from_id[$id]}" != "$id_admin" ]]; then
+        limite="1"  # Forzar límite = 1 para revendedores
+        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
+            --text "$(echo -e "⚠️ *Modo revendedor*: Límite fijado a 1 conexión automáticamente.")" \
+            --parse_mode markdown
+    fi
+
     [[ -d /etc/bot/revenda/${message_from_username} ]] && {
         [[ ! -e /etc/bot/revenda/${message_from_username}/usuarios/$usuario ]] && {
             ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
@@ -359,49 +371,32 @@ alterar_limite_user() {
             _erro='1'
             return 0
         }
-        _limTotal=$(grep -w 'LIMITE_REVENDA' /etc/bot/revenda/${message_from_username}/${message_from_username} | awk '{print $NF}')
-        [[ "$limite" -gt "$_limTotal" ]] && {
-            ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                --text "$(echo -e "❌ NO TIENES LIMITE SUFICIENTE ❌\n\nLimite Actual: $_limTotal ")" \
-                --parse_mode html
-            _erro='1'
-            return 0
-        }
-        _limTotal=$(grep -w "${message_from_username}" $ativos | awk '{print $4}')
-        fun_verif_limite_rev ${message_from_username}
-        _limsomarev2=$(echo "$_result + $limite" | bc)
-        echo "Total $_limsomarev2"
-        [[ "$_limsomarev2" -gt "$_limTotal" ]] && {
-            [[ "$_limTotal" == "$(($_limTotal - $_result))" ]] && _restant1='0' || _restant1=$(($_limTotal - $_result))
-            ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                --text "$(echo -e "❌ No tienes suficientes límites\n\nLimite restante: $_restant1 ")" \
-                --parse_mode html
-            _erro='1'
-            return 0
-        }
+
+        # Solo verificar límites si es admin (revendedores ya tienen límite = 1)
+        if [[ "${message_from_id[$id]}" == "$id_admin" ]]; then
+            _limTotal=$(grep -w 'LIMITE_REVENDA' /etc/bot/revenda/${message_from_username}/${message_from_username} | awk '{print $NF}')
+            [[ "$limite" -gt "$_limTotal" ]] && {
+                ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
+                    --text "$(echo -e "❌ NO TIENES LIMITE SUFICIENTE ❌\n\nLímite actual: $_limTotal")" \
+                    --parse_mode html
+                _erro='1'
+                return 0
+            }
+        fi
+
+        # Actualizar la base de datos
         grep -v ^$usuario[[:space:]] /root/usuarios.db >/tmp/a
         mv /tmp/a /root/usuarios.db
-        echo $usuario $limite >>/root/usuarios.db
-        limite2=$(cat /etc/bot/revenda/${message_from_username}/usuarios/$usuario | awk -F : {'print $4'})
-        sed -i "/\b$usuario\b/ s/\b$limite2\b/$limite/" /etc/bot/revenda/${message_from_username}/usuarios/$usuario
-        sed -i "/\b$usuario\b/ s/\b$limite2\b/$limite/" /etc/bot/info-users/$usuario
-    }
-}
+        echo "$usuario $limite" >>/root/usuarios.db
 
-alterar_data() {
-    [[ "$(grep -wc ${callback_query_from_username} $suspensos)" != '0' ]] && {
-        ShellBot.answerCallbackQuery --callback_query_id ${callback_query_id[$id]} \
-            --text "⚠️ ¡ESTÁS SUSPENDIDO! CONTACTAR AL ADMINISTRADOR"
-        return 0
-    }
-    [[ "${callback_query_from_id[$id]}" == "$id_admin" ]] || [[ "$(grep -wc ${callback_query_from_username} $ativos)" != '0' ]] && {
-        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-            --text "⏳ Alterar Fecha ⏳\n\nNombre de usuario:" \
-            --reply_markup "$(ShellBot.ForceReply)"
-    } || {
-        ShellBot.answerCallbackQuery --callback_query_id ${callback_query_id[$id]} \
-            --text "🚫 ACESSO NEGADO 🚫"
-        return 0
+        # Actualizar archivos de usuarios
+        limite_anterior=$(cat /etc/bot/revenda/${message_from_username}/usuarios/$usuario | awk -F: '{print $4}')
+        sed -i "s/:${limite_anterior}$/:${limite}/" /etc/bot/revenda/${message_from_username}/usuarios/$usuario
+        sed -i "s/:${limite_anterior}$/:${limite}/" /etc/bot/info-users/$usuario
+
+        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
+            --text "$(echo -e "✅ *Límite actualizado* ✅\n\nUsuario: $usuario\nNuevo límite: $limite")" \
+            --parse_mode markdown
     }
 }
 
@@ -409,30 +404,56 @@ alterar_data_user() {
     usuario=$1
     inputdate=$2
     database="/root/usuarios.db"
-    [[ "$(echo -e "$inputdate" | sed -e 's/[^/]//ig')" != '//' ]] && {
+
+    # Forzar 31 días para revendedores (excepto admin)
+    if [[ "$(grep -w "${message_from_username}" $ativos | grep -c 'revenda')" != '0' && "${message_from_id[$id]}" != "$id_admin" ]]; then
+        inputdate="31"
+        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
+            --text "$(echo -e "⚠️ *Modo revendedor*: Fecha fijada a 31 días automáticamente")" \
+            --parse_mode markdown
+    fi
+
+    # Validar formato de fecha
+    if [[ "$(echo -e "$inputdate" | sed -e 's/[^/]//ig')" != '//' ]]; then
+        # Formato en días (ej: 30)
         udata=$(date "+%d/%m/%Y" -d "+$inputdate days")
-        sysdate="$(echo "$udata" | awk -v FS=/ -v OFS=- '{print $3,$2,$1}')"
-    } || {
+        sysdate=$(date -d "+$inputdate days" +"%Y-%m-%d")
+    else
+        # Formato directo (dd/mm/yyyy)
         udata=$(echo -e "$inputdate")
-        sysdate="$(echo -e "$inputdate" | awk -v FS=/ -v OFS=- '{print $3,$2,$1}')"
-        today="$(date -d today +"%Y%m%d")"
-        timemachine="$(date -d "$sysdate" +"%Y%m%d")"
-        [ $today -ge $timemachine ] && {
-            verify='1'
+        sysdate=$(echo -e "$inputdate" | awk -v FS=/ -v OFS=- '{print $3,$2,$1}')
+        
+        # Verificar si la fecha es válida y futura
+        today=$(date +"%Y%m%d")
+        timemachine=$(date -d "$sysdate" +"%Y%m%d" 2>/dev/null)
+        
+        if [[ -z "$timemachine" ]] || [ $today -ge $timemachine ]; then
             ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                --text "$(echo -e "❌ Error! Dato invalido")" \
+                --text "$(echo -e "❌ Error! Fecha inválida o pasada")" \
                 --parse_mode html
             _erro='1'
             return 0
-        }
-    }
-    chage -E $sysdate $usuario
-    [[ -e /etc/bot/revenda/${message_from_username}/usuarios/$usuario ]] && {
-        data2=$(cat /etc/bot/info-users/$usuario | awk -F : {'print $3'})
-        sed -i "s;$data2;$udata;" /etc/bot/info-users/$usuario
-        echo $usuario $udata ${message_from_username}
-        sed -i "s;$data2;$udata;" /etc/bot/revenda/${message_from_username}/usuarios/$usuario
-    }
+        fi
+    fi
+
+    # Actualizar fecha de expiración
+    if chage -E "$sysdate" "$usuario" 2>/dev/null; then
+        # Actualizar en archivos de usuarios si existe
+        if [[ -e "/etc/bot/revenda/${message_from_username}/usuarios/$usuario" ]]; then
+            data_anterior=$(cat /etc/bot/info-users/$usuario | awk -F: '{print $3}')
+            sed -i "s:$data_anterior:$udata:" /etc/bot/info-users/$usuario
+            sed -i "s:$data_anterior:$udata:" /etc/bot/revenda/${message_from_username}/usuarios/$usuario
+        fi
+        
+        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
+            --text "$(echo -e "✅ *Fecha actualizada* ✅\n\nUsuario: $usuario\nNueva fecha: $udata")" \
+            --parse_mode markdown
+    else
+        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
+            --text "$(echo -e "❌ Error al actualizar la fecha")" \
+            --parse_mode html
+        _erro='1'
+    fi
 }
 
 ver_users() {
@@ -1791,11 +1812,11 @@ ShellBot.InlineKeyboardButton --button 'menu2' --line 1 --text 'CREAR USUARIO' -
 ShellBot.InlineKeyboardButton --button 'menu2' --line 1 --text 'CREAR TEST' --callback_data '_criarteste2'
 ShellBot.InlineKeyboardButton --button 'menu2' --line 2 --text 'REMOVER' --callback_data '_deluser2'
 ShellBot.InlineKeyboardButton --button 'menu2' --line 2 --text 'USUARIOS ONLINE' --callback_data '_monitor2'
-ShellBot.InlineKeyboardButton --button 'menu2' --line 3 --text 'ALTERAR LIMITE' --callback_data '_altlimite2'
+#ShellBot.InlineKeyboardButton --button 'menu2' --line 3 --text 'ALTERAR LIMITE' --callback_data '_altlimite2'
 ShellBot.InlineKeyboardButton --button 'menu2' --line 3 --text 'INFO USUARIOS' --callback_data '_verusers2'
 ShellBot.InlineKeyboardButton --button 'menu2' --line 4 --text 'CAMBIAR CONTRASEÑA' --callback_data '_altsenha2'
 ShellBot.InlineKeyboardButton --button 'menu2' --line 4 --text 'BORRAR EXPIRADOS' --callback_data '_expirados2'
-ShellBot.InlineKeyboardButton --button 'menu2' --line 5 --text 'ALTERAR FECHA' --callback_data '_altdata2'
+#ShellBot.InlineKeyboardButton --button 'menu2' --line 5 --text 'ALTERAR FECHA' --callback_data '_altdata2'
 ShellBot.InlineKeyboardButton --button 'menu2' --line 5 --text 'REVENTA' --callback_data '_opcoesrev2'
 ShellBot.InlineKeyboardButton --button 'menu2' --line 6 --text 'INFORME' --callback_data '_relatorio2'
 ShellBot.InlineKeyboardButton --button 'menu2' --line 6 --text 'AYUDA' --callback_data '_ajuda2'
