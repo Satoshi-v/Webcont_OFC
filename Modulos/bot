@@ -7,9 +7,10 @@
 #   CONTATO TELEGRAM: http://t.me/TURBONET2023
 #   CANAL TELEGRAM: http://t.me/TURBONET2023
 #===================================================
-[[ ! -d /etc/SSHPlus ]] && echo "Error: Directorio /etc/SSHPlus no encontrado." && echo "El script se cerrará debido a un error." && exit 1
-[[ ! -d /etc/bot ]] && echo "Error: Directorio /etc/bot no encontrado." && echo "El script se cerrará debido a un error." && exit 1
-[[ -e ShellBot.sh ]] && source ShellBot.sh || { echo "Error: ShellBot.sh no encontrado."; echo "El script se cerrará debido a un error." && exit 1; }
+mkdir -p /etc/SSHPlus
+mkdir -p /etc/bot
+[[ -e ShellBot.sh ]] || wget -qO ShellBot.sh https://raw.githubusercontent.com/PhoenixxZ2023/PLUS/main/Modulos/ShellBot.sh
+source ShellBot.sh
 api_bot=$1
 id_admin=$2
 [[ -z $api_bot ]] && echo "Error: Token de API no proporcionado." && echo "El script se cerrará debido a un error." && exit 1
@@ -34,7 +35,7 @@ fun_add_user() {
     /usr/sbin/useradd -M -s /bin/false -e "$validade" "$usuario"
     
     # Asignar la contraseña generada
-    echo "$usuario:$senha" | chpasswd
+    [[ -n "$usuario" && -n "$senha" ]] && echo "$usuario:$senha" | chpasswd || echo "Error: Usuario o contraseña vacíos"
     
     # Limitar a 1 conexión
     if ! grep -q "^$usuario" /etc/security/limits.conf; then
@@ -48,7 +49,7 @@ fun_add_user() {
 }
 
 fun_menu() {
-    [[ "${message_from_id[$id]}" == "$id_admin" ]] && {
+    [[ -n "${message_from_id[$id]}" && "${message_from_id[$id]}" == "$id_admin" ]] && {
         local env_msg
 env_msg="╔══════════•⊱✦⊰•══════════╗\n"
         env_msg+="<b>               🔥 BOT WEBCONT 🔥</b>\n"
@@ -345,7 +346,7 @@ alterar_senha() {
 alterar_senha_user() {
     usuario=$1
     senha=$2
-    echo "$usuario:$senha" | chpasswd
+    [[ -n "$usuario" && -n "$senha" ]] && echo "$usuario:$senha" | chpasswd || echo "Error: Usuario o contraseña vacíos"
     echo "$senha" >/etc/SSHPlus/senha/$usuario
     [[ -e /etc/bot/revenda/${message_from_username}/usuarios/$usuario ]] && {
         senha2=$(cat /etc/bot/revenda/${message_from_username}/usuarios/$usuario | awk -F : {'print $2'})
@@ -376,7 +377,7 @@ alterar_limite_user() {
     usuario=$1
     limite=$2
     database="/root/usuarios.db"
-    [[ "${message_from_id[$id]}" == "$id_admin" ]] && {
+    [[ -n "${message_from_id[$id]}" && "${message_from_id[$id]}" == "$id_admin" ]] && {
         grep -v ^$usuario[[:space:]] /root/usuarios.db >/tmp/a
         mv /tmp/a /root/usuarios.db
         echo $usuario $limite >>/root/usuarios.db
@@ -717,7 +718,7 @@ fun_verif_user() {
             --parse_mode html
         return 0
     }
-    [[ "${message_from_id[$id]}" == "$id_admin" ]] && {
+    [[ -n "${message_from_id[$id]}" && "${message_from_id[$id]}" == "$id_admin" ]] && {
         [[ "$(awk -F : '$3 >= 1000 { print $1 }' /etc/passwd | grep -wc $user)" == '0' ]] && {
             ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
                 --text "$(echo -e ❌ Usuario $user no existe !)" \
@@ -1406,7 +1407,7 @@ del_rev() {
             --text "$(echo -e "Erro")"
         return 0
     }
-    [[ "${message_from_id[$id]}" == "$id_admin" ]] && {
+    [[ -n "${message_from_id[$id]}" && "${message_from_id[$id]}" == "$id_admin" ]] && {
         [[ "$(grep -wc "$_cli_rev" $ativos)" != '0' ]] && {
             [[ -e "/etc/bot/revenda/$_cli_rev/$_cli_rev" ]] && _dirsts='revenda' || _dirsts='suspensos'
             [[ "$(grep -wc 'SUBREVENDA' /etc/bot/$_dirsts/$_cli_rev/$_cli_rev)" != '0' ]] && {
@@ -1694,7 +1695,7 @@ susp_rev() {
             --parse_mode html
         return 0
     }
-    [[ "${message_from_id[$id]}" == "$id_admin" ]] && {
+    [[ -n "${message_from_id[$id]}" && "${message_from_id[$id]}" == "$id_admin" ]] && {
         [[ "$(grep -wc 'SUBREVENDA' /etc/bot/revenda/$_revs/$_revs)" != '0' ]] && {
             while read _listsub3; do
                 _usub3="$(echo $_listsub3 | awk '{print $2}')"
@@ -2401,7 +2402,7 @@ while :; do
                             --parse_mode html
                         break
                     }
-                    [[ "${message_from_id[$id]}" == "$id_admin" ]] && {
+                    [[ -n "${message_from_id[$id]}" && "${message_from_id[$id]}" == "$id_admin" ]] && {
                         [[ $(grep -wc $_Var1 $ativos) != '0' ]] && {
                             ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
                                 --text 'Ingrese el limite SSH:' \
@@ -2477,7 +2478,7 @@ while :; do
                             --parse_mode html
                         break
                     }
-                    [[ "${message_from_id[$id]}" == "$id_admin" ]] && {
+                    [[ -n "${message_from_id[$id]}" && "${message_from_id[$id]}" == "$id_admin" ]] && {
                         [[ $(grep -wc $_VAR1 $ativos) != '0' ]] && {
                             echo -e "Revendedor: ${message_text[$id]}" >$CAD_ARQ
                             ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
