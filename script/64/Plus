@@ -10,6 +10,7 @@ sudo apt-get install uuid-runtime -y >/dev/null 2>&1
 sudo apt-get install python-minimal -y >/dev/null 2>&1
 sudo apt-get install libpython-stdlib -y >/dev/null 2>&1
 sudo apt-get install procps -y >/dev/null 2>&1
+sudo apt-get install jq -y >/dev/null 2>&1
 
 # Verificação se o usuário é root
 cd $HOME
