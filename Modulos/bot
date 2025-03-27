@@ -180,9 +180,17 @@ fun_adduser() {
         return 0
     }
     [[ "${callback_query_from_id[$id]}" == "$id_admin" ]] || [[ "$(grep -wc ${callback_query_from_username} $ativos)" != '0' ]] && {
-        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-            --text "👤 CREAR USUARIO 👤\n\nNombre de usuario:" \
-            --reply_markup "$(ShellBot.ForceReply)"
+        if [[ "${callback_query_from_id[$id]}" != "$id_admin" ]]; then
+            # Si es revendedor, asignamos 31 días automáticamente
+            ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
+                --text "👤 CREAR USUARIO (31 DÍAS) 👤\n\nNombre de usuario:" \
+                --reply_markup "$(ShellBot.ForceReply)"
+        else
+            # Si es admin, pregunta días normalmente
+            ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
+                --text "👤 CREAR USUARIO 👤\n\nNombre de usuario:" \
+                --reply_markup "$(ShellBot.ForceReply)"
+        fi
     } || {
         ShellBot.answerCallbackQuery --callback_query_id ${callback_query_id[$id]} \
             --text "🚫 ACESSO NEGADO 🚫"
@@ -1930,51 +1938,42 @@ while :; do
                         --reply_markup "$(ShellBot.ForceReply)" # Força a resposta.
                     ;;
                 'Pass:')
-                    sizepass=$(echo -e ${#message_text[$id]})
-                    verifica_acesso
-                    [[ "$_erro" == '1' ]] && break
-                    [[ "$sizepass" -lt '4' ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "❌ Error !\n\nUtilice al menos 4 caracteres\n[Ej: 1234]")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                    }
-                    echo "Senha: ${message_text[$id]}" >>$CAD_ARQ
-                    # Próximo campo.
-                    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text 'Limite de conexiones:' \
-                        --reply_markup "$(ShellBot.ForceReply)"
-                    ;;
-                'Limite de conexiones:')
-                    verifica_acesso
-                    [[ "$_erro" == '1' ]] && break
-                    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "❌ Error ! \n\nUtilize solo numeros [Ej: 1]")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                    }
-                    [[ "${message_from_id[$id]}" != "$id_admin" ]] && {
-                        _limTotal=$(grep -w "${message_from_username}" $ativos | awk '{print $4}')
-                        fun_verif_limite_rev ${message_from_username}
-                        _limsomarev2=$(echo "$_result + ${message_text[$id]}" | bc)
-                        [[ "$_limsomarev2" -gt "$_limTotal" ]] && {
-                            _restant1=$(($_limTotal - $_result))
-                            ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                                --text "$(echo -e "❌ No tienes suficientes límites\n\nLimite disponivel: $_restant1 ")" \
-                                --parse_mode html
-                            >$CAD_ARQ
-                            break
-                        }
-                    }
-                    echo "Limite: ${message_text[$id]}" >>$CAD_ARQ
-                    # Próximo campo.
-                    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text 'Dias de Validez: ' \
-                        --reply_markup "$(ShellBot.ForceReply)"
-                    ;;
+    sizepass=$(echo -e ${#message_text[$id]})
+    verifica_acesso
+    [[ "$_erro" == '1' ]] && break
+    [[ "$sizepass" -lt '4' ]] && {
+        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
+            --text "$(echo -e "❌ Error !\n\nUtilice al menos 4 caracteres\n[Ej: 1234]")" \
+            --parse_mode html
+        >$CAD_ARQ
+        break
+    }
+    echo "Senha: ${message_text[$id]}" >>$CAD_ARQ
+
+    # Si es revendedor (no admin), asignamos 31 días sin preguntar
+    if [[ "${message_from_id[$id]}" != "$id_admin" ]]; then
+        echo "Limite: 1" >>$CAD_ARQ  # Asignamos 1 conexión (o el límite que desees)
+        info_data=$(date '+%d/%m/%C%y' -d "+31 days")  # 31 días automáticos
+        echo "Validade: $info_data" >>$CAD_ARQ
+        criar_user $CAD_ARQ
+
+        if [[ "$(ls /etc/bot/arquivos | wc -l)" != '0' ]]; then
+            ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
+                --text '📥 ARCHIVOS DISPONIBLES 📥\n\n¿Quieres descargar? ¿Si o no?:' \
+                --reply_markup "$(ShellBot.ForceReply)"
+        else
+            ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
+                --text "<b>✅ CREADO CON ÉXITO (31 DÍAS) ✅</b>\n\n👤 User: <code>$(awk -F " " '/Nome/ {print $2}' $CAD_ARQ)</code>\n🔑 Pass: <code>$(awk -F " " '/Senha/ {print $2}' $CAD_ARQ)</code>\n📱 Dispositivos: 1\n⏱️ Expira: $info_data" \
+                --parse_mode html
+            >$CAD_ARQ
+        fi
+    else
+        # Si es admin, pregunta el límite normalmente
+        ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
+            --text 'Limite de conexiones:' \
+            --reply_markup "$(ShellBot.ForceReply)"
+    fi
+    ;;
 
                 'Dias de Validez:')
     verifica_acesso
