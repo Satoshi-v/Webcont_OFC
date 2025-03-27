@@ -7,14 +7,14 @@
 #   CONTATO TELEGRAM: http://t.me/TURBONET2023
 #   CANAL TELEGRAM: http://t.me/TURBONET2023
 #===================================================
-[[ ! -d /etc/SSHPlus ]] && exit 0
-[[ ! -d /etc/bot ]] && exit 0
-source ShellBot.sh
+[[ ! -d /etc/SSHPlus ]] && echo "Error: Directorio /etc/SSHPlus no encontrado." && exit 1
+[[ ! -d /etc/bot ]] && echo "Error: Directorio /etc/bot no encontrado." && exit 1
+[[ -e ShellBot.sh ]] && source ShellBot.sh || { echo "Error: ShellBot.sh no encontrado."; exit 1; }
 api_bot=$1
 id_admin=$2
-[[ -z $api_bot ]] && exit 0
-[[ -z $id_admin ]] && exit 0
-[[ ! -e /usr/lib/licence ]] && exit 0
+[[ -z $api_bot ]] && echo "Error: Token de API no proporcionado." && exit 1
+[[ -z $id_admin ]] && echo "Error: ID de administrador no proporcionado." && exit 1
+[[ ! -e /usr/lib/licence ]] && echo "Error: Archivo de licencia no encontrado." && exit 1
 ativos='/etc/bot/lista_ativos'
 suspensos='/etc/bot/lista_suspensos'
 ShellBot.init --token "$api_bot" --monitor --return map --flush
