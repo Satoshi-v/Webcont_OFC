@@ -19,6 +19,34 @@ ativos='/etc/bot/lista_ativos'
 suspensos='/etc/bot/lista_suspensos'
 ShellBot.init --token "$api_bot" --monitor --return map --flush
 ShellBot.username
+
+# Función para agregar un usuario con configuración automática
+fun_add_user() {
+    usuario="$1"
+    
+    # Generar contraseña aleatoria de 5 dígitos
+    senha=$(shuf -i 10000-99999 -n 1)
+    
+    # Fecha de expiración (31 días desde hoy)
+    validade=$(date -d "+31 days" +"%Y-%m-%d")
+    
+    # Crear usuario con fecha de expiración y sin directorio home
+    /usr/sbin/useradd -M -s /bin/false -e "$validade" "$usuario"
+    
+    # Asignar la contraseña generada
+    echo "$usuario:$senha" | chpasswd
+    
+    # Limitar a 1 conexión
+    if ! grep -q "^$usuario" /etc/security/limits.conf; then
+        echo "$usuario - maxlogins 1" >> /etc/security/limits.conf
+    fi
+    
+    echo -e "\033[1;32mUsuario creado con éxito!\033[0m"
+    echo -e "Nombre: \033[1;37m$usuario\033[0m"
+    echo -e "Contraseña: \033[1;37m$senha\033[0m"
+    echo -e "Expira en: \033[1;37m$validade\033[0m"
+}
+
 fun_menu() {
     [[ "${message_from_id[$id]}" == "$id_admin" ]] && {
         local env_msg
