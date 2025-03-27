@@ -366,102 +366,83 @@ alterar_limite_user() {
     usuario=$1
     limite=$2
 
-    # Verificar si el usuario que ejecuta el comando es revendedor (no admin)
-    if [[ "$(grep -w "${message_from_username}" $ativos | grep -c 'revenda')" != '0' && "${message_from_id[$id]}" != "$id_admin" ]]; then
-        limite="1"  # Forzar límite = 1 para revendedores
+    # Verificar si es revendedor (no admin)
+    if [[ "$(grep -w "${message_from_username}" $ativos | grep -c 'revenda\|subrevenda')" != '0' && "${message_from_id[$id]}" != "$id_admin" ]]; then
+        limite="1"  # Forzar límite = 1 para revendedores y subrevendedores
         ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-            --text "$(echo -e "⚠️ *Modo revendedor*: Límite fijado a 1 conexión automáticamente.")" \
+            --text "$(echo -e "⚠️ *Modo revendedor*: Límite fijado a 1 conexión.")" \
             --parse_mode markdown
     fi
 
-    [[ -d /etc/bot/revenda/${message_from_username} ]] && {
-        [[ ! -e /etc/bot/revenda/${message_from_username}/usuarios/$usuario ]] && {
+    # Verificar si el usuario existe (para revendedores)
+    if [[ "${message_from_id[$id]}" != "$id_admin" ]]; then
+        if [[ ! -e "/etc/bot/revenda/${message_from_username}/usuarios/$usuario" && ! -e "/etc/bot/suspensos/${message_from_username}/usuarios/$usuario" ]]; then
             ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                --text "$(echo -e "❌ EL USUARIO NO EXISTE ❌")" \
+                --text "$(echo -e "❌ USUARIO NO ENCONTRADO EN TU BASE")" \
                 --parse_mode html
             _erro='1'
             return 0
-        }
-
-        # Solo verificar límites si es admin (revendedores ya tienen límite = 1)
-        if [[ "${message_from_id[$id]}" == "$id_admin" ]]; then
-            _limTotal=$(grep -w 'LIMITE_REVENDA' /etc/bot/revenda/${message_from_username}/${message_from_username} | awk '{print $NF}')
-            [[ "$limite" -gt "$_limTotal" ]] && {
-                ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                    --text "$(echo -e "❌ NO TIENES LIMITE SUFICIENTE ❌\n\nLímite actual: $_limTotal")" \
-                    --parse_mode html
-                _erro='1'
-                return 0
-            }
         fi
+    fi
 
-        # Actualizar la base de datos
-        grep -v ^$usuario[[:space:]] /root/usuarios.db >/tmp/a
-        mv /tmp/a /root/usuarios.db
-        echo "$usuario $limite" >>/root/usuarios.db
+    # Actualizar la base de datos
+    grep -v ^$usuario[[:space:]] /root/usuarios.db >/tmp/a
+    mv /tmp/a /root/usuarios.db
+    echo "$usuario $limite" >>/root/usuarios.db
 
-        # Actualizar archivos de usuarios
-        limite_anterior=$(cat /etc/bot/revenda/${message_from_username}/usuarios/$usuario | awk -F: '{print $4}')
-        sed -i "s/:${limite_anterior}$/:${limite}/" /etc/bot/revenda/${message_from_username}/usuarios/$usuario
-        sed -i "s/:${limite_anterior}$/:${limite}/" /etc/bot/info-users/$usuario
+    # Actualizar archivos de usuarios
+    if [[ "${message_from_id[$id]}" != "$id_admin" ]]; then
+        sed -i "s/^$usuario:[^:]*:[^:]*:\K[0-9]+$/$limite/" "/etc/bot/revenda/${message_from_username}/usuarios/$usuario"
+        sed -i "s/^$usuario:[^:]*:[^:]*:\K[0-9]+$/$limite/" "/etc/bot/info-users/$usuario"
+    else
+        # Lógica para admin (puede modificar cualquier usuario)
+        [[ -e "/etc/bot/info-users/$usuario" ]] && sed -i "s/^$usuario:[^:]*:[^:]*:\K[0-9]+$/$limite/" "/etc/bot/info-users/$usuario"
+    fi
 
-        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-            --text "$(echo -e "✅ *Límite actualizado* ✅\n\nUsuario: $usuario\nNuevo límite: $limite")" \
-            --parse_mode markdown
-    }
+    ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
+        --text "$(echo -e "✅ *Límite actualizado*\nUsuario: $usuario\nNuevo límite: $limite")" \
+        --parse_mode markdown
 }
 
 alterar_data_user() {
     usuario=$1
     inputdate=$2
-    database="/root/usuarios.db"
 
-    # Forzar 31 días para revendedores (excepto admin)
-    if [[ "$(grep -w "${message_from_username}" $ativos | grep -c 'revenda')" != '0' && "${message_from_id[$id]}" != "$id_admin" ]]; then
+    # Forzar 31 días para revendedores (no admin)
+    if [[ "$(grep -w "${message_from_username}" $ativos | grep -c 'revenda\|subrevenda')" != '0' && "${message_from_id[$id]}" != "$id_admin" ]]; then
         inputdate="31"
         ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-            --text "$(echo -e "⚠️ *Modo revendedor*: Fecha fijada a 31 días automáticamente")" \
+            --text "$(echo -e "⚠️ *Modo revendedor*: Fecha fijada a 31 días.")" \
             --parse_mode markdown
-    fi
-
-    # Validar formato de fecha
-    if [[ "$(echo -e "$inputdate" | sed -e 's/[^/]//ig')" != '//' ]]; then
-        # Formato en días (ej: 30)
-        udata=$(date "+%d/%m/%Y" -d "+$inputdate days")
-        sysdate=$(date -d "+$inputdate days" +"%Y-%m-%d")
     else
-        # Formato directo (dd/mm/yyyy)
-        udata=$(echo -e "$inputdate")
-        sysdate=$(echo -e "$inputdate" | awk -v FS=/ -v OFS=- '{print $3,$2,$1}')
-        
-        # Verificar si la fecha es válida y futura
-        today=$(date +"%Y%m%d")
-        timemachine=$(date -d "$sysdate" +"%Y%m%d" 2>/dev/null)
-        
-        if [[ -z "$timemachine" ]] || [ $today -ge $timemachine ]; then
+        # Validar formato de fecha solo para admin
+        if [[ "$(echo "$inputdate" | grep -c '^[0-9]\+$')" = '0' ]]; then
             ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                --text "$(echo -e "❌ Error! Fecha inválida o pasada")" \
+                --text "$(echo -e "❌ Solo admins pueden usar formato personalizado (dd/mm/yyyy).\nUse número de días.")" \
                 --parse_mode html
             _erro='1'
             return 0
         fi
     fi
 
-    # Actualizar fecha de expiración
+    # Convertir a fecha válida
+    udata=$(date "+%d/%m/%Y" -d "+$inputdate days")
+    sysdate=$(date "+%Y-%m-%d" -d "+$inputdate days")
+
+    # Actualizar fecha
     if chage -E "$sysdate" "$usuario" 2>/dev/null; then
-        # Actualizar en archivos de usuarios si existe
-        if [[ -e "/etc/bot/revenda/${message_from_username}/usuarios/$usuario" ]]; then
-            data_anterior=$(cat /etc/bot/info-users/$usuario | awk -F: '{print $3}')
-            sed -i "s:$data_anterior:$udata:" /etc/bot/info-users/$usuario
-            sed -i "s:$data_anterior:$udata:" /etc/bot/revenda/${message_from_username}/usuarios/$usuario
+        # Actualizar en archivos de usuarios
+        if [[ "${message_from_id[$id]}" != "$id_admin" ]]; then
+            sed -i "/^$usuario:/s:[0-9]\{2\}/[0-9]\{2\}/[0-9]\{4\}$:$udata:" "/etc/bot/revenda/${message_from_username}/usuarios/$usuario"
         fi
-        
+        sed -i "/^$usuario:/s:[0-9]\{2\}/[0-9]\{2\}/[0-9]\{4\}$:$udata:" "/etc/bot/info-users/$usuario"
+
         ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-            --text "$(echo -e "✅ *Fecha actualizada* ✅\n\nUsuario: $usuario\nNueva fecha: $udata")" \
+            --text "$(echo -e "✅ *Fecha actualizada*\nUsuario: $usuario\nNueva fecha: $udata")" \
             --parse_mode markdown
     else
         ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-            --text "$(echo -e "❌ Error al actualizar la fecha")" \
+            --text "$(echo -e "❌ Error al actualizar")" \
             --parse_mode html
         _erro='1'
     fi
