@@ -52,44 +52,18 @@ fun_bar() {
     tput cnorm
 }
 
-# URL del archivo PHP en el hosting (usando HTTPS pero ignorando la verificación SSL)
-URL="https://webcont.x10.mx/vps/validar_clave.php"
+# Função para verificação de chave
+function verif_key() {
+    krm=$(echo "5:q-3gs2.o7%8:1" | rev)
+    chmod +x $_Ink/list > /dev/null 2>&1
 
-# Función para validar la clave
-function validar_clave() {
-    printf "\n\033[1;36mVERIFICANDO CLAVE DE INSTALACIÓN...\033[0m\n"
-    read -p "Ingresa la clave de instalación: " clave_usuario
-
-    # Obtener la clave válida desde el servidor (ignorando la verificación SSL)
-    respuesta=$(curl -s -k -A "Mozilla/5.0" "$URL" || echo "Error en la solicitud")
-    if [[ "$respuesta" == "Error en la solicitud" ]]; then
-        printf "\033[1;31mError: No se pudo conectar al servidor.\033[0m\n"
-        exit 1
+    if [[ ! -e "$_Ink/list" ]]; then
+        echo -e "\n\033[1;31mKEY INVÁLIDA!\033[0m"
+        rm -rf $HOME/Plus > /dev/null 2>&1
+        tput reset
+        exit 1  # Indica erro com código de saída
     fi
-
-    # Extraer clave_valida usando jq
-    if ! command -v jq &> /dev/null; then
-        printf "\033[1;31mError: 'jq' no está instalado. Por favor, instálalo antes de continuar.\033[0m\n"
-        exit 1
-    fi
-
-    clave_valida=$(echo "$respuesta" | jq -r '.clave_valida')
-    if [[ -z "$clave_valida" ]]; then
-        printf "\033[1;31mError: No se pudo obtener la clave válida desde el servidor.\033[0m\n"
-        exit 1
-    fi
-
-    if [[ "$clave_usuario" == "$clave_valida" ]]; then
-        printf "\033[1;32mClave válida. Continuando con la instalación...\033[0m\n"
-        return 0  # Clave válida
-    else
-        printf "\033[1;31mClave inválida. La instalación no puede continuar.\033[0m\n"
-        exit 1  # Terminar el script con error
-    fi
-}
-
-# Validar la clave antes de continuar
-validar_clave
+} 
 
 # Redefinir a exibição do terminal
 tput reset
