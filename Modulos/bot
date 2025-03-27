@@ -210,9 +210,9 @@ criar_user() {
     file_user=$1
     usuario=$(sed -n '1 p' $file_user | cut -d' ' -f2)
     senha=$(sed -n '2 p' $file_user | cut -d' ' -f2)
-    limite=$(sed -n '3 p' $file_user | cut -d' ' -f2)
-    data=$(sed -n '4 p' $file_user | cut -d' ' -f2)
-    validade=$(echo "$data" | awk -F'/' '{print $2FS$1FS$3}' | xargs -i date -d'{}' +%Y-%m-%d)
+    limite=1  # Establecer siempre el límite de conexión en 1
+validade=$(date -d "+31 days" +"%Y-%m-%d")  # Establecer 31 días de validez desde la fecha actual
+
     if /usr/sbin/useradd -M -N -s /bin/false $usuario -e $validade; then
         (echo "${senha}";echo "${senha}") | passwd "${usuario}"
     else
