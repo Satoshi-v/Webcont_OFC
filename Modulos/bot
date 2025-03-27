@@ -1804,20 +1804,16 @@ ShellBot.InlineKeyboardButton --button 'menu2' --line 1 --text 'CREAR USUARIO' -
 ShellBot.InlineKeyboardButton --button 'menu2' --line 1 --text 'CREAR TEST' --callback_data '_criarteste2'
 ShellBot.InlineKeyboardButton --button 'menu2' --line 2 --text 'REMOVER' --callback_data '_deluser2'
 ShellBot.InlineKeyboardButton --button 'menu2' --line 2 --text 'USUARIOS ONLINE' --callback_data '_monitor2'
-#ShellBot.InlineKeyboardButton --button 'menu2' --line 3 --text 'ALTERAR LIMITE' --callback_data '_altlimite2'
 ShellBot.InlineKeyboardButton --button 'menu2' --line 3 --text 'INFO USUARIOS' --callback_data '_verusers2'
 ShellBot.InlineKeyboardButton --button 'menu2' --line 4 --text 'CAMBIAR CONTRASEÑA' --callback_data '_altsenha2'
 ShellBot.InlineKeyboardButton --button 'menu2' --line 4 --text 'BORRAR EXPIRADOS' --callback_data '_expirados2'
-#ShellBot.InlineKeyboardButton --button 'menu2' --line 5 --text 'ALTERAR FECHA' --callback_data '_altdata2'
 ShellBot.InlineKeyboardButton --button 'menu2' --line 5 --text 'REVENTA' --callback_data '_opcoesrev2'
 ShellBot.InlineKeyboardButton --button 'menu2' --line 6 --text 'INFORME' --callback_data '_relatorio2'
 ShellBot.InlineKeyboardButton --button 'menu2' --line 6 --text 'AYUDA' --callback_data '_ajuda2'
-ShellBot.regHandleFunction --function fun_adduser --callback_data _criaruser2
-ShellBot.regHandleFunction --function fun_add_teste --callback_data _criarteste2
+ShellBot.regHandleFunction --function fun_adduser_rev --callback_data _criaruser2
+ShellBot.regHandleFunction --function fun_add_teste_rev --callback_data _criarteste2
 ShellBot.regHandleFunction --function fun_deluser --callback_data _deluser2
 ShellBot.regHandleFunction --function alterar_senha --callback_data _altsenha2
-ShellBot.regHandleFunction --function alterar_limite --callback_data _altlimite2
-ShellBot.regHandleFunction --function alterar_data_user --callback_data _altdata2
 ShellBot.regHandleFunction --function monitor_ssh --callback_data _monitor2
 ShellBot.regHandleFunction --function ver_users --callback_data _verusers2
 ShellBot.regHandleFunction --function fun_exp_user --callback_data _expirados2
@@ -1827,121 +1823,85 @@ ShellBot.regHandleFunction --function fun_ajuda --callback_data _ajuda2
 unset keyboard2
 keyboard2="$(ShellBot.InlineKeyboardMarkup -b 'menu2')"
 
-#LISTA MUNU SUB REVENDEDOR
-unset menu3
-menu3=''
-ShellBot.InlineKeyboardButton --button 'menu3' --line 1 --text 'CREAR USUARIO' --callback_data '_criaruser3'
-ShellBot.InlineKeyboardButton --button 'menu3' --line 1 --text 'CREAR TEST' --callback_data '_criarteste3'
-ShellBot.InlineKeyboardButton --button 'menu3' --line 2 --text 'REMOVER' --callback_data '_deluser3'
-ShellBot.InlineKeyboardButton --button 'menu3' --line 2 --text 'USUARIOS ONLINE' --callback_data '_monitor3'
-ShellBot.InlineKeyboardButton --button 'menu3' --line 3 --text 'ALTERAR LIMITE' --callback_data '_altlimite3'
-ShellBot.InlineKeyboardButton --button 'menu3' --line 3 --text 'INFO USUARIOS' --callback_data '_verusers3'
-ShellBot.InlineKeyboardButton --button 'menu3' --line 4 --text 'CAMBIAR CONTRASEÑA' --callback_data '_altsenha3'
-ShellBot.InlineKeyboardButton --button 'menu3' --line 4 --text 'BORRAR EXPIRADOS' --callback_data '_expirados3'
-ShellBot.InlineKeyboardButton --button 'menu3' --line 5 --text 'ALTERAR FECHA' --callback_data '_altdata3'
-ShellBot.InlineKeyboardButton --button 'menu3' --line 5 --text 'AYUDA' --callback_data '_ajuda3'
-ShellBot.regHandleFunction --function fun_adduser --callback_data _criaruser3
-ShellBot.regHandleFunction --function fun_add_teste --callback_data _criarteste3
-ShellBot.regHandleFunction --function fun_deluser --callback_data _deluser3
-ShellBot.regHandleFunction --function alterar_senha --callback_data _altsenha3
-ShellBot.regHandleFunction --function alterar_limite --callback_data _altlimite3
-ShellBot.regHandleFunction --function alterar_data_user --callback_data _altdata3
-ShellBot.regHandleFunction --function monitor_ssh --callback_data _monitor3
-ShellBot.regHandleFunction --function ver_users --callback_data _verusers3
-ShellBot.regHandleFunction --function fun_exp_user --callback_data _expirados3
-ShellBot.regHandleFunction --function fun_ajuda --callback_data _ajuda3
-unset keyboard3
-keyboard3="$(ShellBot.InlineKeyboardMarkup -b 'menu3')"
+# Función especial para crear usuarios desde revendedor
+fun_adduser_rev() {
+    local msg
+    CAD_ARQ=/tmp/cad.${callback_query_from_id}
+    ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
+        --text "👤 CREAR USUARIO 👤\n\nNombre de usuario:" \
+        --reply_markup "$(ShellBot.ForceReply)"
+}
 
-#LISTA MENU OPCOES REVENDA
-unset menu4
-menu4=''
-ShellBot.InlineKeyboardButton --button 'menu4' --line 1 --text 'AGREGAR REVENDEDOR' --callback_data '_addrev'
-ShellBot.InlineKeyboardButton --button 'menu4' --line 2 --text 'REMOVER REVENDEDOR' --callback_data '_delrev'
-ShellBot.InlineKeyboardButton --button 'menu4' --line 3 --text 'ALTERAR CUPOS DE REVENTA' --callback_data '_limrev'
-ShellBot.InlineKeyboardButton --button 'menu4' --line 4 --text 'ALTERAR DATOS DE REVENTA' --callback_data '_datrev'
-ShellBot.InlineKeyboardButton --button 'menu4' --line 5 --text 'LISTA DE REVENDEDORES' --callback_data '_listrev'
-ShellBot.InlineKeyboardButton --button 'menu4' --line 6 --text 'SUSPENDER REVENDEDOR' --callback_data '_susprevendas'
-ShellBot.regHandleFunction --function fun_add_revenda --callback_data _addrev
-ShellBot.regHandleFunction --function fun_del_rev --callback_data _delrev
-ShellBot.regHandleFunction --function fun_lim_rev --callback_data _limrev
-ShellBot.regHandleFunction --function fun_dat_rev --callback_data _datrev
-ShellBot.regHandleFunction --function fun_list_rev --callback_data _listrev
-ShellBot.regHandleFunction --function fun_susp_rev --callback _susprevendas
-unset keyboard4
-keyboard4="$(ShellBot.InlineKeyboardMarkup -b 'menu4')"
+# Función especial para crear tests desde revendedor
+fun_add_teste_rev() {
+    local msg
+    CAD_ARQ=/tmp/cad.${callback_query_from_id}
+    ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
+        --text "👤 CREAR TEST 👤\n\nHoras para expirar? Ej: 1:" \
+        --reply_markup "$(ShellBot.ForceReply)"
+}
 
-while :; do
-    [[ -e "/etc/SSHPlus/backups/backup.vps" ]] && {
-        backup_auto
+# Modificar el caso de respuesta para revendedores
+case ${message_reply_to_message_text[$id]} in
+'👤 CREAR USUARIO 👤\n\nNombre de usuario:')
+    verifica_acesso
+    [[ "$_erro" == '1' ]] && break
+    [[ "$(awk -F : '$3 >= 1000 { print $1 }' /etc/passwd | grep -w ${message_text[$id]} | wc -l)" != '0' ]] && {
+        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
+            --text "$(echo -e "❌ Error! USUARIO INVALIDO ❌\n\n⚠️ Ingrese Otro Nombre..")" \
+            --parse_mode html
+        >$CAD_ARQ
+        break
     }
-    #Obtem as atualizações
-    ShellBot.getUpdates --limit 100 --offset $(ShellBot.OffsetNext) --timeout 35
-    #Lista o índice das atualizações
-    for id in $(ShellBot.ListUpdates); do
-        #Inicio thread
-        (
-            ShellBot.watchHandle --callback_data ${callback_query_data[$id]}
-            # Requisições somente no privado.
-            [[ ${message_chat_type[$id]} != 'private' ]] && continue
-            [[ ${message_text[$id]} ]] || restaure_backup
-            CAD_ARQ=/tmp/cad.${message_from_id[$id]}
-            if [[ ${message_entities_type[$id]} == bot_command ]]; then
-                #Verifica se a mensagem enviada pelo usuário é um comando válido.
-                case ${message_text[$id]} in
-                *)
-                    :
-                    #comandos
-                    comando=(${message_text[$id]})
-                    [[ "${comando[0]}" = "/start" ]] && msg_bem_vindo
-                    [[ "${comando[0]}" = "/menu" ]] && fun_menu
-                    [[ "${comando[0]}" = "/info" ]] && infouserbot
-                    [[ "${comando[0]}" = "/hrlp" || "${comando[0]}" = "/ayuda" ]] && fun_ajuda
-                    [[ "${comando[0]}" = "/bot" || "${comando[0]}" = "/sobre" ]] && sobremim
-                    ;;
-                esac
-            fi
-            if [[ ${message_reply_to_message_message_id[$id]} ]]; then
-                # Analisa a interface de resposta.
-                case ${message_reply_to_message_text[$id]} in
-                '👤 CREAR USUARIO 👤\n\nNombre de usuario:')
-                    verifica_acesso
-                    [[ "$_erro" == '1' ]] && break
-                    [[ "$(awk -F : '$3 >= 1000 { print $1 }' /etc/passwd | grep -w ${message_text[$id]} | wc -l)" != '0' ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "❌ Error! USUARIO INVALIDO ❌\n\n⚠️ Ingrese Otro Nombre..")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                    }
-                    [ "${message_text[$id]}" == 'root' ] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "❌ ERROR! USUARIO INVALIDO ❌\n\n⚠️ Ingrese Otro Nombre..")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                    }
-                    sizemin=$(echo -e ${#message_text[$id]})
-                    [[ "$sizemin" -lt '4' ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "❌ Error !\n\nUtilice al menos 4 caracteres\n[Ej: test]")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                    }
-                    sizemax=$(echo -e ${#message_text[$id]})
-                    [[ "$sizemax" -gt '10' ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "❌ Error !\n\nUse maximo 8 caracteres\n[Ej: Telegram]")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                    }
-                    echo "Nome: ${message_text[$id]}" >$CAD_ARQ
-                    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text 'Pass:' \
-                        --reply_markup "$(ShellBot.ForceReply)" # Força a resposta.
-                    ;;
+    [ "${message_text[$id]}" == 'root' ] && {
+        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
+            --text "$(echo -e "❌ ERROR! USUARIO INVALIDO ❌\n\n⚠️ Ingrese Otro Nombre..")" \
+            --parse_mode html
+        >$CAD_ARQ
+        break
+    }
+    sizemin=$(echo -e ${#message_text[$id]})
+    [[ "$sizemin" -lt '4' ]] && {
+        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
+            --text "$(echo -e "❌ Error !\n\nUtilice al menos 4 caracteres\n[Ej: test]")" \
+            --parse_mode html
+        >$CAD_ARQ
+        break
+    }
+    sizemax=$(echo -e ${#message_text[$id]})
+    [[ "$sizemax" -gt '10' ]] && {
+        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
+            --text "$(echo -e "❌ Error !\n\nUse maximo 8 caracteres\n[Ej: Telegram]")" \
+            --parse_mode html
+        >$CAD_ARQ
+        break
+    }
+    echo "Nome: ${message_text[$id]}" >$CAD_ARQ
+    
+    # Para revendedores, asignamos valores fijos
+    if [[ "${message_from_id[$id]}" != "$id_admin" ]]; then
+        echo "Senha: $(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)" >>$CAD_ARQ
+        echo "Limite: 1" >>$CAD_ARQ  # Límite de conexión fijo a 1
+        info_data=$(date '+%d/%m/%C%y' -d " +31 days")  # 31 días por defecto
+        echo "Validade: $info_data" >>$CAD_ARQ
+        criar_user $CAD_ARQ
+        [[ "$(grep -w ${message_text[$id]} /etc/passwd)" = '0' ]] && {
+            ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
+                --text "$(echo -e ❌ Error al crear usuario !)" \
+                --parse_mode html
+            >$CAD_ARQ
+            break
+        }
+        ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
+            --text "<b>✅ CREADO CON ÉXITO ✅</b>\n\n👤 User: <code>$(awk -F " " '/Nome/ {print $2}' $CAD_ARQ)</code>\n🔑 Pass: <code>$(awk -F " " '/Senha/ {print $2}' $CAD_ARQ)</code>\n📱 Dispositivos: $(awk -F " " '/Limite/ {print $2}' $CAD_ARQ)\n⏱️ Expira: $(awk -F " " '/Validade/ {print $2}' $CAD_ARQ)" \
+            --parse_mode html
+    else
+        # Admin sigue con el flujo normal
+        ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
+            --text 'Pass:' \
+            --reply_markup "$(ShellBot.ForceReply)"
+    fi
+    ;;
                 'Pass:')
                     sizepass=$(echo -e ${#message_text[$id]})
                     verifica_acesso
