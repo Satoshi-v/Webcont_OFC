@@ -1789,7 +1789,7 @@ ShellBot.regHandleFunction --function fun_add_teste --callback_data _criarteste
 ShellBot.regHandleFunction --function fun_deluser --callback_data _deluser
 ShellBot.regHandleFunction --function alterar_senha --callback_data _altsenha
 ShellBot.regHandleFunction --function alterar_limite --callback_data _altlimite
-ShellBot.regHandleFunction --function alterar_data --callback_data _altdata
+ShellBot.regHandleFunction --function alterar_data_user --callback_data _altdata
 ShellBot.regHandleFunction --function fun_down --callback_data _arqdown
 ShellBot.regHandleFunction --function monitor_ssh --callback_data _monitor
 ShellBot.regHandleFunction --function ver_users --callback_data _verusers
@@ -1825,7 +1825,7 @@ ShellBot.regHandleFunction --function fun_add_teste --callback_data _criarteste2
 ShellBot.regHandleFunction --function fun_deluser --callback_data _deluser2
 ShellBot.regHandleFunction --function alterar_senha --callback_data _altsenha2
 ShellBot.regHandleFunction --function alterar_limite --callback_data _altlimite2
-ShellBot.regHandleFunction --function alterar_data --callback_data _altdata2
+ShellBot.regHandleFunction --function alterar_data_user --callback_data _altdata2
 ShellBot.regHandleFunction --function monitor_ssh --callback_data _monitor2
 ShellBot.regHandleFunction --function ver_users --callback_data _verusers2
 ShellBot.regHandleFunction --function fun_exp_user --callback_data _expirados2
@@ -1853,7 +1853,7 @@ ShellBot.regHandleFunction --function fun_add_teste --callback_data _criarteste3
 ShellBot.regHandleFunction --function fun_deluser --callback_data _deluser3
 ShellBot.regHandleFunction --function alterar_senha --callback_data _altsenha3
 ShellBot.regHandleFunction --function alterar_limite --callback_data _altlimite3
-ShellBot.regHandleFunction --function alterar_data --callback_data _altdata3
+ShellBot.regHandleFunction --function alterar_data_user --callback_data _altdata3
 ShellBot.regHandleFunction --function monitor_ssh --callback_data _monitor3
 ShellBot.regHandleFunction --function ver_users --callback_data _verusers3
 ShellBot.regHandleFunction --function fun_exp_user --callback_data _expirados3
