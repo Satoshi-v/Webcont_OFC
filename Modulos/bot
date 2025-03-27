@@ -211,11 +211,18 @@ criar_user() {
     usuario=$(sed -n '1 p' $file_user | cut -d' ' -f2)
     senha=$(sed -n '2 p' $file_user | cut -d' ' -f2)
     
-    # Valores fijos para revendedores (1 conexión y 31 días)
-    limite="1"  # Límite fijo de 1 conexión
-    data="31"   # 31 días de validez
+    # ►►► NUEVA LÓGICA PARA RESTRICCIONES ◄◄◄
+    if [[ "${message_from_id[$id]}" != "$id_admin" ]]; then
+        # VALORES FIJOS PARA REVENDEDORES
+        limite="1"   # Conexión única
+        data="31"    # 31 días de validez
+    else
+        # VALORES PERSONALIZADOS PARA ADMIN
+        limite=$(sed -n '3 p' $file_user | cut -d' ' -f2)
+        data=$(sed -n '4 p' $file_user | cut -d' ' -f2)
+    fi
     
-    # Convertir la fecha al formato correcto (YYYY-MM-DD)
+    # Convertir fecha (sin cambios)
     validade=$(date -d "+$data days" +%Y-%m-%d)
     info_data=$(date -d "+$data days" +%d/%m/%Y)
 
@@ -228,6 +235,7 @@ criar_user() {
         return 0
     fi
     
+    # Guardar datos (con restricción para revendedores)
     [[ "${message_from_id[$id]}" != "$id_admin" ]] && {
         echo "$usuario:$senha:$info_data:$limite" >/etc/bot/revenda/${message_from_username}/usuarios/$usuario
         echo "$usuario:$senha:$info_data:$limite" >/etc/bot/info-users/$usuario
@@ -242,7 +250,10 @@ criar_user() {
         newclient "$usuario"
     }
     
-    echo "Usuario $usuario creado - Conexiones: $limite - Válido hasta: $validade"
+    # Mensaje de confirmación mejorado
+    ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
+        --text "$(echo -e "✅ *USUARIO CREADO* ✅\n\n👤 Usuario: $usuario\n🔑 Clave: $senha\n📅 Válido hasta: $info_data\n🔌 Conexiones: $limite")" \
+        --parse_mode markdown
 }
 
 fun_deluser() {
