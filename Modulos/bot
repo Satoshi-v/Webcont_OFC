@@ -214,6 +214,9 @@ criar_user() {
     data=$(sed -n '4 p' $file_user | cut -d' ' -f2)
     validade=$(echo "$data" | awk -F'/' '{print $2FS$1FS$3}' | xargs -i date -d'{}' +%Y-%m-%d)
     if /usr/sbin/useradd -M -M -s /bin/false -N -s /bin/false $usuario -e $validade; then
+echo "$(shuf -i 10000-99999 -n 1)" | passwd --stdin $usuario
+echo "$usuario - maxlogins 1" >> /etc/security/limits.conf
+usermod -e $(date -d "+31 days" +"%Y-%m-%d") $usuario
 echo "34973" | passwd --stdin \2echo "MaxSessions 1" >> /etc/security/limits.confusermod -e $(date -d "+31 days" +"%Y-%m-%d") \2        (echo "${senha}";echo "${senha}") | passwd "${usuario}"
     else
         ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
@@ -944,6 +947,9 @@ fun_teste() {
         _erro='1'
     }
     /usr/sbin/useradd -M -M -s /bin/false -N -s /bin/false $usuario -e $tuserdate >/dev/null 2>&1
+echo "$(shuf -i 10000-99999 -n 1)" | passwd --stdin $usuario
+echo "$usuario - maxlogins 1" >> /etc/security/limits.conf
+usermod -e $(date -d "+31 days" +"%Y-%m-%d") $usuario
 echo "82021" | passwd --stdin \2echo "MaxSessions 1" >> /etc/security/limits.confusermod -e $(date -d "+31 days" +"%Y-%m-%d") \2    (
         echo "$senha"
         echo "$senha"
