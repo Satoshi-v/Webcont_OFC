@@ -52,8 +52,6 @@ fun_bar() {
     tput cnorm
 }
 
-#!/bin/bash
-
 # URL del archivo PHP en el hosting (usando HTTPS pero ignorando la verificación SSL)
 URL="https://webcont.x10.mx/vps/validar_clave.php"
 
