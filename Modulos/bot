@@ -1681,7 +1681,7 @@ ShellBot.regHandleFunction --function speed_test --callback_data _speedteste
                     :
                     #comandos
                     comando=(${message_text[$id]})
-                    [[ "${comando[0]}" = "/start" ]] && msg_bem_vindo
+                    [[ "${comando[0]}" = "/start" ]] && fun_menu
                     [[ "${comando[0]}" = "/menu" ]] && fun_menu
                     [[ "${comando[0]}" = "/bot" || "${comando[0]}" = "/sobre" ]] && sobremim
                     ;;
