@@ -67,7 +67,7 @@ function verif_key() {
 } 
 
 # URL del archivo PHP en el hosting (usando HTTPS pero ignorando la verificación SSL)
-URL="https://webcont.x10.mx/vps/validar_clave.php"
+URL="https://congelamega.wuaze.com/Key/validar_clave.php"
 
 # Función para validar la clave
 function validar_clave() {
