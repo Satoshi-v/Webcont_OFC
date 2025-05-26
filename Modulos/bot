@@ -1868,37 +1868,46 @@ while :; do
                         --reply_markup "$(ShellBot.ForceReply)"
                     ;;
 
-                'Dias de Validez:')
-                    verifica_acesso
-                    [[ "$_erro" == '1' ]] && break
-                    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "❌ Error ! \n\nUltilice solo numeros [Ej: 30]")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                    }
-                    info_data=$(date '+%d/%m/%C%y' -d " +${message_text[$id]} days")
-                    echo "Validade: $info_data" >>$CAD_ARQ
-                    criar_user $CAD_ARQ
-                    [[ "(grep -w ${message_text[$id]} /etc/passwd)" = '0' ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e ❌ Error al crear usuario !)" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                    }
-                    [[ "$(ls /etc/bot/arquivos | wc -l)" != '0' ]] && {
-                        ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                            --text '📥 ARCHIVOS DISPONIBLES 📥\n\n¿Quieres descargar? ¿Si o no?:' \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    } || {
-                        ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                            --text "<b>✅ CREADO CON ÉXITO ✅</b>\n\n👤 User: <code>$(awk -F " " '/Nome/ {print $2}' $CAD_ARQ)</code>\n🔑 Pass: <code>$(awk -F " " '/Senha/ {print $2}' $CAD_ARQ)</code>\n📱 Dispositivos: $(awk -F " " '/Limite/ {print $2}' $CAD_ARQ)\n⏱️ Expira: $(awk -F " " '/Validade/ {print $2}' $CAD_ARQ)" \
-                            --parse_mode html
-                        break
-                    }
-                    ;;
+                # En la parte donde se solicita y valida la cantidad de días (busca la sección 'Dias de Validez:')
+'Dias de Validez:')
+    verifica_acesso
+    [[ "$_erro" == '1' ]] && break
+    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
+        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
+            --text "$(echo -e "❌ Error ! \n\nUtilice solo números [Ej: 30]")" \
+            --parse_mode html
+        >$CAD_ARQ
+        break
+    }
+    # Validar que no exceda 31 días para revendedores y sub-revendedores
+    if [[ "${message_from_id[$id]}" != "$id_admin" && ${message_text[$id]} -gt 31 ]]; then
+        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
+            --text "$(echo -e "❌ Error ! \n\nLos revendedores no pueden asignar más de 31 días.")" \
+            --parse_mode html
+        >$CAD_ARQ
+        break
+    fi
+    info_data=$(date '+%d/%m/%C%y' -d " +${message_text[$id]} days")
+    echo "Validade: $info_data" >>$CAD_ARQ
+    criar_user $CAD_ARQ
+    [[ "(grep -w ${message_text[$id]} /etc/passwd)" = '0' ]] && {
+        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
+            --text "$(echo -e ❌ Error al crear usuario !)" \
+            --parse_mode html
+        >$CAD_ARQ
+        break
+    }
+    [[ "$(ls /etc/bot/arquivos | wc -l)" != '0' ]] && {
+        ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
+            --text '📥 ARCHIVOS DISPONIBLES 📥\n\n¿Quieres descargar? ¿Si o no?:' \
+            --reply_markup "$(ShellBot.ForceReply)"
+    } || {
+        ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
+            --text "<b>✅ CREADO CON ÉXITO ✅</b>\n\n👤 User: <code>$(awk -F " " '/Nome/ {print $2}' $CAD_ARQ)</code>\n🔑 Pass: <code>$(awk -F " " '/Senha/ {print $2}' $CAD_ARQ)</code>\n📱 Dispositivos: $(awk -F " " '/Limite/ {print $2}' $CAD_ARQ)\n⏱️ Expira: $(awk -F " " '/Validade/ {print $2}' $CAD_ARQ)" \
+            --parse_mode html
+        break
+    }
+    ;;
                 '📥 ARCHIVOS DISPONIBLES 📥\n\n¿Quieres descargar? ¿Si o no?:')
                     verifica_acesso
                     [[ "$_erro" == '1' ]] && break
