@@ -113,22 +113,6 @@ criar_user() {
     limite=$(sed -n '3 p' $file_user | cut -d' ' -f2)
     data=$(sed -n '4 p' $file_user | cut -d' ' -f2)
     validade=$(echo "$data" | awk -F'/' '{print $2FS$1FS$3}' | xargs -i date -d'{}' +%Y-%m-%d)
-    # Bloqueo para revenda/subrevenda: limite máximo 1 conexión
-if [[ "${message_from_id[$id]}" != "$id_admin" ]] && [[ "$limite" -gt 1 ]]; then
-    ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-        --text "❌ Como revendedor/subrevendedor solo puedes asignar 1 como máximo en el límite de conexión." \
-        --parse_mode html
-    return 0
-fi
-
-# Bloqueo para revenda/subrevenda: máximo 31 días de validez
-dias_validade=$(( ( $(date -ud "$validade" +%s) - $(date -ud $(date +%Y-%m-%d) +%s) )/60/60/24 ))
-if [[ "${message_from_id[$id]}" != "$id_admin" ]] && [[ "$dias_validade" -gt 31 ]]; then
-    ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-        --text "❌ Como revendedor/subrevendedor solo puedes asignar máximo 31 días de validez." \
-        --parse_mode html
-    return 0
-fi
     if /usr/sbin/useradd -M -N -s /bin/false $usuario -e $validade; then
         (echo "${senha}";echo "${senha}") | passwd "${usuario}"
     else
@@ -260,14 +244,6 @@ alterar_limite() {
 alterar_limite_user() {
     usuario=$1
     limite=$2
-# Bloqueo para revenda/subrevenda: limite máximo 1 conexión
-if [[ "${message_from_id[$id]}" != "$id_admin" ]] && [[ "$limite" -gt 1 ]]; then
-    ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-        --text "❌ Como revendedor/subrevendedor solo puedes asignar 1 como máximo en el límite de conexión." \
-        --parse_mode html
-    _erro='1'
-    return 0
-fi
     database="/root/usuarios.db"
     [[ "${message_from_id[$id]}" == "$id_admin" ]] && {
         grep -v ^$usuario[[:space:]] /root/usuarios.db >/tmp/a
