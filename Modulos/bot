@@ -1855,7 +1855,7 @@ while :; do
                         [[ "$_limsomarev2" -gt "$_limTotal" ]] && {
                             _restant1=$(($_limTotal - $_result))
                             ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                                --text "$(echo -e "❌ No tienes suficientes límites\n\nLimite Diponiblel: $_restant1 ")" \
+                                --text "$(echo -e "❌ No tienes suficientes Cupos\n\nLimite disponible: $_restant1 ")" \
                                 --parse_mode html
                             >$CAD_ARQ
                             break
@@ -2359,25 +2359,6 @@ while :; do
                                     --text "$(echo -e "❌ El SubRevendedor ${message_text[$id]} no existe")" \
                                     --parse_mode html
                                 break
-'Dias de acceso [Ej: 30]:')
-    verifica_acesso
-    [[ "$_erro" == '1' ]] && break
-    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
-        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-            --text "$(echo -e "❌ Error ! \n\nUltilize apenas numeros [Ej: 30]")" \
-            --parse_mode html
-        break
-    }
-    MAX_DIAS=31
-    if [[ "${message_from_id[$id]}" != "$id_admin" ]]; then
-        if (( ${message_text[$id]} > MAX_DIAS )); then
-            ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                --text "$(echo -e "❌ No puedes poner más de $MAX_DIAS días")" \
-                --parse_mode html
-            break
-        fi
-    fi
-    # ... (el resto de tu lógica actual)
                             }
                         }
                     }
