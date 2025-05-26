@@ -19,11 +19,6 @@ ativos='/etc/bot/lista_ativos'
 suspensos='/etc/bot/lista_suspensos'
 ShellBot.init --token "$api_bot" --monitor --return map --flush
 ShellBot.username
-
-# Función para generar una contraseña aleatoria de 5 dígitos
-generate_random_password() {
-    echo $((RANDOM % 90000 + 10000))
-}
 fun_menu() {
     [[ "${message_from_id[$id]}" == "$id_admin" ]] && {
         local env_msg
