@@ -855,15 +855,15 @@ fun_teste() {
     }
     dir_teste="/etc/bot/revenda/${message_from_username}/usuarios/$usuario"
     cat <<-EOF >/etc/SSHPlus/userteste/$usuario.sh
-        #!/bin/bash
-        # USUARIO TESTE
-        [[ \$(ps -u "$usuario" | grep -c sshd) != '0' ]] && pkill -u $usuario
-        userdel --force $usuario
-        grep -v ^$usuario[[:space:]] /root/usuarios.db > /tmp/ph ; cat /tmp/ph > /root/usuarios.db
-        [[ -e $dir_teste ]] && rm $dir_teste
-        rm /etc/SSHPlus/senha/$usuario > /dev/null 2>&1
-        rm /etc/SSHPlus/userteste/$usuario.sh
-        EOF
+	#!/bin/bash
+	# USUARIO TESTE
+	[[ \$(ps -u "$usuario" | grep -c sshd) != '0' ]] && pkill -u $usuario
+	userdel --force $usuario
+	grep -v ^$usuario[[:space:]] /root/usuarios.db > /tmp/ph ; cat /tmp/ph > /root/usuarios.db
+	[[ -e $dir_teste ]] && rm $dir_teste
+	rm /etc/SSHPlus/senha/$usuario > /dev/null 2>&1
+	rm /etc/SSHPlus/userteste/$usuario.sh
+	EOF
     chmod +x /etc/SSHPlus/userteste/$usuario.sh
     echo "/etc/SSHPlus/userteste/$usuario.sh" | at now + $t_time hour >/dev/null 2>&1
     [[ "$t_time" == '1' ]] && hrs="hora" || hrs="horas"
@@ -1032,8 +1032,8 @@ relatorio_rev() {
             msg="=×=×=×=×=×=×=×=×=×=×=×=×=×=\n"
             msg+="<b>📊 INFORME | COMPLETO</b>\n"
             msg+="=×=×=×=×=×=×=×=×=×=×=×=×=×=\n\n"
-            msg+="<b>Limite de Cupos:</b> $_cont_limite\n"
-            msg+="<b>Cupos Disponibles:</b> $_cont_disp\n"
+            msg+="<b>Limite de Logins:</b> $_cont_limite\n"
+            msg+="<b>Limite Disponivel:</b> $_cont_disp\n"
             ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
                 --text "$msg" \
                 --parse_mode html
@@ -1054,8 +1054,8 @@ relatorio_rev() {
         msg="=×=×=×=×=×=×=×=×=×=×=×=×=×=\n"
         msg+="<b>📊 INFORME | COMPLETO</b>\n"
         msg+="=×=×=×=×=×=×=×=×=×=×=×=×=×=\n\n"
-        msg+="<b>Limite de Cupos:</b> $_cont_limite\n"
-        msg+="<b>Cupos Disponibles:</b> $_cont_disp\n"
+        msg+="<b>Limite de Logins:</b> $_cont_limite\n"
+        msg+="<b>Limite Disponivel:</b> $_cont_disp\n"
         msg+="<b>Sub-Revendas Total:</b> $_cont_atv\n"
         msg+="<b>Sub-Reventas Suspendidas:</b> $_cont_sup\n"
         msg+="<b>User:</b> @${callback_query_from_username}\n"
@@ -1688,16 +1688,18 @@ ShellBot.InlineKeyboardButton --button 'menu2' --line 1 --text 'CREAR USUARIO' -
 ShellBot.InlineKeyboardButton --button 'menu2' --line 1 --text 'CREAR TEST' --callback_data '_criarteste2'
 ShellBot.InlineKeyboardButton --button 'menu2' --line 2 --text 'REMOVER' --callback_data '_deluser2'
 ShellBot.InlineKeyboardButton --button 'menu2' --line 2 --text 'USUARIOS ONLINE' --callback_data '_monitor2'
+ShellBot.InlineKeyboardButton --button 'menu2' --line 3 --text 'ALTERAR LIMITE' --callback_data '_altlimite2'
 ShellBot.InlineKeyboardButton --button 'menu2' --line 3 --text 'INFO USUARIOS' --callback_data '_verusers2'
-ShellBot.InlineKeyboardButton --button 'menu2' --line 3 --text 'CAMBIAR CONTRASEÑA' --callback_data '_altsenha2'
+ShellBot.InlineKeyboardButton --button 'menu2' --line 4 --text 'CAMBIAR CONTRASEÑA' --callback_data '_altsenha2'
 ShellBot.InlineKeyboardButton --button 'menu2' --line 4 --text 'BORRAR EXPIRADOS' --callback_data '_expirados2'
-ShellBot.InlineKeyboardButton --button 'menu2' --line 4 --text 'ALTERAR FECHA' --callback_data '_altdata2'
+ShellBot.InlineKeyboardButton --button 'menu2' --line 5 --text 'ALTERAR FECHA' --callback_data '_altdata2'
 ShellBot.InlineKeyboardButton --button 'menu2' --line 5 --text 'REVENTA' --callback_data '_opcoesrev2'
-ShellBot.InlineKeyboardButton --button 'menu2' --line 5 --text 'CUPOS' --callback_data '_relatorio2'
+ShellBot.InlineKeyboardButton --button 'menu2' --line 6 --text 'INFORME' --callback_data '_relatorio2'
 ShellBot.regHandleFunction --function fun_adduser --callback_data _criaruser2
 ShellBot.regHandleFunction --function fun_add_teste --callback_data _criarteste2
 ShellBot.regHandleFunction --function fun_deluser --callback_data _deluser2
 ShellBot.regHandleFunction --function alterar_senha --callback_data _altsenha2
+ShellBot.regHandleFunction --function alterar_limite --callback_data _altlimite2
 ShellBot.regHandleFunction --function alterar_data --callback_data _altdata2
 ShellBot.regHandleFunction --function monitor_ssh --callback_data _monitor2
 ShellBot.regHandleFunction --function ver_users --callback_data _verusers2
@@ -1714,14 +1716,16 @@ ShellBot.InlineKeyboardButton --button 'menu3' --line 1 --text 'CREAR USUARIO' -
 ShellBot.InlineKeyboardButton --button 'menu3' --line 1 --text 'CREAR TEST' --callback_data '_criarteste3'
 ShellBot.InlineKeyboardButton --button 'menu3' --line 2 --text 'REMOVER' --callback_data '_deluser3'
 ShellBot.InlineKeyboardButton --button 'menu3' --line 2 --text 'USUARIOS ONLINE' --callback_data '_monitor3'
+ShellBot.InlineKeyboardButton --button 'menu3' --line 3 --text 'ALTERAR LIMITE' --callback_data '_altlimite3'
 ShellBot.InlineKeyboardButton --button 'menu3' --line 3 --text 'INFO USUARIOS' --callback_data '_verusers3'
-ShellBot.InlineKeyboardButton --button 'menu3' --line 3 --text 'CAMBIAR CONTRASEÑA' --callback_data '_altsenha3'
+ShellBot.InlineKeyboardButton --button 'menu3' --line 4 --text 'CAMBIAR CONTRASEÑA' --callback_data '_altsenha3'
 ShellBot.InlineKeyboardButton --button 'menu3' --line 4 --text 'BORRAR EXPIRADOS' --callback_data '_expirados3'
-ShellBot.InlineKeyboardButton --button 'menu3' --line 4 --text 'ALTERAR FECHA' --callback_data '_altdata3'
+ShellBot.InlineKeyboardButton --button 'menu3' --line 5 --text 'ALTERAR FECHA' --callback_data '_altdata3'
 ShellBot.regHandleFunction --function fun_adduser --callback_data _criaruser3
 ShellBot.regHandleFunction --function fun_add_teste --callback_data _criarteste3
 ShellBot.regHandleFunction --function fun_deluser --callback_data _deluser3
 ShellBot.regHandleFunction --function alterar_senha --callback_data _altsenha3
+ShellBot.regHandleFunction --function alterar_limite --callback_data _altlimite3
 ShellBot.regHandleFunction --function alterar_data --callback_data _altdata3
 ShellBot.regHandleFunction --function monitor_ssh --callback_data _monitor3
 ShellBot.regHandleFunction --function ver_users --callback_data _verusers3
@@ -1851,7 +1855,7 @@ while :; do
                         [[ "$_limsomarev2" -gt "$_limTotal" ]] && {
                             _restant1=$(($_limTotal - $_result))
                             ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                                --text "$(echo -e "❌ No tienes suficientes cupos\n\nLimite disponiblel: $_restant1 ")" \
+                                --text "$(echo -e "❌ No tienes suficientes límites\n\nLimite disponivel: $_restant1 ")" \
                                 --parse_mode html
                             >$CAD_ARQ
                             break
