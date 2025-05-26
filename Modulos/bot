@@ -19,6 +19,11 @@ ativos='/etc/bot/lista_ativos'
 suspensos='/etc/bot/lista_suspensos'
 ShellBot.init --token "$api_bot" --monitor --return map --flush
 ShellBot.username
+
+# Función para generar una contraseña aleatoria de 5 dígitos
+generate_random_password() {
+    echo $((RANDOM % 90000 + 10000))
+}
 fun_menu() {
     [[ "${message_from_id[$id]}" == "$id_admin" ]] && {
         local env_msg
@@ -80,9 +85,20 @@ fun_adduser() {
         return 0
     }
     [[ "${callback_query_from_id[$id]}" == "$id_admin" ]] || [[ "$(grep -wc ${callback_query_from_username} $ativos)" != '0' ]] && {
+        # Aquí prevenimos que revendedores y sub-revendedores ingresen valores manualmente
+        local generated_password
+        generated_password=$(generate_random_password)
+        
+        # Configuración predeterminada
+        local default_limit=1
+        local default_days=31
+        local expiration_date
+        expiration_date=$(date '+%Y-%m-%d' -d "+$default_days days")
+
         ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-            --text "👤 CREAR USUARIO 👤\n\nNombre de usuario:" \
+            --text "👤 CREAR USUARIO AUTOMÁTICAMENTE 👤\n\nNombre de usuario: Indique un nombre" \
             --reply_markup "$(ShellBot.ForceReply)"
+        return 0
     } || {
         ShellBot.answerCallbackQuery --callback_query_id ${callback_query_id[$id]} \
             --text "🚫 ACESSO NEGADO 🚫"
@@ -92,38 +108,29 @@ fun_adduser() {
 
 criar_user() {
     IP=$(cat /etc/IP)
-    newclient() {
-        cp /etc/openvpn/client-common.txt ~/$1.ovpn
-        echo "<ca>" >>~/$1.ovpn
-        cat /etc/openvpn/easy-rsa/pki/ca.crt >>~/$1.ovpn
-        echo "</ca>" >>~/$1.ovpn
-        echo "<cert>" >>~/$1.ovpn
-        cat /etc/openvpn/easy-rsa/pki/issued/$1.crt >>~/$1.ovpn
-        echo "</cert>" >>~/$1.ovpn
-        echo "<key>" >>~/$1.ovpn
-        cat /etc/openvpn/easy-rsa/pki/private/$1.key >>~/$1.ovpn
-        echo "</key>" >>~/$1.ovpn
-        echo "<tls-auth>" >>~/$1.ovpn
-        cat /etc/openvpn/ta.key >>~/$1.ovpn
-        echo "</tls-auth>" >>~/$1.ovpn
-    }
     file_user=$1
     usuario=$(sed -n '1 p' $file_user | cut -d' ' -f2)
-    senha=$(sed -n '2 p' $file_user | cut -d' ' -f2)
-    limite=$(sed -n '3 p' $file_user | cut -d' ' -f2)
-    data=$(sed -n '4 p' $file_user | cut -d' ' -f2)
+    
+    # Generar contraseña aleatoria de 5 dígitos
+    senha=$(generate_random_password)
+    
+    # Configuración predeterminada
+    limite=1
+    data=$(date '+%Y-%m-%d' -d "+31 days")
     validade=$(echo "$data" | awk -F'/' '{print $2FS$1FS$3}' | xargs -i date -d'{}' +%Y-%m-%d)
+
     if /usr/sbin/useradd -M -N -s /bin/false $usuario -e $validade; then
-        (echo "${senha}";echo "${senha}") | passwd "${usuario}"
+        (echo "${senha}"; echo "${senha}") | passwd "${usuario}"
     else
         ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
                 --text "$(echo -e "❌ ERROR AL CREAR EL USUARIO ❌")" \
                 --parse_mode html
         return 0
     fi
+
     [[ "${message_from_id[$id]}" != "$id_admin" ]] && {
-        echo "$usuario:$senha:$info_data:$limite" >/etc/bot/revenda/${message_from_username}/usuarios/$usuario
-        echo "$usuario:$senha:$info_data:$limite" >/etc/bot/info-users/$usuario
+        echo "$usuario:$senha:$data:$limite" >/etc/bot/revenda/${message_from_username}/usuarios/$usuario
+        echo "$usuario:$senha:$data:$limite" >/etc/bot/info-users/$usuario
     }
     echo "$usuario $limite" >>/root/usuarios.db
     echo "$senha" >/etc/SSHPlus/senha/$usuario
@@ -132,7 +139,7 @@ criar_user() {
         ./easyrsa build-client-full $usuario nopass
         newclient "$usuario"
     }
-    echo "usuario $usuario $validade $senha criado"
+    echo "Usuario $usuario creado con contraseña $senha, límite $limite y validez $data"
 }
 
 fun_deluser() {
@@ -855,15 +862,15 @@ fun_teste() {
     }
     dir_teste="/etc/bot/revenda/${message_from_username}/usuarios/$usuario"
     cat <<-EOF >/etc/SSHPlus/userteste/$usuario.sh
-	#!/bin/bash
-	# USUARIO TESTE
-	[[ \$(ps -u "$usuario" | grep -c sshd) != '0' ]] && pkill -u $usuario
-	userdel --force $usuario
-	grep -v ^$usuario[[:space:]] /root/usuarios.db > /tmp/ph ; cat /tmp/ph > /root/usuarios.db
-	[[ -e $dir_teste ]] && rm $dir_teste
-	rm /etc/SSHPlus/senha/$usuario > /dev/null 2>&1
-	rm /etc/SSHPlus/userteste/$usuario.sh
-	EOF
+        #!/bin/bash
+        # USUARIO TESTE
+        [[ \$(ps -u "$usuario" | grep -c sshd) != '0' ]] && pkill -u $usuario
+        userdel --force $usuario
+        grep -v ^$usuario[[:space:]] /root/usuarios.db > /tmp/ph ; cat /tmp/ph > /root/usuarios.db
+        [[ -e $dir_teste ]] && rm $dir_teste
+        rm /etc/SSHPlus/senha/$usuario > /dev/null 2>&1
+        rm /etc/SSHPlus/userteste/$usuario.sh
+        EOF
     chmod +x /etc/SSHPlus/userteste/$usuario.sh
     echo "/etc/SSHPlus/userteste/$usuario.sh" | at now + $t_time hour >/dev/null 2>&1
     [[ "$t_time" == '1' ]] && hrs="hora" || hrs="horas"
