@@ -339,19 +339,19 @@ fun_cupos_disponibles() {
             --text "⚠️ ¡ESTÁS SUSPENDIDO! CONTACTAR AL ADMINISTRADOR"
         return 0
     }
-
+    
     if [[ "$(grep -w "${callback_query_from_username}" $ativos | grep -wc 'revenda')" != '0' ]]; then
         _cont_limite=$(grep -w ${callback_query_from_username} $ativos | awk '{print $4}')
         fun_verif_limite_rev ${callback_query_from_username}
         _cont_disp=$(echo "$_cont_limite - $_result" | bc)
-
+        
         local msg
         msg="╔═════════════•⊱✦⊰•═════════════╗\n"
         msg+="<b>           ✨ TUS CUPOS DISPONIBLES ✨</b>\n"
         msg+="╚═════════════•⊱✦⊰•═════════════╝\n\n"
         msg+="<b>Tu Usuario:</b> @${callback_query_from_username}\n"
         msg+="<b>Cupos Disponibles:</b> $_cont_disp\n"
-
+        
         ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
             --text "$(echo -e "$msg")" \
             --parse_mode html
@@ -743,9 +743,9 @@ fun_add_teste() {
                 --text "❌ NO TIENES LIMITE DISPONIBLE!"
             return 0
         } || {
-            # PARA REVENDEDORES: Llamar directamente a fun_teste con 2 horas, sin pedir input.
-            fun_teste 2
-            return 0
+            ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
+                --text "👤 CREAR TEST 👤\n\nHoras para expirar? Ej: 1:" \
+                --reply_markup "$(ShellBot.ForceReply)"
         }
     else
         ShellBot.answerCallbackQuery --callback_query_id ${callback_query_id[$id]} \
@@ -759,8 +759,8 @@ fun_teste() {
     senha='1234'
     limite='1'
     t_time=$1
-    ex_date=$(date '+%d/%m/%C%y' -d " +$t_time hours")
-    tuserdate=$(date '+%C%y/%m/%d' -d " +$t_time hours")
+    ex_date=$(date '+%d/%m/%C%y' -d " +2 days")
+    tuserdate=$(date '+%C%y/%m/%d' -d " +2 days")
     [[ -z $t_time ]] && {
         ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
             --text "$(echo -e "❌ Error intente nuevamente")" \
@@ -946,17 +946,17 @@ relatorio_rev() {
                 --text "⚠️ ¡ESTÁS SUSPENDIDO! CONTACTAR AL ADMINISTRADOR"
             return 0
         }
-
+        
         _cont_limite=$(grep -w ${callback_query_from_username} $ativos | awk '{print $4}')
         fun_verif_limite_rev ${callback_query_from_username}
         _cont_disp=$(echo "$_cont_limite - $_result" | bc)
-
+        
         local msg
         msg="╔═════════════•⊱✦⊰•═════════════╗\n"
         msg+="<b>           ✨ TUS CUPOS DISPONIBLES ✨</b>\n"
         msg+="╚═════════════•⊱✦⊰•═════════════╝\n\n"
         msg+="<b>Cupos Disponibles:</b> $_cont_disp\n"
-
+        
         ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
             --text "$(echo -e "$msg")" \
             --parse_mode html
@@ -969,7 +969,7 @@ relatorio_rev() {
 }
 
 fun_backauto() {
-    [[ "${callback_query_from_id[$id]}" == "$id_admin" ]] && {
+    [[ "${callback_query_from_id[$id]}" = "$id_admin" ]] && {
         [[ ! -d /etc/SSHPlus/backups ]] && {
             mkdir /etc/SSHPlus/backups
             [[ $(crontab -l | grep -c "userbackup") = '0' ]] && (
@@ -1650,7 +1650,7 @@ while :; do
                     comando=(${message_text[$id]})
                     [[ "${comando[0]}" = "/start" ]] && msg_bem_vindo
                     [[ "${comando[0]}" = "/menu" ]] && fun_menu
-                    [[ "${comando[0]}" = "/info" ]] && infouserbot
+                    [[ "${comando[0]}" = "/info" ]] && infouserbot                   
                     [[ "${comando[0]}" = "/bot" || "${comando[0]}" = "/sobre" ]] && sobremim
                     ;;
                 esac
@@ -1976,7 +1976,7 @@ while :; do
                         [[ $download_file -eq 1 ]] && {
                             file_id=($file_id)
                             ShellBot.getFile --file_id "${file_id[0]}"
-                            ShellBot.downloadFile --file_path "${return[file_path]}" --dir "/tmp/file" && {
+                            ShellBot.downloadFile --file_path ${return[file_path]} --dir "/tmp/file" && {
                                 msg='*✅ Archivo hospedado exitosamente.*\n\n'
                                 msg+="*📤 Informaciones*\n\n"
                                 msg+="*Nombre*: ${message_document_file_name}\n"
@@ -1997,7 +1997,7 @@ while :; do
                     ;;
                 'Deseja restaurar ? [si | nao]')
                     Resp=${message_text[$id]}
-                    [[ ${message_from_id[$id]} == ${id_admin} ]] && break
+                    [[ ${message_from_id[$id]} != ${id_admin} ]] && break
                     [[ $Resp != ?(+|-)+([a-z]) ]] && {
                         ShellBot.sendMessage --chat_id ${id_admin} \
                             --text "$(echo -e "❌ Error ! \n\n⚠️ Ultilice solo si o no")" \
