@@ -855,15 +855,15 @@ fun_teste() {
     }
     dir_teste="/etc/bot/revenda/${message_from_username}/usuarios/$usuario"
     cat <<-EOF >/etc/SSHPlus/userteste/$usuario.sh
-        #!/bin/bash
-        # USUARIO TESTE
-        [[ \$(ps -u "$usuario" | grep -c sshd) != '0' ]] && pkill -u $usuario
-        userdel --force $usuario
-        grep -v ^$usuario[[:space:]] /root/usuarios.db > /tmp/ph ; cat /tmp/ph > /root/usuarios.db
-        [[ -e $dir_teste ]] && rm $dir_teste
-        rm /etc/SSHPlus/senha/$usuario > /dev/null 2>&1
-        rm /etc/SSHPlus/userteste/$usuario.sh
-        EOF
+	#!/bin/bash
+	# USUARIO TESTE
+	[[ \$(ps -u "$usuario" | grep -c sshd) != '0' ]] && pkill -u $usuario
+	userdel --force $usuario
+	grep -v ^$usuario[[:space:]] /root/usuarios.db > /tmp/ph ; cat /tmp/ph > /root/usuarios.db
+	[[ -e $dir_teste ]] && rm $dir_teste
+	rm /etc/SSHPlus/senha/$usuario > /dev/null 2>&1
+	rm /etc/SSHPlus/userteste/$usuario.sh
+	EOF
     chmod +x /etc/SSHPlus/userteste/$usuario.sh
     echo "/etc/SSHPlus/userteste/$usuario.sh" | at now + $t_time hour >/dev/null 2>&1
     [[ "$t_time" == '1' ]] && hrs="hora" || hrs="horas"
@@ -1649,7 +1649,7 @@ ShellBot.InlineKeyboardButton --button 'menu1' --line 2 --text 'CREAR TEST' --ca
 ShellBot.InlineKeyboardButton --button 'menu1' --line 3 --text 'REMOVER' --callback_data '_deluser'
 ShellBot.InlineKeyboardButton --button 'menu1' --line 4 --text 'CAMBIAR CONTRASEÑA' --callback_data '_altsenha'
 ShellBot.InlineKeyboardButton --button 'menu1' --line 5 --text 'ALTERAR LIMITE' --callback_data '_altlimite'
-ShellBot.InlineKeyboardButton --button 'menu1' --line 6 --text 'RENOVAR' --callback_data '_altdata'
+ShellBot.InlineKeyboardButton --button 'menu1' --line 6 --text 'ALTERAR FECHA' --callback_data '_altdata'
 ShellBot.InlineKeyboardButton --button 'menu1' --line 7 --text 'ONLINE' --callback_data '_monitor'
 ShellBot.InlineKeyboardButton --button 'menu1' --line 8 --text 'INFO USUARIOS' --callback_data '_verusers'
 ShellBot.InlineKeyboardButton --button 'menu1' --line 9 --text 'BORRAR EXPIRADOS' --callback_data '_expirados'
@@ -1692,7 +1692,7 @@ ShellBot.InlineKeyboardButton --button 'menu2' --line 3 --text 'ALTERAR LIMITE' 
 ShellBot.InlineKeyboardButton --button 'menu2' --line 3 --text 'INFO USUARIOS' --callback_data '_verusers2'
 ShellBot.InlineKeyboardButton --button 'menu2' --line 4 --text 'CAMBIAR CONTRASEÑA' --callback_data '_altsenha2'
 ShellBot.InlineKeyboardButton --button 'menu2' --line 4 --text 'BORRAR EXPIRADOS' --callback_data '_expirados2'
-ShellBot.InlineKeyboardButton --button 'menu2' --line 5 --text 'RENOVAR' --callback_data '_altdata2'
+ShellBot.InlineKeyboardButton --button 'menu2' --line 5 --text 'ALTERAR FECHA' --callback_data '_altdata2'
 ShellBot.InlineKeyboardButton --button 'menu2' --line 5 --text 'REVENTA' --callback_data '_opcoesrev2'
 ShellBot.InlineKeyboardButton --button 'menu2' --line 6 --text 'INFORME' --callback_data '_relatorio2'
 ShellBot.regHandleFunction --function fun_adduser --callback_data _criaruser2
@@ -2024,51 +2024,102 @@ while :; do
                     rm /tmp/name-l >/dev/null 2>&1
                     ;;
                 '⏳ Alterar Fecha ⏳\n\nNombre de usuario:')
-    verifica_acesso
-    [[ "$_erro" == '1' ]] && break
-    fun_verif_user ${message_text[$id]}
-    [[ "$_erro" == '1' ]] && break
-    echo "${message_text[$id]}" >/tmp/name-d
-    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-        --text 'ingrese cantidad de dias:' \
-        --reply_markup "$(ShellBot.ForceReply)"
-    ;;
-'ingrese cantidad de dias:')
-    verifica_acesso
-    [[ "$_erro" == '1' ]] && break
-    [[ ${message_text[$id]} != ?(+|-)+([0-9/]) ]] && {
-        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-            --text "$(echo -e "❌ Error! Siga el ejemplo\n\nDias formato [Ej: 30]\nFormato dato [Ej: 30/12/2019]")" \
-            --parse_mode html
-        break
-    }
-    
-    # Validar que revendedores no puedan poner más de 31 días
-    if [[ "${message_from_id[$id]}" != "$id_admin" && ${message_text[$id]} -gt 31 ]]; then
-        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-            --text "$(echo -e "❌ Error ! \n\nLos revendedores solo pueden asignar hasta 31 días.")" \
-            --parse_mode html
-        rm /tmp/name-d >/dev/null 2>&1
-        break
-    fi
-
-    alterar_data_user $(cat /tmp/name-d) ${message_text[$id]}
-    [[ "$_erro" == '1' ]] && break
-    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-        --text "$(echo -e "=×=×=×=×=×=×=×=×=×=×=×\n<b>✅ DATO ALTERADO !</b> !\n=×=×=×=×=×=×=×=×=×=×=×\n\n<b>Usuario:</b> $(cat /tmp/name-d)\n<b>Nueva Fecha:</b> $udata")" \
-        --parse_mode html
-    rm /tmp/name-d >/dev/null 2>&1
-    ;;
-'🗑Eliminar archivo\nIngrese el número del archivo:')
-    [[ "${message_from_id[$id]}" != "$id_admin" ]] && break
-    Opc1=${message_text[$id]}
-    echo $Opc1
-    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
-        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-            --text "$(echo -e "❌ Error al Excluir archivo ! \n\n⚠️ Utilize solo numeros [Ej: 1]")" \
-            --parse_mode html
-        break
-    }
+                    verifica_acesso
+                    [[ "$_erro" == '1' ]] && break
+                    fun_verif_user ${message_text[$id]}
+                    [[ "$_erro" == '1' ]] && break
+                    echo "${message_text[$id]}" >/tmp/name-d
+                    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
+                        --text 'ingrese cantidad de dias:' \
+                        --reply_markup "$(ShellBot.ForceReply)"
+                    ;;
+                'ingrese cantidad de dias:')
+                    verifica_acesso
+                    [[ "$_erro" == '1' ]] && break
+                    [[ ${message_text[$id]} != ?(+|-)+([0-9/]) ]] && {
+                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
+                            --text "$(echo -e "❌ Error! Siga el ejemplo\n\nDias formato [Ej: 30]\nFormato dato [Ej: 30/12/2019]")" \
+                            --parse_mode html
+                        break
+                    }
+                    alterar_data_user $(cat /tmp/name-d) ${message_text[$id]}
+                    [[ "$_erro" == '1' ]] && break
+                    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
+                        --text "$(echo -e "=×=×=×=×=×=×=×=×=×=×=×\n<b>✅ DATO ALTERADO !</b> !\n=×=×=×=×=×=×=×=×=×=×=×\n\n<b>Usuario:</b> $(cat /tmp/name-d)\n<b>Nueva Fecha:</b> $udata")" \
+                        --parse_mode html
+                    rm /tmp/name-d >/dev/null 2>&1
+                    ;;
+                '[1] - AGREGAR ARCHIVO\n[2] - EXCLUIR ARCHIVO\n\nIngrese la opcion [1-2]')
+                    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
+                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
+                            --text "$(echo -e "❌ Error ! \n\n⚠️ Utilize solo numeros [Ej: 1 o 2]")" \
+                            --parse_mode html
+                        break
+                    }
+                    if [[ "${message_text[$id]}" = '1' ]]; then
+                        ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
+                            --text "📤 HOSPEDAR ARCHIVOS 📤\n\nEnvíame el archivo:" \
+                            --reply_markup "$(ShellBot.ForceReply)"
+                    elif [[ "${message_text[$id]}" = '2' ]]; then
+                        [[ $(ls /etc/bot/arquivos | wc -l) != '0' ]] && {
+                            msg_cli1="≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠\n"
+                            msg_cli1+="🚀<b> ARCHIVOS HOSPEDADOS </b>\n"
+                            msg_cli1+="≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠\n\n"
+                            for _file in $(ls /etc/bot/arquivos); do
+                                i=$(($i + 1))
+                                msg_cli1+="<b>[$i]</b> - $_file\n"
+                            done
+                            ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
+                                --text "$(echo -e "$msg_cli1")" \
+                                --parse_mode html
+                            ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
+                                --text "🗑Eliminar archivo\nIngrese el número del archivo:" \
+                                --reply_markup "$(ShellBot.ForceReply)"
+                        } || {
+                            ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
+                                --text "$(echo -e "Nao existe arquivos disponiveis")" \
+                                --parse_mode html
+                            break
+                        }
+                    else
+                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
+                            --text "$(echo -e "❌ Opcion Invalida")" \
+                            --parse_mode html
+                        break
+                    fi
+                    ;;
+                '🗑Eliminar archivo\nIngrese el número del archivo:')
+                    [[ "${message_from_id[$id]}" != "$id_admin" ]] && break
+                    Opc1=${message_text[$id]}
+                    echo $Opc1
+                    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
+                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
+                            --text "$(echo -e "❌ Error al Excluir archivo ! \n\n⚠️ Utilize solo numeros [Ej: 1]")" \
+                            --parse_mode html
+                        break
+                    } || {
+                        echo "opcao $Opc1"
+                        _DirArq=$(ls /etc/bot/arquivos)
+                        i=0
+                        unset _Pass
+                        while read _Arq; do
+                            i=$(expr $i + 1)
+                            _oP=$i
+                            [[ $i == [1-9] ]] && i=0$i && oP+=" 0$i"
+                            echo -e "[$i] - $_Arq"
+                            _Pass+="\n${_oP}:${_Arq}"
+                        done <<<"${_DirArq}"
+                        _file=$(echo -e "${_Pass}" | grep -E "\b$Opc1\b" | cut -d: -f2)
+                        [[ -e /etc/bot/arquivos/$_file ]] && {
+                            rm /etc/bot/arquivos/$_file
+                            ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
+                                --text "✅ *Excluido con éxito* ✅" \
+                                --parse_mode markdown
+                            break
+                        } || {
+                            ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
+                                --text "$(echo -e "❌ Opcion invalida")"
+                            break
                         }
                     }
                     ;;
@@ -2334,7 +2385,7 @@ while :; do
                     dat_rev $CAD_ARQ
                     [[ "$_erro" == '1' ]] && break
                     ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text "$(echo -e "=×=×=×=×=×=×=×=×=×=×=×\n<b>✅ RENOVADO CON ÉXITO !</b> !\n=×=×=×=×=×=×=×=×=×=×=×\n\n$(<$CAD_ARQ)")" \
+                        --text "$(echo -e "=×=×=×=×=×=×=×=×=×=×=×\n<b>✅ DATO ALTERADO !</b> !\n=×=×=×=×=×=×=×=×=×=×=×\n\n$(<$CAD_ARQ)")" \
                         --parse_mode html
                     ;;
                     # SUSPENDER REVENDEDOR
