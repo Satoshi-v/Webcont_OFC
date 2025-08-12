@@ -53,7 +53,7 @@ fun_bar() {
     tput cnorm
 }
 
-# --- [✓] CLAVE DE INSTALACIÓN DESACTIVADA ---
+# --- CLAVE DE INSTALACIÓN DESACTIVADA ---
 echo -e "\033[1;32m[✓] Modo sin clave activado. Continuando con la instalación...\033[0m"
 
 # Redefinir la visualización del terminal
@@ -82,7 +82,7 @@ echo -e "\033[1;36m[✓] Descargando archivos necesarios...\033[0m"
 rm -f $_Ink/list >/dev/null 2>&1
 wget -P $_Ink https://raw.githubusercontent.com/Satoshi-V/Webcont_OFC/main/Install/list -O $_Ink/list >/dev/null 2>&1
 
-# Verificación básica de que el archivo exista (opcional, sin clave)
+# Verificación básica de que el archivo exista
 if [[ ! -f "$_Ink/list" ]]; then
     echo -e "\033[1;31m[✘] Error: No se pudo descargar el archivo 'list'.\033[0m"
     exit 1
@@ -135,9 +135,9 @@ echo -e "\033[0;34m┗━━━━━━━━━━━━━━━━━━━�
 echo ""
 tput setaf 2 ; tput bold ; read -p "¿Opción?: " -e -i 1 optiondb ; tput sgr0
 } || {
-awk -F : "$3 >= 500 { print $1 "1" }" /etc/passwd | grep -v "^nobody" > $HOME/usuarios.db
+awk -F : "$3 >= 500 { print $1 \"1\" }" /etc/passwd | grep -v "^nobody" > $HOME/usuarios.db
 }
-[[ "$optiondb" = "2" ]] && awk -F : "$3 >= 500 { print $1 " 1" }" /etc/passwd | grep -v "^nobody" > $HOME/usuarios.db
+[[ "$optiondb" = "2" ]] && awk -F : "$3 >= 500 { print $1 \" 1\" }" /etc/passwd | grep -v "^nobody" > $HOME/usuarios.db
 
 # Redefinir terminal
 tput reset
@@ -245,9 +245,8 @@ if [[ -f "/usr/sbin/ufw" ]]; then
   echo "Configuraciones de UFW aplicadas."
 fi
 
-# Instalar rustyproxy
-tput reset
-bash <(wget -qO- https://raw.githubusercontent.com/PhoenixxZ2023/RustyProxyOnly/refs/heads/main/install.sh)
+# --- ✅ SE ELIMINÓ LA INSTALACIÓN DE RUSTYPROXY ---
+echo -e "\033[1;32m[✓] Instalación de RustyProxy omitida.\033[0m"
 
 # Instalar herramientas de red
 tput reset
@@ -265,15 +264,19 @@ fun_bar "sudo apt-get install -y netcat >/dev/null 2>&1"
 tput reset
 echo -e "\033[1;36mINSTALANDO DNS PERSONALIZADOS\033[0m"
 echo ""
-iptables -F
-sudo rm -f /etc/resolv.conf
+
+# ⚠️ Evitar bloqueo del sistema
+# iptables -F  # Comentado para evitar pérdida de conexión
+
 echo -e 'nameserver 1.1.1.1
 nameserver 1.0.0.1
 nameserver 8.8.8.8
 nameserver 8.4.4.8
 nameserver 208.67.222.222
 nameserver 208.67.220.220' | sudo tee /etc/resolv.conf
-sudo chattr +i /etc/resolv.conf
+
+# ⚠️ Evitar chattr +i que puede causar problemas
+# sudo chattr +i /etc/resolv.conf  # Eliminado
 
 # Finalización
 tput reset
