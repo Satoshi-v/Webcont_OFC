@@ -313,30 +313,38 @@ alterar_data_user() {
     usuario=$1
     inputdate=$2
     database="/root/usuarios.db"
-    [[ "$(echo -e "$inputdate" | sed -e 's/[^/]//ig')" != '//' ]] && {
-        udata=$(date "+%d/%m/%Y" -d "+$inputdate days")
-        sysdate="$(echo "$udata" | awk -v FS=/ -v OFS=- '{print $3,$2,$1}')"
-    } || {
-        udata=$(echo -e "$inputdate")
-        sysdate="$(echo -e "$inputdate" | awk -v FS=/ -v OFS=- '{print $3,$2,$1}')"
-        today="$(date -d today +"%Y%m%d")"
-        timemachine="$(date -d "$sysdate" +"%Y%m%d")"
-        [ $today -ge $timemachine ] && {
-            verify='1'
-            ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                --text "$(echo -e "❌ Error! Dato invalido")" \
-                --parse_mode html
-            _erro='1'
-            return 0
-        }
-    }
-    chage -E $sysdate $usuario
-    [[ -e /etc/bot/revenda/${message_from_username}/usuarios/$usuario ]] && {
-        data2=$(cat /etc/bot/info-users/$usuario | awk -F : {'print $3'})
-        sed -i "s;$data2;$udata;" /etc/bot/info-users/$usuario
-        echo $usuario $udata ${message_from_username}
-        sed -i "s;$data2;$udata;" /etc/bot/revenda/${message_from_username}/usuarios/$usuario
-    }
+
+    if [[ $inputdate =~ ^[0-9]+$ ]]; then
+        # input son días
+        sysdate=$(date -d "+$inputdate days" +"%Y-%m-%d")
+        udata=$(date -d "+$inputdate days" +"%d/%m/%Y")
+    else
+        # input es fecha dd/mm/YYYY
+        sysdate=$(echo "$inputdate" | awk -F/ '{printf "%04d-%02d-%02d\n",$3,$2,$1}')
+        udata="$inputdate"
+    fi
+
+    # Aplicar en el sistema (dos comandos para asegurar)
+    chage -E "$sysdate" "$usuario"
+    usermod -e "$sysdate" "$usuario"
+
+    # Actualizar info-users
+    if [[ -e /etc/bot/info-users/$usuario ]]; then
+        old=$(awk -F : '{print $3}' /etc/bot/info-users/$usuario)
+        sed -i "s;$old;$udata;" /etc/bot/info-users/$usuario
+    fi
+
+    # Actualizar carpeta del revendedor
+    if [[ -e /etc/bot/revenda/${message_from_username}/usuarios/$usuario ]]; then
+        old=$(awk -F : '{print $3}' /etc/bot/revenda/${message_from_username}/usuarios/$usuario)
+        sed -i "s;$old;$udata;" /etc/bot/revenda/${message_from_username}/usuarios/$usuario
+    fi
+
+    # Actualizar usuarios.db
+    if grep -qw "$usuario" "$database"; then
+        old=$(grep -w "$usuario" "$database" | awk '{print $2}')
+        sed -i "/^$usuario / s/$old/$udata/" "$database"
+    fi
 }
 
 ver_users() {
@@ -1997,9 +2005,25 @@ while :; do
                         --parse_mode html
                     rm /tmp/name-l >/dev/null 2>&1
                     ;;
-                '⏳ Alterar Fecha ⏳\n\nNombre de usuario:')
+                                                                '⏳ Alterar Fecha ⏳\n\nNombre de usuario:')
                     verifica_acesso
                     [[ "$_erro" == '1' ]] && break
+
+                    # --- Verificar límites antes de permitir alterar ---
+                    if [[ "${message_from_id[$id]}" != "$id_admin" ]]; then
+                        revendedor="${message_from_username}"
+                        limite_atual=$(grep -w "$revendedor" $ativos | awk '{print $4}')
+
+                        if [[ -z "$limite_atual" || "$limite_atual" -le 0 ]]; then
+                            ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
+                                --text "⚠️ No tienes límites disponibles para alterar fechas." \
+                                --parse_mode html
+                            _erro='1'
+                            return 0
+                        fi
+                    fi
+                    # --- Fin verificación de límites ---
+
                     fun_verif_user ${message_text[$id]}
                     [[ "$_erro" == '1' ]] && break
                     echo "${message_text[$id]}" >/tmp/name-d
@@ -2007,31 +2031,48 @@ while :; do
                         --text 'ingrese cantidad de dias:' \
                         --reply_markup "$(ShellBot.ForceReply)"
                     ;;
-                                'ingrese cantidad de dias:')
+
+                'ingrese cantidad de dias:')
                     verifica_acesso
                     [[ "$_erro" == '1' ]] && break
                     [[ ${message_text[$id]} != ?(+|-)+([0-9/]) ]] && {
                         ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
                             --text "$(echo -e "❌ Error! Siga el ejemplo\n\nDias formato [Ej: 30]\nFormato dato [Ej: 30/12/2019]")" \
                             --parse_mode html
-                        break
+                        _erro='1'
+                        return 0
                     }
+
+                    # --- Validar máximo de 32 días para revendedores/subrevendedores ---
+                    if [[ "${message_from_id[$id]}" != "$id_admin" ]]; then
+                        if [[ ${message_text[$id]} =~ ^[0-9]+$ ]]; then
+                            if [[ ${message_text[$id]} -gt 32 ]]; then
+                                ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
+                                    --text "⚠️ Solo puedes renovar hasta 32 días máximo." \
+                                    --parse_mode html
+                                _erro='1'
+                                return 0
+                            fi
+                        fi
+                    fi
+                    # --- Fin validación máximo de 32 días ---
+
                     alterar_data_user $(cat /tmp/name-d) ${message_text[$id]}
                     [[ "$_erro" == '1' ]] && break
 
                     # --- Restar 1 límite ---
-                    revendedor="${message_from_username}"
-                    if grep -qw "$revendedor" $ativos; then
+                    if [[ "${message_from_id[$id]}" != "$id_admin" ]]; then
+                        revendedor="${message_from_username}"
                         limite_atual=$(grep -w "$revendedor" $ativos | awk '{print $4}')
-                        if [[ $limite_atual -gt 0 ]]; then
+                        if [[ -n "$limite_atual" && "$limite_atual" -gt 0 ]]; then
                             novo=$((limite_atual - 1))
-                            sed -i "s/\($revendedor .* \)$limite_atual/\1$novo/" $ativos
+                            sed -i "/$revendedor/ s/LIMITE: $limite_atual/LIMITE: $novo/" $ativos
                         fi
                     fi
                     # --- Fin restar 1 límite ---
 
                     ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text "$(echo -e "=×=×=×=×=×=×=×=×=×=×=×\n<b>✅ DATO ALTERADO !</b> !\n=×=×=×=×=×=×=×=×=×=×=×\n\n<b>Usuario:</b> $(cat /tmp/name-d)\n<b>Nueva Fecha:</b> $udata")" \
+                        --text "$(echo -e "=×=×=×=×=×=×=×=×=×=×=×\n<b>✅ DATO ALTERADO !</b>\n=×=×=×=×=×=×=×=×=×=×=×\n\n<b>Usuario:</b> $(cat /tmp/name-d)\n<b>Nueva Fecha:</b> $udata")" \
                         --parse_mode html
                     rm /tmp/name-d >/dev/null 2>&1
                     ;;
