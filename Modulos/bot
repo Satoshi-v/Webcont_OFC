@@ -2007,7 +2007,7 @@ while :; do
                         --text 'ingrese cantidad de dias:' \
                         --reply_markup "$(ShellBot.ForceReply)"
                     ;;
-                'ingrese cantidad de dias:')
+                                'ingrese cantidad de dias:')
                     verifica_acesso
                     [[ "$_erro" == '1' ]] && break
                     [[ ${message_text[$id]} != ?(+|-)+([0-9/]) ]] && {
@@ -2018,11 +2018,24 @@ while :; do
                     }
                     alterar_data_user $(cat /tmp/name-d) ${message_text[$id]}
                     [[ "$_erro" == '1' ]] && break
+
+                    # --- Restar 1 límite ---
+                    revendedor="${message_from_username}"
+                    if grep -qw "$revendedor" $ativos; then
+                        limite_atual=$(grep -w "$revendedor" $ativos | awk '{print $4}')
+                        if [[ $limite_atual -gt 0 ]]; then
+                            novo=$((limite_atual - 1))
+                            sed -i "s/\($revendedor .* \)$limite_atual/\1$novo/" $ativos
+                        fi
+                    fi
+                    # --- Fin restar 1 límite ---
+
                     ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
                         --text "$(echo -e "=×=×=×=×=×=×=×=×=×=×=×\n<b>✅ DATO ALTERADO !</b> !\n=×=×=×=×=×=×=×=×=×=×=×\n\n<b>Usuario:</b> $(cat /tmp/name-d)\n<b>Nueva Fecha:</b> $udata")" \
                         --parse_mode html
                     rm /tmp/name-d >/dev/null 2>&1
                     ;;
+
                 '[1] - AGREGAR ARCHIVO\n[2] - EXCLUIR ARCHIVO\n\nIngrese la opcion [1-2]')
                     [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
                         ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
