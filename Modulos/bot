@@ -23,7 +23,7 @@ ShellBot.username
 fun_menu() {
     [[ "${message_from_id[$id]}" == "$id_admin" ]] && {
         local env_msg
-        env_msg="╔══════════•⊱✦⊰•══════════╗\n"
+        env_msg="╔══════════•⊱✦⊰•═════════╗\n"
         env_msg+="<b>               🔥 BOT WEBCONT 🔥</b>\n"
         env_msg+="╚══════════•⊱✦⊰•══════════╝\n\n"
         ShellBot.sendMessage --chat_id ${message_chat_id[$id]} --text "$env_msg" \
@@ -447,7 +447,7 @@ ver_users() {
         }
         [[ $(ls /etc/bot/revenda/${callback_query_from_username}/usuarios | wc -l) == '0' ]] && {
             ShellBot.answerCallbackQuery --callback_query_id ${callback_query_id[$id]} \
-                --text "VC AINDA NAO CRIOU USUARIO!"
+                --text "AUN NO TIENES USUARIOS !"
             return 0
         }
         arq_info=/tmp/$(echo $RANDOM)
@@ -587,7 +587,7 @@ monitor_ssh() {
         }
         [[ $(ls /etc/bot/revenda/${callback_query_from_username}/usuarios | wc -l) == '0' ]] && {
             ShellBot.answerCallbackQuery --callback_query_id ${callback_query_id[$id]} \
-                --text "VC AINDA NAO CRIOU USUARIO!"
+                --text "AUN NO TIENES USUARIOS !"
             return 0
         }
         database="/root/usuarios.db"
@@ -950,7 +950,7 @@ fun_exp_user() {
     if [[ "${callback_query_from_id[$id]}" == "$id_admin" ]]; then
         [[ $(cat /root/usuarios.db | wc -l) == '0' ]] && {
             ShellBot.answerCallbackQuery --callback_query_id ${callback_query_id[$id]} \
-                --text "VC AINDA NAO CRIOU USUARIO!"
+                --text "AUN NO TIENES USUARIOS !"
             return 0
         }
         datenow=$(date +%s)
@@ -985,7 +985,7 @@ fun_exp_user() {
         }
         [[ $(ls /etc/bot/revenda/${callback_query_from_username}/usuarios | wc -l) == '0' ]] && {
             ShellBot.answerCallbackQuery --callback_query_id ${callback_query_id[$id]} \
-                --text "VC AINDA NAO CRIOU USUARIO!"
+                --text "AUN NO TIENES USUARIOS !"
             return 0
         }
         datenow=$(date +%s)
@@ -1293,33 +1293,35 @@ lim_rev() {
     }
     # Extraer usuario sin @ y sin espacios
     _rev_usern=$(grep -w 'Revendedor' $_file_lim | cut -d' ' -f2- | sed 's/@//g' | xargs)
-    sumar_cupos=$(grep -w 'Limite' $_file_lim | awk {'print $2'} | xargs)
+    ajuste_cupos=$(grep -w 'Limite' $_file_lim | awk {'print $2'} | xargs)
     
-    # Validaciones
+    # Validaciones: permitir números con signo negativo
     [[ -z "$_rev_usern" ]] && {
         ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
             --text "$(echo -e "❌ Usuario no válido")" \
             --parse_mode html
         return 0
     }
-    [[ ! "$sumar_cupos" =~ ^[0-9]+$ ]] && {
+    [[ ! "$ajuste_cupos" =~ ^\-?[0-9]+$ ]] && {
         ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-            --text "$(echo -e "❌ El límite debe ser un número positivo")" \
+            --text "$(echo -e "❌ Debe ingresar un número (ej: 5 o -3)")" \
             --parse_mode html
         return 0
     }
 
-    # Función para actualizar el límite en cualquier archivo (sumando)
+    # Función para actualizar el límite en cualquier archivo (suma con signo)
     actualizar_limite() {
         local archivo=$1
         local usuario=$2
-        local suma=$3
-        # Usar awk para sumar el valor de LIMITE
-        awk -v u="$usuario" -v s="$suma" '
+        local ajuste=$3
+        # Usar awk para sumar (o restar si ajuste es negativo)
+        awk -v u="$usuario" -v a="$ajuste" '
             $0 ~ u {
                 for(i=1;i<=NF;i++){
                     if($i=="LIMITE:"){
-                        $(i+1) += s
+                        $(i+1) += a
+                        # Si el nuevo valor es menor que 0, lo fijamos a 0
+                        if ($(i+1) < 0) $(i+1) = 0
                         break
                     }
                 }
@@ -1328,34 +1330,49 @@ lim_rev() {
         ' "$archivo" > "${archivo}.tmp" && mv "${archivo}.tmp" "$archivo"
     }
     
-    # Obtener límite actual antes de sumar (para mostrar en mensaje)
+    # Obtener límite actual antes de ajustar (para mostrar en mensaje)
     limite_actual=$(grep -w "$_rev_usern" $ativos | awk '{print $4}')
-    nuevo_limite=$((limite_actual + sumar_cupos))
+    
+    # Calcular nuevo límite (solo para mostrar, el awk ya lo hará)
+    nuevo_limite=$((limite_actual + ajuste_cupos))
+    if [[ $nuevo_limite -lt 0 ]]; then
+        nuevo_limite=0
+        ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
+            --text "$(echo -e "⚠️ El límite no puede ser negativo. Se ha establecido a 0.")" \
+            --parse_mode html
+    fi
+    
+    # Determinar si es suma o resta para el mensaje
+    if [[ $ajuste_cupos -ge 0 ]]; then
+        operacion="➕ Sumados"
+    else
+        operacion="➖ Restados"
+    fi
     
     # Caso 1: Revendedor activo
     if [[ -d /etc/bot/revenda/$_rev_usern ]]; then
-        # Actualizar archivo de configuración del revendedor (sumar)
         if [[ -f /etc/bot/revenda/$_rev_usern/$_rev_usern ]]; then
             l_old=$(grep -w 'LIMITE_REVENDA' /etc/bot/revenda/$_rev_usern/$_rev_usern | awk {'print $2'})
-            l_new=$((l_old + sumar_cupos))
+            l_new=$((l_old + ajuste_cupos))
+            [[ $l_new -lt 0 ]] && l_new=0
             sed -i "/LIMITE_REVENDA/ s/$l_old/$l_new/g" /etc/bot/revenda/$_rev_usern/$_rev_usern
         fi
-        # Actualizar lista_ativos (sumar)
-        actualizar_limite "$ativos" "$_rev_usern" "$sumar_cupos"
+        actualizar_limite "$ativos" "$_rev_usern" "$ajuste_cupos"
         ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-            --text "$(echo -e "=×=×=×=×=×=×=×=×=×=×=×\n<b>✅ CUPOS DE REVENTA SUMADOS !</b> !\n=×=×=×=×=×=×=×=×=×=×=×\n\n👤 Usuario: @$_rev_usern\n📊 Límite anterior: $limite_actual\n➕ Sumados: $sumar_cupos\n📊 Nuevo Límite: $nuevo_limite")" \
+            --text "$(echo -e "=×=×=×=×=×=×=×=×=×=×=×\n<b>✅ CUPOS DE REVENTA AJUSTADOS !</b> !\n=×=×=×=×=×=×=×=×=×=×=×\n\n👤 Usuario: @$_rev_usern\n📊 Límite anterior: $limite_actual\n$operacion: ${ajuste_cupos#-}\n📊 Nuevo Límite: $nuevo_limite")" \
             --parse_mode html
     # Caso 2: Revendedor suspendido
     elif [[ -d /etc/bot/suspensos/$_rev_usern ]]; then
         if [[ -f /etc/bot/suspensos/$_rev_usern/$_rev_usern ]]; then
             l_old=$(grep -w 'LIMITE_REVENDA' /etc/bot/suspensos/$_rev_usern/$_rev_usern | awk {'print $2'})
-            l_new=$((l_old + sumar_cupos))
+            l_new=$((l_old + ajuste_cupos))
+            [[ $l_new -lt 0 ]] && l_new=0
             sed -i "/LIMITE_REVENDA/ s/$l_old/$l_new/g" /etc/bot/suspensos/$_rev_usern/$_rev_usern
         fi
-        actualizar_limite "$ativos" "$_rev_usern" "$sumar_cupos"
-        actualizar_limite "$suspensos" "$_rev_usern" "$sumar_cupos"
+        actualizar_limite "$ativos" "$_rev_usern" "$ajuste_cupos"
+        actualizar_limite "$suspensos" "$_rev_usern" "$ajuste_cupos"
         ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-            --text "$(echo -e "=×=×=×=×=×=×=×=×=×=×=×\n<b>✅ CUPOS DE REVENTA SUMADOS !</b> !\n=×=×=×=×=×=×=×=×=×=×=×\n\n👤 Usuario: @$_rev_usern (SUSPENDIDO)\n📊 Límite anterior: $limite_actual\n➕ Sumados: $sumar_cupos\n📊 Nuevo Límite: $nuevo_limite")" \
+            --text "$(echo -e "=×=×=×=×=×=×=×=×=×=×=×\n<b>✅ CUPOS DE REVENTA AJUSTADOS !</b> !\n=×=×=×=×=×=×=×=×=×=×=×\n\n👤 Usuario: @$_rev_usern (SUSPENDIDO)\n📊 Límite anterior: $limite_actual\n$operacion: ${ajuste_cupos#-}\n📊 Nuevo Límite: $nuevo_limite")" \
             --parse_mode html
     else
         ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
@@ -2162,19 +2179,20 @@ while :; do
                     fi
                     ;;
                 'Ingrese el limite SSH:')
-                    verifica_acesso
-                    [[ "$_erro" == '1' ]] && { fun_menu; exit 0; }
-                    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "❌ Error ! \n\nUtilize solo numeros [Ej: 1]")" \
-                            --parse_mode html
-                        fun_menu
-                        exit 0
-                    }
-                    echo -e "Limite: ${message_text[$id]}" >>$CAD_ARQ
-                    lim_rev $CAD_ARQ
-                    fun_menu
-                    ;;
+    verifica_acesso
+    [[ "$_erro" == '1' ]] && { fun_menu; exit 0; }
+    # Permitir números negativos (ej: -5)
+    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
+        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
+            --text "$(echo -e "❌ Error ! \n\nUtilice solo números (ej: 5 o -3)")" \
+            --parse_mode html
+        fun_menu
+        exit 0
+    }
+    echo -e "Limite: ${message_text[$id]}" >>$CAD_ARQ
+    lim_rev $CAD_ARQ
+    fun_menu
+    ;;
                 '📆 ALTERAR DATOS DE REVENTA 📆\n\nIngrese el user [Ej: @smigolvip]:')
                     verifica_acesso
                     [[ "$_erro" == '1' ]] && { fun_menu; exit 0; }
