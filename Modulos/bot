@@ -346,6 +346,123 @@ alterar_data_user() {
         --text "$(echo -e "=×=×=×=×=×=×=×=×=×=×=×\n<b>✅ DATO ALTERADO !</b>\n=×=×=×=×=×=×=×=×=×=×=×\n\n<b>Usuario:</b> $usuario\n<b>Nueva Fecha:</b> $udata")" \
         --parse_mode html
 }
+
+# ===================================================
+# NUEVA FUNCIÓN: AÑADIR DÍAS A TODOS LOS USUARIOS
+# ===================================================
+fun_add_dias_todos() {
+    # Verificar que el usuario es administrador
+    if [[ "${callback_query_from_id[$id]}" != "$id_admin" ]]; then
+        ShellBot.answerCallbackQuery --callback_query_id ${callback_query_id[$id]} \
+            --text "🚫 ACESSO NEGADO 🚫"
+        return 0
+    fi
+
+    # Solicitar cantidad de días
+    ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
+        --text "📅 AÑADIR DÍAS A TODOS LOS USUARIOS 📅\n\nIngrese la cantidad de días a añadir (ej: 30):" \
+        --reply_markup "$(ShellBot.ForceReply)"
+}
+
+procesar_add_dias_todos() {
+    dias=$1
+    
+    # Validar que sea un número positivo
+    if [[ ! "$dias" =~ ^[0-9]+$ ]] || [[ "$dias" -le 0 ]]; then
+        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
+            --text "❌ Error: Debe ingresar un número entero positivo (ej: 30)" \
+            --parse_mode html
+        fun_menu
+        return 0
+    fi
+
+    # Contadores para el informe
+    usuarios_procesados=0
+    usuarios_error=0
+    usuarios_saltados=0
+    mensaje_errores=""
+
+    # Obtener todos los usuarios del sistema (UID >= 1000, excluyendo nobody)
+    for user in $(awk -F: '$3 >= 1000 {print $1}' /etc/passwd | grep -v nobody); do
+        # Obtener fecha de expiración actual
+        expdate=$(chage -l "$user" | grep -i "Account expires" | awk -F: '{print $2}' | xargs)
+        
+        # Si el usuario no expira (never), lo saltamos
+        if [[ -z "$expdate" ]] || [[ "$expdate" == "never" ]]; then
+            ((usuarios_saltados++))
+            continue
+        fi
+
+        # Calcular nueva fecha (fecha actual + días)
+        if date -d "$expdate" >/dev/null 2>&1; then
+            nueva_fecha=$(date -d "$expdate + $dias days" +"%Y-%m-%d" 2>/dev/null)
+            nueva_fecha_display=$(date -d "$expdate + $dias days" +"%d/%m/%Y" 2>/dev/null)
+        else
+            # Si la fecha no es válida, usar fecha actual + días
+            nueva_fecha=$(date -d "+$dias days" +"%Y-%m-%d" 2>/dev/null)
+            nueva_fecha_display=$(date -d "+$dias days" +"%d/%m/%Y" 2>/dev/null)
+        fi
+
+        # Verificar que se obtuvo una fecha válida
+        if [[ -z "$nueva_fecha" ]]; then
+            ((usuarios_error++))
+            mensaje_errores+="❌ $user - Error al calcular fecha\n"
+            continue
+        fi
+
+        # Aplicar cambios al sistema
+        if chage -E "$nueva_fecha" "$user" 2>/dev/null && usermod -e "$nueva_fecha" "$user" 2>/dev/null; then
+            ((usuarios_procesados++))
+            
+            # Actualizar /etc/bot/info-users/$usuario
+            if [[ -e /etc/bot/info-users/$user ]]; then
+                old=$(awk -F : '{print $3}' /etc/bot/info-users/$user 2>/dev/null)
+                [[ -n "$old" ]] && sed -i "s;$old;$nueva_fecha_display;" /etc/bot/info-users/$user 2>/dev/null
+            fi
+            
+            # Actualizar carpetas de revendedores
+            if [[ -d /etc/bot/revenda ]]; then
+                for rev_dir in $(find /etc/bot/revenda -type d -name "usuarios" 2>/dev/null); do
+                    if [[ -e "$rev_dir/$user" ]]; then
+                        old=$(awk -F : '{print $3}' "$rev_dir/$user" 2>/dev/null)
+                        [[ -n "$old" ]] && sed -i "s;$old;$nueva_fecha_display;" "$rev_dir/$user" 2>/dev/null
+                    fi
+                done
+            fi
+            
+            # Actualizar /root/usuarios.db
+            if grep -qw "$user" /root/usuarios.db 2>/dev/null; then
+                old=$(grep -w "$user" /root/usuarios.db | awk '{print $2}' 2>/dev/null)
+                if [[ -n "$old" ]]; then
+                    sed -i "/^$user / s/$old/$nueva_fecha_display/" /root/usuarios.db 2>/dev/null
+                fi
+            fi
+        else
+            ((usuarios_error++))
+            mensaje_errores+="❌ $user - Error al actualizar fecha\n"
+        fi
+    done
+
+    # Enviar mensaje de confirmación
+    msg="=×=×=×=×=×=×=×=×=×=×=×=×=×=\n"
+    msg+="<b>✅ DÍAS AÑADIDOS A TODOS LOS USUARIOS</b>\n"
+    msg+="=×=×=×=×=×=×=×=×=×=×=×=×=×=\n\n"
+    msg+="📅 <b>Días añadidos:</b> $dias\n"
+    msg+="👤 <b>Usuarios procesados:</b> $usuarios_procesados\n"
+    msg+="⏭️ <b>Usuarios sin fecha (saltados):</b> $usuarios_saltados\n"
+    msg+="❌ <b>Usuarios con error:</b> $usuarios_error\n"
+    
+    if [[ -n "$mensaje_errores" ]]; then
+        msg+="\n<b>Errores:</b>\n$mensaje_errores"
+    fi
+
+    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
+        --text "$(echo -e "$msg")" \
+        --parse_mode html
+    
+    fun_menu
+}
+
 renovar_user() {
     usuario=$1
     # Obtener fecha de expiración actual del sistema
@@ -1144,6 +1261,7 @@ restaure_backup() {
         return 0
     }
 }
+
 msg_bem_vindo() {
     local msg
     msg="✌😎 Hola <b>${message_from_first_name[$id]}</b>\n\nBIENVENIDO(a)\n\n"
@@ -1559,6 +1677,7 @@ fun_menurevenda() {
         return 0
     fi
 }
+
 fun_backmenu() {
     # Verificar que el usuario sea administrador
     if [[ "${callback_query_from_id[$id]}" != "$id_admin" ]]; then
@@ -1577,6 +1696,7 @@ fun_backmenu() {
         --reply_markup "$keyboard1" \
         --parse_mode html
 }
+
 fun_renovar() {
     [[ "$(grep -wc ${callback_query_from_username} $suspensos)" != '0' ]] && {
         ShellBot.answerCallbackQuery --callback_query_id ${callback_query_id[$id]} \
@@ -1604,6 +1724,7 @@ fun_renovar() {
         return 0
     fi
 }
+
 fun_vercupos() {
     # Verificar que el usuario sea revendedor o admin
     if [[ "${callback_query_from_id[$id]}" == "$id_admin" ]] || [[ "$(grep -wc ${callback_query_from_username} $ativos)" != '0' ]]; then
@@ -1636,6 +1757,7 @@ fun_vercupos() {
         return 0
     fi
 }
+
 # LISTA MENU ADMIN
 unset menu1
 menu1=''
@@ -1656,6 +1778,8 @@ ShellBot.InlineKeyboardButton --button 'menu1' --line 4 --text 'ONLINE' --callba
 # Línea 5: 2 botones
 ShellBot.InlineKeyboardButton --button 'menu1' --line 5 --text 'INFO USUARIOS' --callback_data '_verusers'
 ShellBot.InlineKeyboardButton --button 'menu1' --line 5 --text 'BORRAR EXPIRADOS' --callback_data '_expirados'
+# Línea 6: Botón nuevo para añadir días a todos los usuarios
+ShellBot.InlineKeyboardButton --button 'menu1' --line 6 --text '➕ AÑADIR DIAS A TODOS' --callback_data '_adddiasatodos'
 
 # Registro de funciones
 ShellBot.regHandleFunction --function fun_adduser --callback_data '_criaruser'
@@ -1670,6 +1794,8 @@ ShellBot.regHandleFunction --function fun_exp_user --callback_data '_expirados'
 ShellBot.regHandleFunction --function backup_users --callback_data '_backupusers'
 ShellBot.regHandleFunction --function relatorio_rev --callback_data '_relatorio'
 ShellBot.regHandleFunction --function fun_menurevenda --callback_data '_opcoesrev'
+# Registrar la nueva función
+ShellBot.regHandleFunction --function fun_add_dias_todos --callback_data '_adddiasatodos'
 
 unset keyboard1
 keyboard1="$(ShellBot.InlineKeyboardMarkup -b 'menu1')"
@@ -1703,6 +1829,7 @@ ShellBot.regHandleFunction --function fun_vercupos --callback_data '_vercupos2'
 
 unset keyboard2
 keyboard2="$(ShellBot.InlineKeyboardMarkup -b 'menu2')"
+
 # LISTA MENU OPCOES REVENDA (solo admin)
 unset menu4
 menu4=''
@@ -1944,21 +2071,21 @@ while :; do
                     fun_menu
                     ;;
                 '🔄 RENOVAR USUARIO 🔄\n\nIngrese el nombre del usuario a renovar:')
-    verifica_acesso
-    [[ "$_erro" == '1' ]] && { fun_menu; exit 0; }
-    fun_verif_user ${message_text[$id]}
-    [[ "$_erro" == '1' ]] && { fun_menu; exit 0; }
-    renovar_user ${message_text[$id]}
-    if [[ "${message_from_id[$id]}" != "$id_admin" ]]; then
-        rev_usuario="${message_from_username}"
-        limite_actual=$(grep -w "$rev_usuario" $ativos | awk '{print $4}')
-        if [[ -n "$limite_actual" && "$limite_actual" -gt 0 ]]; then
-            nuevo_limite=$((limite_actual - 1))
-            sed -i "/$rev_usuario/ s/LIMITE: $limite_actual/LIMITE: $nuevo_limite/" $ativos
-        fi
-    fi
-    fun_menu
-    ;;
+                    verifica_acesso
+                    [[ "$_erro" == '1' ]] && { fun_menu; exit 0; }
+                    fun_verif_user ${message_text[$id]}
+                    [[ "$_erro" == '1' ]] && { fun_menu; exit 0; }
+                    renovar_user ${message_text[$id]}
+                    if [[ "${message_from_id[$id]}" != "$id_admin" ]]; then
+                        rev_usuario="${message_from_username}"
+                        limite_actual=$(grep -w "$rev_usuario" $ativos | awk '{print $4}')
+                        if [[ -n "$limite_actual" && "$limite_actual" -gt 0 ]]; then
+                            nuevo_limite=$((limite_actual - 1))
+                            sed -i "/$rev_usuario/ s/LIMITE: $limite_actual/LIMITE: $nuevo_limite/" $ativos
+                        fi
+                    fi
+                    fun_menu
+                    ;;
                 '[1] - AGREGAR ARCHIVO\n[2] - EXCLUIR ARCHIVO\n\nIngrese la opcion [1-2]')
                     [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
                         ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
@@ -2179,20 +2306,20 @@ while :; do
                     fi
                     ;;
                 'Ingrese el limite SSH:')
-    verifica_acesso
-    [[ "$_erro" == '1' ]] && { fun_menu; exit 0; }
-    # Permitir números negativos (ej: -5)
-    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
-        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-            --text "$(echo -e "❌ Error ! \n\nUtilice solo números (ej: 5 o -3)")" \
-            --parse_mode html
-        fun_menu
-        exit 0
-    }
-    echo -e "Limite: ${message_text[$id]}" >>$CAD_ARQ
-    lim_rev $CAD_ARQ
-    fun_menu
-    ;;
+                    verifica_acesso
+                    [[ "$_erro" == '1' ]] && { fun_menu; exit 0; }
+                    # Permitir números negativos (ej: -5)
+                    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
+                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
+                            --text "$(echo -e "❌ Error ! \n\nUtilice solo números (ej: 5 o -3)")" \
+                            --parse_mode html
+                        fun_menu
+                        exit 0
+                    }
+                    echo -e "Limite: ${message_text[$id]}" >>$CAD_ARQ
+                    lim_rev $CAD_ARQ
+                    fun_menu
+                    ;;
                 '📆 ALTERAR DATOS DE REVENTA 📆\n\nIngrese el user [Ej: @smigolvip]:')
                     verifica_acesso
                     [[ "$_erro" == '1' ]] && { fun_menu; exit 0; }
@@ -2270,6 +2397,16 @@ while :; do
                     fun_teste ${message_text[$id]}
                     # Ya no restamos cupos del archivo lista_ativos
                     fun_menu
+                    ;;
+                '📅 AÑADIR DÍAS A TODOS LOS USUARIOS 📅\n\nIngrese la cantidad de días a añadir (ej: 30):')
+                    # Solo admin
+                    if [[ "${message_from_id[$id]}" != "$id_admin" ]]; then
+                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
+                            --text "🚫 ACCIÓN NO PERMITIDA"
+                        fun_menu
+                        exit 0
+                    fi
+                    procesar_add_dias_todos ${message_text[$id]}
                     ;;
                 esac
             fi
